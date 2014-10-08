@@ -20,7 +20,7 @@
 			
 			<h3><span>Get Support.</span><?php do_action( 'cc2_support_add_title' ); ?></h3>
 			
-			<p><?php do_action( 'cc2_support_add' ); ?> <a id="cc2_get_personal_help" class="button button-primary" href="#" title="Get personal help by the theme authors and write us right from your backend - as soon as you purchase the CC2 Premium Pack." style="margin-right: 3px;">Personal Help</a> <a href="https://themekraft.zendesk.com/hc/en-us/categories/200037911-Custom-Community-2" class="button secondary" target="_new" title="Custom Community 2 Documentation">Documentation <small><i style="color: #999;">following!</i></small></a></p>
+			<p><?php do_action( 'cc2_support_add' ); ?> <a id="cc2_get_personal_help" class="button button-primary" href="#" title="Get personal help by the theme authors and write us right from your backend - as soon as you purchase the CC2 Premium Pack." style="margin-right: 3px;">Personal Help</a> <a href="https://github.com/Themekraft/Custom-Community/wiki" class="button secondary" target="_new" title="Custom Community 2 Documentation">Documentation</a></p>
 		</div>
 
 		<div id="cc2_ideas" style="float: left; overflow: auto; padding: 0 20px 0 20px; border-right: 0px solid #ddd;">

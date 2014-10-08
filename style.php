@@ -153,13 +153,19 @@ class cc2_CustomStyle {
     $arrHeaderBaseStyle = array();
     
     // Header Background Color.
+    
+    echo '/*debug: Header Background Color: '
+		. print_r( get_theme_mod( 'header_background_color' ), true )
+		. '*/';
+    
+    
     if( get_theme_mod( 'header_background_color', false ) != false ) {
 		$arrHeaderBaseStyle[] = 'background-color: #' . get_theme_mod( 'header_background_color' );
 	}
 	
 	// Header Background Image
     if( get_theme_mod( 'header_background_image', false ) != false ) {
-		$arrHeaderBaseStyle[] = 'background: url("' . get_theme_mod( 'header_background_image' ) . '")';
+		$arrHeaderBaseStyle[] = 'background-image: url("' . get_theme_mod( 'header_background_image' ) . '")';
 	}
 	
 	// Header Height

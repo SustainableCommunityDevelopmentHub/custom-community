@@ -191,6 +191,7 @@ add_action( 'add_top_nav_brand', 'add_top_nav_brand' );
 
 function add_top_nav_brand() {
 
+	/*
 	if( true === get_theme_mod( 'top_nav_brand' ) ) {
 	
 		$content = get_bloginfo('name');
@@ -200,8 +201,10 @@ function add_top_nav_brand() {
 		}
 		
 		add_nav_brand( $content );
+	}*/
+	if( get_theme_mod( 'top_nav_brand', false ) != false ) {
+		add_nav_brand();
 	}
-	
 }
 
 
@@ -218,11 +221,10 @@ add_action( 'add_bottom_nav_brand', 'add_bottom_nav_brand' );
 
 function add_bottom_nav_brand() {
 
-	if( has_nav_menu('top') && !has_nav_menu('default') ) {
-		return;
-	}	
+	if( !has_nav_menu('top') && has_nav_menu('default') && get_theme_mod('bottom_nav_brand', false) != false ) {
+
 	
-	if( get_theme_mod( 'bottom_nav_brand', false ) != false ) {
+	/*if( get_theme_mod( 'bottom_nav_brand', false ) != false ) {
 		
 		$content = get_bloginfo('name');
 		
@@ -231,9 +233,15 @@ function add_bottom_nav_brand() {
 		}
 		
 		add_nav_brand( $content );
+	}*/
+	
+		add_nav_brand( 'bottom' );
 	}
 
 }
+
+
+
 
 /**
  * Echo the Branding (title or image) for Navigations
@@ -242,23 +250,21 @@ function add_bottom_nav_brand() {
  * @author Konrad Sroka
  * @author Fabian Wolf
  * @package cc2
- * @since 2.0
+ * @since 2.0.1
  * 
  */
-function add_nav_brand( $content = '' ) {
+function add_nav_brand( $position = 'top' ) {
+	$strSiteName = get_bloginfo( 'name', 'display' );
+	
+	$content = get_theme_mod( $position . '_nav_brand_image', $strSiteName );
+	
 	// default content = title
-	
-	if( empty( $content ) ) {
-		$content = get_bloginfo('name');
-	} elseif( !empty( $content ) && strpos( $content, '<img') === false ) {
-		$content = '<img src="' . $content . ' />';
-	}
-	
-	
+	$content = '<img src="' . $content . '" alt="'.$content.'" />';
 
 	// just echo the brand here.	
-	echo '<a class="navbar-brand hidden-xs" href="' . esc_url( home_url( '/' ) ) . '" title="'. esc_attr( get_bloginfo( 'name', 'display' ) ) .'" rel="home">' . $content . '</a>';
+	$return = '<a class="navbar-brand hidden-xs" href="' . esc_url( home_url( '/' ) ) . '" title="'. esc_attr( $strSiteName ) .'" rel="home">' . $content . '</a>';
 
+	echo $return;
 }
 
 /**

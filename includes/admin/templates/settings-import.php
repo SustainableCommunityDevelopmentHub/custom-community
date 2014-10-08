@@ -11,7 +11,7 @@
 	<div class="backup-settings settings-export">
 		<p><?php echo sprintf( __('Import theme settings from the %s.', 'cc2'), $strFormatOfChoice ); ?></p>
 		
-	<?php if( $available_formats ) : ?>
+	<?php if( !empty($available_formats) && !empty( $import_data) ) : ?>
 		<p><label><?php _e('Select import format:', 'cc2'); ?>
 			<select name="import_format">
 		<?php foreach( $available_formats as $strFormat => $strFormatLabel ) : ?>
@@ -38,14 +38,31 @@
 <?php else : ?>
 
 	<?php if( !empty( $import_result ) && is_array( $import_result ) ) : ?>
-		<p><?php echo sprintf(__('%s the following data:', 'cc2'), 'Imported'); ?></p>
+		<div class="updated">
+			<p><?php _e('Successfully imported all settings.', 'cc2'); ?></p>
+		</div>
+		<p class="import-message">
+			<strong><?php printf(__('%s the following data:', 'cc2'), 'Imported'); ?></strong>
+		</p>	
 		
-		<ul class="import-messages">
-		<?php foreach( $import_result as $importedItem => $arrItemData ) : ?>
-			<li><?php echo sprintf( ( is_int($importedItem) ? '#%d - ' : '%s: ' ), (is_int( $importedItem) ? $importedItem+1 : $importedItem ) ) . $arrItemData['title']; ?></li>
-			<!-- <?php echo $importedItem; ?>: <?php print_r( $arrItemData); ?>  -->
+		
+		<ul class="import-result-list">
+		<?php foreach( $import_result as $importedItem => $arrItemData ) :
+			$importedItemKey = (is_int( $importedItem ) ? $importedItem+1 : $importedItem );
+		 ?>
+			<li>
+				<span class="import-result-count"><?php echo sprintf( ( is_int($importedItem ) ? '#%d - ' : '%s: ' ), $importedItemKey ); ?></span> <span class="import-result-title"><?php echo $arrItemData['title']; ?></span> <span class="import-result-amount"><?php printf( __( '(%d items)', 'cc2' ), $arrItemData['number'] ) ; ?></span>
+				<a href="#<?php echo $importedItemKey . '-' . $arrItemData['number']; ?>" class="import-result-details-link" style="display:none">
+				</a>
+				<div class="import-result-details" id="<?php echo $importedItemKey . '-' . $arrItemData['number']; ?>" style="display:none">
+					<pre><?php print_r( $arrItemData['test_data_result'] ); ?></pre>
+				</div>
+				
+				</li>
 		<?php endforeach; ?>
 		</ul>
+		
+		
 		
 	<?php else: ?>
 		

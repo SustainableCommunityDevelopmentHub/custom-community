@@ -344,24 +344,29 @@ class cc2_Admin_ExportImport {
 		
 		
 		//new __debug( array( 'backup action ($_POST)' =>  $_POST['backup_action'], 'import_format' => $_POST['import_format'], 'import_data' => $_POST['import_data'] ) );
-		if( isset( $_POST['backup_action'] ) && $_POST['backup_action'] == 'import' ) {
+		if( !empty( $_POST['backup_action'] ) && $_POST['backup_action'] == 'import' ) {
 			$do_import = true;
 		}
 		
 		
 		
 		if( !empty($_POST['import_data'] ) && $do_import != false ) {
+			//new __debug( $_POST['import_data'], 'import_data' );
+			
 			
 			if( !empty( $_POST['import_format'] ) && isset( $this->arrKnownFormats[$_POST['import_format'] ] ) != false ) {
 				$strImportFormat = $_POST['import_format'];
 			}
-			new __debug( array( 'import_format' => $strImportFormat, 'import_data' => $_POST['import_data'] ) );
+			
+			//new __debug( array( 'import_format' => $strImportFormat, 'import_data' => $_POST['import_data'] ), 'admin_settings_import: before import_data()' );
 			
 			$result = $this->import_data( $_POST['import_data'], $strImportFormat );
 			
 			if( $result != false && is_array( $result ) ) {
 				$import_result = $result;
 			}
+			
+			//new __debug( $result, 'import result' );
 		}
 		
 		// fetch concerned tab / template
@@ -393,21 +398,6 @@ class cc2_Admin_ExportImport {
 			}
 		}
 		
-		/*
-		// settings
-		if( stripos( $strDataItems, 'settings') !== false ) { 
-			$arrReturn['advanced_settings'] = get_option( 'cc2_advanced_settings', false );
-		}
-		
-		// theme mods: options => theme_mods_cc2
-		if( stripos( $strDataItems, 'theme_mods') !== false ) { 
-			$arrReturn['theme_mods'] = get_option( 'theme_mods_cc2', false );
-		}
-		
-		// slideshows
-		if( stripos( $strDataItems, 'slideshows') !== false ) { 
-			$arrReturn['slideshows'] = get_option('cc_slider_options', false );
-		}*/
 		
 		if( !empty( $arrReturn ) ) {
 			$return = $arrReturn;
@@ -457,28 +447,41 @@ class cc2_Admin_ExportImport {
 		if( !empty( $data ) ) {
 		
 			$cleaned_data = stripslashes( $data );
+			//new __debug( $cleaned_data, 'import_data: cleaned_data' );
 		
-			switch( $type ) {
+		
+			switch( strtolower( $type) ) {
 				case 'php':
 					$import_data = maybe_unserialize( $cleaned_data );
 					break;
 				
 				case 'json':
 				default:
-					$import_data = json_decode( $cleaned_data , true );
+					$import_data = json_decode( $cleaned_data, true );
+					//new __debug( $import_data, 'json: imported data' );
 					break;
 			}
+			
+			
 		}
 		
 		// note: just for testing purposes
 		//$opt_prefix = 'test_';
 		
-		//new __debug( $import_data, 'import_data' );
+		//new __debug( $import_data, 'import_data: before import' );
 		
 		if( !empty( $import_data ) && is_array( $import_data) ) {
+			//new __debug( $import_data, 'import_data: parsing' );
+			
+			// fetch keys
+			$arrDataKeys = array_keys( $import_data );
+			$strDataKeys = implode(' || ', $arrDataKeys );
+			
 			// settings
 			if( isset( $import_data['advanced_settings'] ) && is_array( $import_data['advanced_settings']) ) {
 				//$arrReturn['advanced_settings'] = get_option( 'cc2_advanced_settings', false );
+				
+				//new __debug( $import_data['advanced_settings'], 'import_data:advanced_settings' );
 				
 				$import_result = update_option( 'cc2_advanced_settings', $import_data['advanced_settings'] );
 				
@@ -490,10 +493,12 @@ class cc2_Admin_ExportImport {
 			}
 			
 			// theme mods: options => theme_mods_cc2
-			if( stripos( $strDataItems, 'theme_mods') !== false ) { 
+			if( stripos( $strDataKeys, 'theme_mods') !== false ) { 
 				
 				$import_result = update_option( 'theme_mods_cc2', $import_data['theme_mods'] );
-				//$import_result = true;
+			
+				//new __debug( $import_data['theme_mods'], 'import_data:theme_mods' );
+				
 				
 				$arrReturn[] = array( 'title' => __('Customizer options', 'cc2' ), 'number' => sizeof( $import_data['theme_mods']), 'test_data_result' => get_option( 'theme_mods_cc2', false ), 'status' => $import_result );
 				unset( $import_result );
@@ -501,11 +506,12 @@ class cc2_Admin_ExportImport {
 			}
 			
 			// slideshows
-			if( stripos( $strDataItems, 'slideshows') !== false ) { 
+			if( stripos( $strDataKeys, 'slideshows') !== false ) { 
 				//$arrReturn['slideshows'] = get_option('cc_slider_options', false );
 				
 				$import_result = update_option( 'cc_slider_options', $import_data['slideshows'] );
-				//$import_result = true;
+				
+				//new __debug( $import_data['slideshows'], 'import_data:slideshows' );
 				
 				$arrReturn[] = array( 'title' => __('Slideshows', 'cc2' ), 'number' => sizeof( $import_data['slideshows']), 'status' => $import_result, 'test_data_result' => get_option( 'cc_slider_options', false ) );
 				unset( $import_result );
