@@ -265,12 +265,12 @@ jQuery(function() {
     jQuery( document ).on( 'click', '.add-slideshow', function(e) {
 		e.preventDefault();
 		
-		console.info( 'add new slideshow' );
+		//console.info( 'add new slideshow' );
         var new_slideshow_type =  jQuery('#add-slideshow-type').val();
         var new_slideshow_name =  jQuery('#add-slideshow-name').val();
         var new_slideshow_slug = create_slug( new_slideshow_name );
         
-		console.log( 'slideshow params', new_slideshow_name, new_slideshow_type, 'slug', new_slideshow_slug );
+		//console.log( 'slideshow params', new_slideshow_name, new_slideshow_type, 'slug', new_slideshow_slug );
 
         if(new_slideshow_name == '') {
 			// modal dialogue

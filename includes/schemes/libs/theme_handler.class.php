@@ -1,18 +1,19 @@
 <?php
 /**
- * Implements color schemes
+ * Handles all of the stylesheet (style.css) filtering / replacement, switch between dynamic and static mode, etc. pp.
  * 
  * @author Fabian Wolf
  * @package cc2
  * @since 2.0-r2
+ * @require cc2_ColorSchemes
  */
 
 
-if( class_exists( 'cc2_ColorSchemes' ) ) {
+if( class_exists( 'cc2_ColorSchemes_ThemeHandler' ) ) {
 	return;
 }
 
-	class cc2_ColorSchemes {
+	class cc2_ColorSchemes_ThemeHandler {
 		
 		var $arrKnownLocations = array(),
 			$arrColorSchemes = array();
@@ -60,7 +61,7 @@ if( class_exists( 'cc2_ColorSchemes' ) ) {
 		}
 
 
-		public function set_known_locations( $arrLocations = array() ) {
+		/*public function set_known_locations( $arrLocations = array() ) {
 			$return = false;
 			
 			if( !empty( $arrLocations ) && is_array( $arrLocations ) ) {
@@ -70,7 +71,7 @@ if( class_exists( 'cc2_ColorSchemes' ) ) {
 			}
 		
 			return $return;
-		}
+		}*/
 		
 	
 		public function switch_color_scheme( $url ) {
@@ -152,5 +153,5 @@ if( class_exists( 'cc2_ColorSchemes' ) ) {
 		}
 	}
 	
-	add_action('cc2_init_color_schemes', array('cc2_ColorSchemes', 'init'), 11 );
+	add_action('cc2_init_color_schemes', array('cc2_ColorSchemes_ThemeHandler', 'init'), 11 );
 

@@ -84,6 +84,28 @@ if( !function_exists( '_notempty' ) ) :
 
 endif;
 
+// nother lil helper
+if( !function_exists( '_switchdefault' ) ) :
+	/**
+	 * Switch to default if $value is empty. Works identical to get_option()
+	 * 
+	 * @param mixed $value		Value to test against.
+	 * @param mixed $default	Default value if $value is empty. Defaults to FALSE.
+	 * @return mixed $return	Returns $default if $value is empty, or $value, if not.
+	 */
+
+	function _switchdefault( $value = null, $default = false ) {
+		$return = $default;
+		
+		if( $default !== $value && !empty( $value ) ) {
+			$return = $value;
+		}
+		
+		return $return;
+	}
+
+endif;
+
 
 
 // woocomerce support
@@ -382,27 +404,25 @@ add_action('admin_enqueue_scripts', 'cc2_js_aid', 1 ); // admin
 //add_action('admin_enqueue_scripts', 'cc2_js_aid', 0 );
 
 
-/*
-if( !class_exists( 'cc2_ColorSchemes' ) ) {
-	
-	
-	require_once( apply_filters('cc2_include_color_scheme_class', get_template_directory() . '/includes/color-schemes.class.php' ) );
-
-	add_action('after_setup_theme', array( 'cc2_ColorSchemes', 'init' ), 11 );
-}*/
-
-
 
 /**
- * Helper functions
+ * Color Scheme library includes (classes + helper functions)
+ * TODO: Test if these could be tacked into the rest of the includes at the end of this file, or if there's a need to load them all BEFORE the rest.
  */
 
 if( !class_exists( 'cc2_ColorSchemes' ) ) {
-	include_once( apply_filters('cc2_include_color_scheme_class', get_template_directory() . '/includes/color-schemes.class.php' ) );
+	include_once( apply_filters('cc2_include_color_scheme_class', get_template_directory() . '/includes/schemes/libs/color-schemes.class.php' ) );
 }
+
+if( !class_exists( 'cc2_ColorSchemes_ThemeHandler' ) ) {
+	include_once( apply_filters('cc2_include_color_scheme_theme_handler', get_template_directory() . '/includes/schemes/libs/theme_handler.class.php' ) );	
+}
+include_once( get_template_directory() . '/includes/schemes/libs/functions.php' );
+
 
 /**
  * Global wrapper function
+ * NOTE: Might be obsolete because of cc2_get_current_color_scheme();
  */
 if( !function_exists('_cc2_get_current_color_scheme' ) ) :
 	function _cc2_get_current_color_scheme() {
