@@ -15,9 +15,9 @@ if( !function_exists('cc2_get_current_color_scheme') ) {
 			$cc2_color_schemes = new cc2_ColorSchemes(); // should be unset-table / replaceable via plugin / filter hooks
 		}
 		
-		$return = $cc2_color_schemes->get_current_color_scheme();
 		
-		
+		$return = apply_filters('cc2_get_current_color_scheme', $cc2_color_schemes->get_current_color_scheme() );
+				
 		return $return;
 	}
 	

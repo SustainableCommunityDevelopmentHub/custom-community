@@ -55,7 +55,7 @@ define('CC2_THEME_CONFIG', serialize(
 		'color_schemes' => array(
 			'default' => array(
 				'title' => 'Orange &amp; Black',
-				'file' => 'default.less', /** if no filename is given, we assume its {$slug}.less */
+				'file' => 'style.less', /** if no filename is given, we assume its {$slug}.less */
 				'scheme' => array(
 					'font_color' => '333333', /** @gray-dark: lighten(#000, 20%); // #333 */
 					'font_family' => 'font-family-sans-serif',
