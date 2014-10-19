@@ -421,20 +421,6 @@ include_once( get_template_directory() . '/includes/schemes/libs/functions.php' 
 
 
 /**
- * Global wrapper function
- * NOTE: Might be obsolete because of cc2_get_current_color_scheme();
- */
-if( !function_exists('_cc2_get_current_color_scheme' ) ) :
-	function _cc2_get_current_color_scheme() {
-		global $cc2_color_schemes;
-		
-		$return = apply_filters('cc2_get_current_color_scheme', $cc2_color_schemes->get_current_color_scheme() );
-		
-		return $return;
-	}
-endif;
-
-/**
  * Helps with initialization, esp. if you're using a child theme or want to extend or override the class with your own.
  *
  * NOTE: Experimental usage of anonymous function call. WP 3.9+ requires at least PHP 5.3 to work, AND PHP 5.2 is officially being deprecated, so it shouldnt be a problem anyway.
@@ -456,7 +442,7 @@ add_action('after_setup_theme', function() {
 		new __debug( $current_scheme, 'current color scheme' );
 		*/
 	}
-}, 20 );
+}, 11 );
 
 
 

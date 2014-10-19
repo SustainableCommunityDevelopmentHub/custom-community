@@ -171,7 +171,7 @@ class updateHelper {
 	}
 	
 	/**
-	 * NOTE: $max_version is actually the maximumg version + 1
+	 * NOTE: $max_version is actually the maximum version + 1
 	 * 
 	 * @param string $min_version	Minimum version to test for. 
 	 * @param string $max_version	Maximum version - ie. any version LOWER than this one.
@@ -189,8 +189,8 @@ class updateHelper {
 		} else {
 			// update script is only applicable for 2.0, later versions require the respective update script (eg. cc21-update.php)
 			//if( version_compare( CC_THEME, '2.1', '>=') ) { // output message and quit
-			if( version_compare( CC_THEME, $max_version, '>=') ) { // output message and quit
-				self::debug( array('CC_THEME' => CC_THEME, 'max_version' => $max_version, 'comparison result' => version_compare( CC_THEME, $max_version, '>=') ), 'version compare max vs. current theme' );
+			if( version_compare( CC2_THEME, $max_version, '>=') ) { // output message and quit
+				self::debug( array('CC2_THEME' => CC2_THEME, 'max_version' => $max_version, 'comparison result' => version_compare( CC2_THEME, $max_version, '>=') ), 'version compare max vs. current theme' );
 				
 				$return = false;
 			}
