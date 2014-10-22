@@ -4,12 +4,19 @@
  *
  * @author Fabian Wolf
  * @link http://usability-idealist.de/
- * @version 1.3
+ * @version 1.4
  * @license GNU GPL v3
+ * 
+ * Features:
+ * - class acts as a namespace
+ * - debug output is displayed only to logged in users with the manage_options capability (may be optionally changed or disabled)
+ * - optionally writes data into a remote-read protected logfile (default location: wp_upload_dir)
  */
  
 class __debug {
 	protected $params, $title;
+	
+	public static $version = 1.4;
 	
 	function __construct( $data, $title = 'Debug:', $arrParams = false ) {
 	
@@ -18,9 +25,26 @@ class __debug {
 			'class' => ( isset( $arrParams['class'] ) ? $arrParams['class'] : 'theme__debug' ),
 			'capability' => ( isset( $arrParams['capability'] ) && $arrParams['capability'] !== true ? $arrParams['capability'] : 'manage_options' ),
 			'logged_in' => ( isset( $arrParams['logged_in'] ) ? $arrParams['logged_in'] : true ),
+			'log' => ( !empty( $arrParams['log'] ) ? true : false ),
 		);
 		
-		$this->debug( $data, $title );
+		// read upload_dir ONLY if logging is ENABLED
+		if( !empty($this->params->log) ) {
+		
+			if( !empty( $arrParams['log_file'] ) ) {
+				$this->params->log_file = $arrParams['log_file'];
+			} else {
+				$upload_dir = wp_upload_dir();
+				$this->params->log_file = trailingslashit( $upload_dir['basedir'] ) . '__debug.log';
+			}
+		}
+		
+		
+		if( !empty($this->params->log ) ) {
+			$this->_log_data( $data, $title );
+		} else {
+			$this->debug( $data, $title );
+		}
 	}
 
 	protected function debug( $data, $title = 'Debug:' ) {
@@ -41,6 +65,43 @@ class __debug {
 		
 		if( $is_allowed_user ) {
 			echo '<div class="'.$this->params->class.'"><p class="debug-title">'.$title.'</p><pre class="debug-content">'.$this->htmlentities2( print_r($data, true) ).'</pre></div>';
+
+		}
+	}
+	
+	public static function log( $data, $title = false, $arrParams = array() ) {
+		$arrParams['log'] = true;
+		
+		new self( $data, $title, $arrParams );
+	}
+	
+	protected function _log_data( $data, $title = false ) {
+		if( !empty( $this->params->log_file ) ) {
+			
+			
+			$arrLogEntry = array( 'title' => date('Y-m-d H:i:s') );
+			
+			if( !empty( $title ) ) {
+				$arrLogEntry['title'] .= ' - ' . $title ;
+			}
+			$arrLogEntry['title'] . ':';
+			
+			
+			$arrLogEntry['data'] = print_r( $data, true );
+			
+			$strLogEntry = "<logentry>\n" . implode( "\n", $arrLogEntry ) . "</logentry>\n";
+							
+			
+			$result = file_put_contents( $this->params->log_file, $strLogEntry, FILE_APPEND );
+			
+			error_log( 'Log entry write'); // backup into regular error log
+			
+			if( $result === false ) {
+				error_log( 'Could not write ' . $this->params->log_file . '. Possible missing file access rights?' );
+			}
+			
+		} else {
+			error_log( 'No log file given.');
 		}
 	}
 	

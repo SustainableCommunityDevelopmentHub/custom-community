@@ -28,7 +28,8 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 	
 	class cc2_CustomizerLoader {
 		
-		static $customizer_section_priority;
+		static $customizer_section_priority,
+			$customizer_section_priority_call = array();
 		
 		function __construct() {
 			
@@ -41,7 +42,22 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			
 		}
 		
-		
+		public static function get_customizer_section_priority( $section = false ) {
+			$return = self::$customizer_section_priority;
+			
+			if( !empty( $section )) {
+				if( isset( self::$customizer_section_priority_call[ $section ] ) ) {
+					$return = self::$customizer_section_priority_call[ $section ];
+				} else {				
+					// missing prefix
+					if( substr( $section, 0, 8 ) !== 'section_' && isset( self::$customizer_section_priority_call[ 'section_'. $section ] ) ) {
+						$return = self::$customizer_section_priority_call[ 'section_'. $section ];
+					}
+				}
+			} 
+			
+			return $return;
+		}
 		
 		function load_customizer_scripts() {
 			$customizer_data = $this->prepare_preloaded_data();
@@ -116,10 +132,23 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				
 				$return['config'] = $config;
 				
+				
+				
+				$arrColorSchemes = cc2_get_color_schemes();
+				$current_scheme = cc2_get_current_color_scheme();
+				
+				if( !empty( $arrColorSchemes ) ) {
+					foreach( $arrColorSchemes as $strSchemeSlug => $arrSchemeData ) {
+						$return['color_schemes'][$strSchemeSlug] = $arrSchemeData['title'];
+					}
+				}
+				$return['current_color_scheme'] = $current_scheme['slug'];
+				
 				/**
 				 * TODO: Use cc2_ColorSchemes instead
 				 */
 				
+				/*
 				if( isset( $config['color_schemes'] ) && is_array( $config['color_schemes'] ) ) {
 				
 					foreach( $config['color_schemes'] as $strSchemeSlug => $arrSchemeParams ) {
@@ -132,7 +161,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 							$return['color_scheme_previews'][ $strSchemeSlug ] = false;
 						}
 					}
-				}
+				}*/
 			}
 			
 			
@@ -328,51 +357,67 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			
 				add_action('customizer_register', array( $this,  ) );
 			}*/
+			
 			self::$customizer_section_priority = 10;
+			self::$customizer_section_priority_call['section_color_schemes'] = self::$customizer_section_priority;
 			add_action( 'customize_register', array( $this, 'section_color_schemes' ),11 );
 			
+			
 			self::$customizer_section_priority += 20;
+			self::$customizer_section_priority_call['section_title_tagline'] = self::$customizer_section_priority;
 			add_action( 'customize_register', array( $this, 'section_title_tagline' ));
 	
 			self::$customizer_section_priority += 20;
+			self::$customizer_section_priority_call['section_typography'] = self::$customizer_section_priority;
 			add_action( 'customize_register', array( $this, 'section_typography' ));
 			
 			self::$customizer_section_priority += 20;
+			self::$customizer_section_priority_call['section_background'] = self::$customizer_section_priority;
 			add_action( 'customize_register', array( $this, 'section_background' ));
 			
 			self::$customizer_section_priority += 20;
+			self::$customizer_section_priority_call['section_header'] = self::$customizer_section_priority;
 			add_action( 'customize_register', array( $this, 'section_header' ));
 			
 			self::$customizer_section_priority += 20;
+			self::$customizer_section_priority_call['section_nav'] = self::$customizer_section_priority;
 			add_action( 'customize_register', array( $this, 'section_nav' ));
 			
 			self::$customizer_section_priority += 20;
+			self::$customizer_section_priority_call['section_branding'] = self::$customizer_section_priority;
 			add_action( 'customize_register', array( $this, 'section_branding' ));
 			
 			self::$customizer_section_priority += 20;
+			self::$customizer_section_priority_call['section_static_frontpage'] = self::$customizer_section_priority;
 			add_action( 'customize_register', array( $this, 'section_static_frontpage' ));
 			
 			self::$customizer_section_priority += 20;
+			self::$customizer_section_priority_call['section_content'] = self::$customizer_section_priority;
 			add_action( 'customize_register', array( $this, 'section_content' ));
 
 			self::$customizer_section_priority += 20;
+			self::$customizer_section_priority_call['section_blog'] = self::$customizer_section_priority;
 			add_action( 'customize_register', array( $this, 'section_blog' ));
 			
 			self::$customizer_section_priority += 20;
+			self::$customizer_section_priority_call['section_slider'] = self::$customizer_section_priority;
 			add_action( 'customize_register', array( $this, 'section_slider' ));
 			
 			self::$customizer_section_priority += 20;
+			self::$customizer_section_priority_call['section_layouts'] = self::$customizer_section_priority;
 			add_action( 'customize_register', array( $this, 'section_layouts' ));
 			
 			self::$customizer_section_priority += 20;
+			self::$customizer_section_priority_call['section_widgets'] = self::$customizer_section_priority;
 			add_action( 'customize_register', array( $this, 'section_widgets' ));
 
 			self::$customizer_section_priority += 20;
+			self::$customizer_section_priority_call['section_footer'] = self::$customizer_section_priority;
 			add_action( 'customize_register', array( $this, 'section_footer' ));
 			
-
 			
 			self::$customizer_section_priority += 20;
+			self::$customizer_section_priority_call['section_customize_bootstrap'] = self::$customizer_section_priority;
 			add_action( 'customize_register', array( $this, 'section_customize_bootstrap' ));
 		
 			
