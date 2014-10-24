@@ -17,6 +17,11 @@ if( !class_exists('__debug') && file_exists( get_template_directory() . '/includ
 	include_once( get_template_directory() . '/includes/debug.class.php' );
 endif;
 
+global $cc2_color_scheme_class;
+if( !isset( $cc2_color_scheme_class ) ) {
+	$cc2_color_scheme_class = 'cc2_ColorScheme';
+}
+
 
 
 
@@ -68,11 +73,28 @@ function cc2_theme_deactivation() {
 
 add_action( 'after_setup_theme', 'cc2_theme_activation' );
 function cc2_theme_activation() {
+	
     if ( is_admin() && isset( $_GET['activated'] ) && 'themes.php' == $GLOBALS['pagenow'] ) {
         wp_redirect(admin_url('customize.php'));
         exit;
     }
 }
+
+// much more helping buddy
+if( !function_exists( 'is_customizer_preview' ) ) :
+
+	function is_customizer_preview() {
+		$return = false;
+
+		if( !is_admin() && isset($_POST['wp_customize']) && $_POST['wp_customize'] == 'on' && is_user_logged_in() ) {
+			$return = true;
+		}
+
+
+		return $return;
+	}
+
+endif;
 
 // a lil helper
 if( !function_exists( '_notempty' ) ) :
@@ -410,14 +432,18 @@ add_action('admin_enqueue_scripts', 'cc2_js_aid', 1 ); // admin
  * TODO: Test if these could be tacked into the rest of the includes at the end of this file, or if there's a need to load them all BEFORE the rest.
  */
 
-if( !class_exists( 'cc2_ColorSchemes' ) ) {
-	include_once( apply_filters('cc2_include_color_scheme_class', get_template_directory() . '/includes/schemes/libs/color-schemes.class.php' ) );
-}
+//new __debug( 'loading color schemes', __FILE__ );
+
+
+
+require( get_template_directory() . '/includes/schemes/libs/color-schemes.class.php' );
+
 
 if( !class_exists( 'cc2_ColorSchemes_ThemeHandler' ) ) {
-	include_once( apply_filters('cc2_include_color_scheme_theme_handler', get_template_directory() . '/includes/schemes/libs/theme_handler.class.php' ) );	
-}
-include_once( get_template_directory() . '/includes/schemes/libs/functions.php' );
+	require( get_template_directory() . '/includes/schemes/libs/theme_handler.class.php' );	
+} 
+
+include( get_template_directory() . '/includes/schemes/libs/functions.php' );
 
 
 /**
@@ -426,24 +452,46 @@ include_once( get_template_directory() . '/includes/schemes/libs/functions.php' 
  * NOTE: Experimental usage of anonymous function call. WP 3.9+ requires at least PHP 5.3 to work, AND PHP 5.2 is officially being deprecated, so it shouldnt be a problem anyway.
  * 
  * @requires WP 3.9
+ * @requires PHP 5.3.8
  */
- 
-add_action('after_setup_theme', function() {
-	global $cc2_color_schemes;
-	//new __debug('init CHECK fires');
-	
-	
-	if( !isset( $cc2_color_schemes ) ) {
-		//new __debug('init fires');
-		
-		do_action('cc2_init_color_schemes');
-	} else {
-		/*$current_scheme = _cc2_get_current_color_scheme();
-		new __debug( $current_scheme, 'current color scheme' );
-		*/
-	}
-}, 11 );
+if (version_compare(PHP_VERSION, '5.4.3') >= 0) :
 
+	add_action('init', function() {
+		
+		//__debug::log('anonymous function call fires', 'cc2_init_color_schemes');
+		
+		//new __debug('init CHECK fires');
+		
+		
+		if( !isset( $GLOBALS['$cc2_color_schemes']) ) {
+			//new __debug('init fires');
+			
+			do_action('cc2_init_color_schemes');
+		} else {
+			/*$current_scheme = _cc2_get_current_color_scheme();
+			new __debug( $current_scheme, 'current color scheme' );
+			*/
+		}
+	}, 10 );
+
+else : // outdated PHP version (< 5.3.8 )
+	
+	if( !function_exists( '_cc2_init_color_schemes_call' ) ) :
+		//__debug::log('outdated private function call fires', 'cc2_init_color_schemes');
+	
+		function _cc2_init_color_schemes_call() {
+	
+			
+			if( !isset( $GLOBALS['$cc2_color_schemes'] ) ) {
+				do_action('cc2_init_color_schemes');
+			}
+		}
+		
+		add_action('init', '_cc2_init_color_schemes_call', 10 );
+	endif;
+
+
+endif;
 
 
 /**

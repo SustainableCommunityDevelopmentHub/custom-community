@@ -8,9 +8,13 @@
  */
 
 
-if( class_exists( 'cc2_ColorSchemes' ) ) {
-	return;
-}
+if( !class_exists( 'cc2_ColorSchemes' ) ) :
+/**
+ * NOTE: Set current color scheme class for handling possible issues with the Them Customization API
+ **/
+ 
+
+//new __debug('cc2_ColorSchemes loaded');
 
 	class cc2_ColorSchemes {
 		
@@ -45,7 +49,7 @@ if( class_exists( 'cc2_ColorSchemes' ) ) {
 			// init variables
 			$this->init_schemes();
 			
-			$upload_dir = $upload_dir = wp_upload_dir();
+			$upload_dir = wp_upload_dir();
 			
 			$arrLocations = array(
 				$upload_dir['path'] . '/cc2/schemes/' => $upload_dir['url'] . '/cc2/schemes/',
@@ -93,14 +97,37 @@ if( class_exists( 'cc2_ColorSchemes' ) ) {
 		public function init_schemes() {
 			
 			if( defined('CC2_THEME_CONFIG' ) ) {
-				
-				$config = maybe_unserialize( CC2_THEME_CONFIG );
+	
+				$this->config = maybe_unserialize( CC2_THEME_CONFIG );
+				$config = $this->config;
 				
 				if( !empty( $config['color_schemes'] ) ) {
 					$this->arrColorSchemes = $config['color_schemes'];
 				}
 
 			}
+		}
+		
+		public function get_color_schemes() {
+			$return = false;
+			
+			// get default themes
+			if( !empty( $this->arrColorSchemes) && isset( $this->arrColorSchemes['default'] ) != false ) {
+				$return = $this->config['color_schemes'];
+				//new __debug( $return, 'default schemes' );
+				
+				// check for scheme paths
+				foreach( $return as $strBaseSlug => $arrBaseMeta ) {
+					$return[ $strBaseSlug ]['scheme_path'] = trailingslashit( get_template_directory() );
+					
+					// check for input file
+					if( empty( $arrBaseMeta['file'] ) ) { // default file = style.less
+						$return[ $strBaseSlug ]['file'] = 'style.less';
+					}
+				}	
+			}
+			
+			return $return;
 		}
 	
 		function get_current_color_scheme( $default = false ) {
@@ -152,5 +179,11 @@ if( class_exists( 'cc2_ColorSchemes' ) ) {
 		}
 	}
 	
+	if( !defined('CC2_COLOR_SCHEMES_CLASS' ) ) {
+		define( 'CC2_COLOR_SCHEMES_CLASS', 'cc2_ColorSchemes' );
+	}
+
+	
 	add_action('cc2_init_color_schemes', array('cc2_ColorSchemes', 'init'), 11 );
 
+endif; // if class_exists
