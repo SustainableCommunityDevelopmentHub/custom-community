@@ -60,7 +60,11 @@ if( !class_exists( 'cc2_ColorSchemes' ) ) :
 			
 			// add filters
 			
+			/**
+			 * NOTE: Possibly misplaced
+			 */
 			add_filter( 'cc2_style_css', array( $this, 'switch_color_scheme') );
+			
 		}
 
 
@@ -80,18 +84,22 @@ if( !class_exists( 'cc2_ColorSchemes' ) ) :
 		public function switch_color_scheme( $url ) {
 			$return = $url;
 			
-			$current_scheme = apply_filters('cc2_get_current_color_scheme', $this->get_current_color_scheme() );
+			$current_scheme = apply_filters('cc2_switch_scheme_get_current_color_scheme', $this->get_current_color_scheme() );
 			
 			//new __debug( array('current_scheme' => $current_scheme ), 'switch_color_scheme' );
 			
 			if( !empty( $current_scheme ) && isset( $current_scheme['slug'] ) && $current_scheme['slug'] != 'default' ) {
 				//new __debug( array('current_scheme' => $current_scheme ), 'switch_color_scheme = true' );
 				
-				$return = apply_filters('cc2_set_style_url', $current_scheme['style_url'] );
+				if( !empty( $current_scheme['style_url'] ) ) {
+					$return = apply_filters('cc2_set_style_url', $current_scheme['style_url'] );
+				}
 			}
 			
 			return $return;
 		}
+
+		
 		
 		
 		public function init_schemes() {
@@ -152,7 +160,7 @@ if( !class_exists( 'cc2_ColorSchemes' ) ) :
 					$strOutputFile = $current_scheme_slug . '.css';
 					
 					if( !empty( $return['file'] ) ) {
-						$strOutputFile = basename( $return['file'], 'less' ) . '.css';
+						$strOutputFile = basename( $return['file'], '.less' ) . '.css';
 					}
 					
 					$return['output_file'] = $strOutputFile;

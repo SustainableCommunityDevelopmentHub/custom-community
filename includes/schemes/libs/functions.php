@@ -87,12 +87,26 @@ if( !function_exists('cc2_get_color_schemes') ) {
 if( !function_exists('cc2_get_color_scheme_by_slug') ) {
 	function cc2_get_color_scheme_by_slug( $scheme_slug = false ) {
 		$return = false;
+		global $cc2_color_schemes;
 	
 		if( !empty( $scheme_slug ) && function_exists( 'cc2_get_color_schemes') ) {
 			$arrSchemes = cc2_get_color_schemes();
 			
+			//new __debug( array('scheme_slug' => $scheme_slug, 'schemes' => $arrSchemes ), __METHOD__ );
+			
 			if( isset( $arrSchemes[ $scheme_slug ] ) != false ) {
+				
+				// check for missing settings
 				$return = $arrSchemes[ $scheme_slug ];
+				
+				
+				if( empty( $return['slug'] ) != false ) {
+					$return['slug'] = $scheme_slug;
+				}
+				
+			
+				$return = $cc2_color_schemes->add_missing_scheme_variables( $return );
+				
 			}
 			
 		}

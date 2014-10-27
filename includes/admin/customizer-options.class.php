@@ -487,9 +487,24 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				 $wp_customize->add_control( 'color_scheme', array(
 					'label'   		=> 	__('Choose a scheme', 'cc2'),
 					'section' 		=> 	'colors',
-					'priority'		=> 	10,
+					'priority'		=> 	5,
 					'type'    		=> 	'radio',
 					'choices'    	=> 	$color_schemes,
+				) );
+				
+				// Color Scheme Notice
+				 $wp_customize->add_setting( 'notice_color_scheme', array(
+					 'capability'   => 'edit_theme_options',
+				 ) );
+				 
+				$wp_customize->add_control( 
+					new Description( $wp_customize, 'notice_color_scheme', array(
+						'label' 		=> 	__('Note: Switching will also change a few other settings, including Font, Link and Link Hover Color.', 'cc2'),
+						'type' 			=> 	'description',
+						'section' 		=> 	'colors',
+						'priority'		=> 	6,
+						
+					) 
 				) );
 			}
 		}

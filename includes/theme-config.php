@@ -65,19 +65,32 @@ define('CC2_THEME_CONFIG', serialize(
 			),
 			'dark' => array(
 				'title' => 'Dark Colours',
-				
+				'file' => 'style.less', /** if no filename is given, we assume its {$slug}.less */
+				'scheme' => array(
+					'font_color' => '111111', /** @gray-dark: lighten(#000, 20%); // #333 */
+					'font_family' => 'font-family-sans-serif',
+					'link_color' => '73605B',
+					'hover_color' => '737373',
+				),
 			),
 			
 			
 			'light' => array(
 				'title' => 'Light Colours',
+				'file' => 'style.less', /** if no filename is given, we assume its {$slug}.less */
+				'scheme' => array(
+					'font_color' => '555555', /** @gray-dark: lighten(#000, 20%); // #333 */
+					'font_family' => 'font-family-sans-serif',
+					'link_color' => '00B4EE',
+					'hover_color' => '1E90FF',
+				),
 			),
 			'_test' => array(
 				'title' => 'Test Scheme',
 				'file' => 'test.less',
 				'output_file' => 'test.css',
 				'scheme' => array(
-					'font_color' => '111', /** @gray-dark: lighten(#000, 20%); // #333 */
+					'font_color' => '111111', /** @gray-dark: lighten(#000, 20%); // #333 */
 					'font_family' => 'font-family-sans-serif',
 					'link_color' => '#F24B8C',
 					'hover_color' => '#F34B6A',
