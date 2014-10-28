@@ -64,7 +64,26 @@ if( !class_exists( 'cc2_ColorSchemes' ) ) :
 			 * NOTE: Possibly misplaced
 			 */
 			add_filter( 'cc2_style_css', array( $this, 'switch_color_scheme') );
+			add_filter( 'cc2_style_css', array( $this, 'use_compiled_stylesheet' ) );
 			
+		}
+
+		/**
+		 * Backward compatiblity for LESS-compiled stylesheets
+		 */
+
+		public function use_compiled_stylesheet( $url ) {
+			$return = $url;
+			
+			$strStylesheetURL = get_option('cc2_stylesheet_file', $return );
+			
+			if( !empty( $strStylesheetURL) && $strStylesheetURL != $return && stripos( $strStylesheetURL, '.css' ) !== false ) {
+				$return = $strStylesheetURL;
+			}
+			
+			//$return = get_option('cc2_stylesheet_file', $return );
+			
+			return $return;
 		}
 
 
