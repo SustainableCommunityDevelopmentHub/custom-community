@@ -111,8 +111,8 @@ class __debug {
 			
 			if( $result === false ) {
 				$strMinifiedLogEntry = str_replace( array( "\r\n", "\n"), '[lnbr]', $strLogEntry );
-				error_log( 'Could not write ' . $this->params->log_file . '. Possible missing file access rights?' );
-				error_log( __METHOD__ . ': Original log entry: ' . str_replace( $strMinifiedLogEntry ) );
+				error_log( 'Could not write ' . $this->params->log_file . '. Possible missing file access rights?', 0 );
+				error_log( __METHOD__ . ': Original log entry: ' . $strMinifiedLogEntry, 0 );
 			}
 			
 		} else {
