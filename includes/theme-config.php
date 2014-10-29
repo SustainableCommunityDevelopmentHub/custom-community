@@ -65,7 +65,7 @@ define('CC2_THEME_CONFIG', serialize(
 			),
 			'dark' => array(
 				'title' => 'Dark Colours',
-				'file' => 'style.less', /** if no filename is given, we assume its {$slug}.less */
+				'file' => 'dark.less', /** if no filename is given, we assume its {$slug}.less */
 				'scheme' => array(
 					'font_color' => '111111', /** @gray-dark: lighten(#000, 20%); // #333 */
 					'font_family' => 'font-family-sans-serif',
@@ -77,7 +77,7 @@ define('CC2_THEME_CONFIG', serialize(
 			
 			'light' => array(
 				'title' => 'Light Colours',
-				'file' => 'style.less', /** if no filename is given, we assume its {$slug}.less */
+				'file' => 'light.less', /** if no filename is given, we assume its {$slug}.less */
 				'scheme' => array(
 					'font_color' => '555555', /** @gray-dark: lighten(#000, 20%); // #333 */
 					'font_family' => 'font-family-sans-serif',

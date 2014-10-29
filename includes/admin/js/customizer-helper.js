@@ -18,7 +18,7 @@ jQuery(function() {
 	 */
 
 	jQuery( document ).on('change', '#customize-control-color_scheme_bottom_nav select', function( e ) {
-		console.log( this, this.value );
+		console.log( 'bottom_nav_scheme', this, this.value );
 		//e.preventDefault();	
 	
 		
@@ -42,7 +42,7 @@ jQuery(function() {
 	});
 	
 	jQuery( document ).on('change', '#customize-control-color_scheme_top_nav select', function( e ) {
-		console.log( this, this.value );
+		console.log( 'top_nav_scheme', this, this.value );
 		//e.preventDefault();	
 	
 		

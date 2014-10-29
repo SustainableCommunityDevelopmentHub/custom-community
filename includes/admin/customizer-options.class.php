@@ -33,14 +33,21 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 		
 		function __construct() {
 			
+			$this->init_customizer_hooks();
+			
+		}
+		
+		public function init_customizer_hooks() {
+			__debug::log( __METHOD__ . ' fires ');
+			
 			// scripts
 			add_action( 'customize_controls_enqueue_scripts', array( $this, 'load_customizer_scripts' ) );
 			
 			
 			// set up actions
-			add_action( 'customize_preview_init', array( $this, 'customizer_preview_init' ) );
-			
+			add_action( 'customize_preview_init', array( $this, 'customizer_preview_init' ) );	
 		}
+		
 		
 		public static function get_customizer_section_priority( $section = false ) {
 			$return = self::$customizer_section_priority;
@@ -60,7 +67,8 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 		}
 		
 		function load_customizer_scripts() {
-			$customizer_data = $this->prepare_preloaded_data();
+			
+			$customizer_data = self::prepare_preloaded_data();
 			
 			wp_enqueue_script(
 				'cc2-customizer-helper', get_template_directory_uri() . '/includes/admin/js/customizer-helper.js', array('jquery', 'wp-color-picker')
@@ -72,7 +80,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 	
 		}
 	
-		function prepare_preloaded_data() {
+		public static function prepare_preloaded_data() {
 			$return = array();
 			
 			
@@ -113,6 +121,13 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			
 			// labels
 			$return['button']['reset'] = apply_filters('cc2_customizer_button_reset_text', __('Reset settings', 'cc2') );
+			
+			// color schemes
+			if( function_exists( 'cc2_get_color_schemes' ) ) {
+				$return['color_schemes'] = cc2_get_color_schemes();
+			}	
+			
+			
 			
 		
 			return $return;
@@ -309,6 +324,29 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			wp_enqueue_style( 'cc-animate-css');
 			wp_enqueue_script( 'tk_customizer_preview_js',	get_template_directory_uri() . '/includes/admin/js/customizer.js', array( 'jquery', 'customize-preview' ), '', true );
 		}
+	
+	
+	
+		function customizer_sanitizer( $data ) {
+			$return = $data;
+			
+			__debug::log( $data, __METHOD__ );
+			
+			return $return;
+		}
+		
+	
+	
+		/**
+		 * Does not sanitize anything, basically.
+		 */
+	
+		function sanitize_default( $data ) {
+			$return = $data;
+			
+			
+			return $return;
+		}
 		
 	}
 	
@@ -319,19 +357,31 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			
 			add_action( 'init', array( $this, 'customizer_init' ) );
 			
+			// add global sanitizer
+			add_action('sanitize_option_theme_mods_cc2', array( $this, 'customizer_sanitizer' ) );
+			// its unclear whether this is a filter or an action
+			add_filter('sanitize_option_theme_mods_cc2', array( $this, 'customizer_sanitizer' ) );
+			
 		}
 		
 		function customizer_init() {
 			
+			$this->init_customizer_hooks();
 			
 			/**
 			 * NOTE: Originally was required to stay with the mega-function call .. cause else its getting pretty .. ugly. But: This might be the cause for multitudinous bugs. So I restructured into several function blocks. Still looking pretty ugly.
 			 */
 			
+			// add global sanitizer .. althought that doesnt seem to work .. which is NASTY.
+			add_action('sanitize_option_theme_mods_cc2', array( $this, 'customizer_sanitizer' ) );
+			// its unclear whether this is a filter or an action
+			add_filter('sanitize_option_theme_mods_cc2', array( $this, 'customizer_sanitizer' ) );
 			
 			
 			// initial function call. don't change if you don't know what you're doing!
 			add_action('customizer_register', array( $this, 'customize_default_sections' ),10 );
+			
+		
 			
 			// rest of the calls, ordered by priority (somewhat)
 			/*$arrCustomizerSections = array(
@@ -467,6 +517,8 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			// customize from default WP
 			//self::$customizer_section_priority
 			//$wp_customize->get_section( 'colors') -> priority = 30;
+			
+			
 			
 			$wp_customize->get_section( 'colors')->priority = self::$customizer_section_priority;
 			

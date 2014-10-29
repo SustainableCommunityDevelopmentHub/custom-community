@@ -1,0 +1,819 @@
+/*
+Theme Name: Custom Community 2 (Light Scheme)
+Theme URI: http://themekraft.com/store/custom-community-2-free-responsive-wordpress-bootstrap-theme/
+Author: ThemeKraft
+Author URI: http://themekraft.com/
+Description: I'm still beta. But lets have some fun!
+Version: 0.3.0
+License: GNU General Public License
+License URI: see license.txt
+Tags: light
+
+Custom Community 2, like WordPress, is licensed under the GPL.
+Use it to make something cool, have fun, and share what you've learned with others.
+
+This theme is developed on the _tk starter theme:
+http://themekraft.com/tk-wordpress-bootstrap-starter-theme/
+_tk is an ultra minimal starter theme based on Twitter Bootstrap Framework and
+the _s starter theme from Automattic, the guys behind WordPress.
+
+If you like to customize inside your CSS files directly,
+you should consider to create a child theme instead of changing theme files - this would break your updates.
+
+Learn more about child themes here:
+http://codex.wordpress.org/Child_Themes
+
+*/
+
+
+
+
+
+/* Import Bootstrap Styles */
+@import url( '../resources/bootstrap/less/bootstrap.less' );
+
+
+
+
+
+
+/*
+ * Now come a few needed CSS additions to integrate bootstrap truly into WordPress,
+ * We kept this slim as possible. Try to avoid any overwriting if not really needed.
+ *
+ *
+ * First fixing the dropdown menu.
+ * Most stuff is handled by the walker, but some styles need to be added too.
+ * Here we are removing the ">" from the original bootstrap styles, so it works for 2nd and 3rd level dropdown too..
+ */
+
+.dropdown-menu li a {
+  display: block;
+  padding: 3px 20px;
+  clear: both;
+  font-weight: normal;
+  line-height: @line-height-base;
+  color: @text-color;
+  white-space: nowrap;
+  border: none;
+}
+.dropdown-menu > li > a:hover,
+.dropdown-menu > li > a:focus {
+  #gradient > .vertical(@start-color: @link-hover-color; @end-color: darken(@link-hover-color, 8%));
+  background-color: @link-hover-color;
+  color: #ffffff;
+  text-decoration: none;
+  background-repeat: repeat-x;
+}
+.dropdown-menu > .active > a,
+.dropdown-menu > .active > a:hover,
+.dropdown-menu > .active > a:focus {
+  #gradient > .vertical(@start-color: @link-hover-color; @end-color: darken(@link-hover-color, 8%));
+  background-color: @link-hover-color;
+  color: #ffffff;
+  text-decoration: none;
+  background-repeat: repeat-x;
+}
+.dropdown-menu ul {
+  list-style: none;
+}
+@media screen and (min-width: 768px) {
+  .navbar-inverse .dropdown-menu li > a,
+  .navbar-inverse .dropdown-menu li > a:first-child {
+    border-left: none;
+  }
+}
+
+
+
+
+
+
+/* Some modified padding for the bootstrap container.
+ * Now you can make many styles of design easily.
+ * Try with giving the .container class just a background colour and have a look. ;)
+ */
+/*.container { padding: 0 10px; }*/
+
+
+
+
+
+
+/** Now the minimum needed WordPress styles **/
+
+/* Alignment */
+.alignleft {
+  display: inline;
+  float: left;
+  margin-right: 1.5em;
+}
+.alignright {
+  display: inline;
+  float: right;
+  margin-left: 1.5em;
+}
+.aligncenter {
+  clear: both;
+  display: block;
+  margin: 0 auto;
+}
+
+/* Images and wp-captions should always fit and be responsive */
+img {
+  display: inline-block;
+  height: auto;
+  max-width: 100%;
+
+  &[class*="wp-image-"] {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+}
+.wp-caption {
+  margin-bottom: 10px;
+  max-width: 100%;
+  border-radius: 4px;
+  padding: 0;
+
+  &.aligncenter {
+    margin-bottom: 10px;
+  }
+  img[class*="wp-image-"] {
+    display: block;
+  }
+  .wp-caption-text {
+    text-align: center;
+    margin-top: 10px;
+  }
+}
+
+/* WP Gallery */
+.gallery {
+  margin-bottom: 1.5em;
+
+  a img {
+    border: none;
+    height: auto;
+    max-width: 90%;
+  }
+  dd {
+    margin: 0;
+  }
+}
+
+
+/* Make sure embeds and iframes fit their containers */
+embed,
+iframe,
+object {
+  max-width: 100%;
+}
+
+/* Text meant only for screen readers */
+.screen-reader-text,
+.sr-only {
+  clip: rect(1px, 1px, 1px, 1px);
+  position: absolute;
+}
+.screen-reader-text:hover,
+.screen-reader-text:active,
+.screen-reader-text:focus {
+  background-color: #f1f1f1;
+  border-radius: 3px;
+  box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.6);
+  clip: auto;
+  color: #21759b;
+  display: block;
+  font-size: 14px;
+  font-weight: bold;
+  height: auto;
+  left: 5px;
+  line-height: normal;
+  padding: 15px 23px 14px;
+  text-decoration: none;
+  top: 5px;
+  width: auto;
+  z-index: 100000; /* Above WP toolbar */
+}
+
+/* Clearing */
+.clear {
+  clear: both;
+  height: 0px;
+  overflow: hidden;
+}
+
+/* Make sure select elements fit in widgets */
+.widget select {
+  max-width: 100%;
+}
+
+/* Comments */
+#comments {
+  clear: both;
+}
+.comment .children {
+  margin-left: 1.5em;
+}
+
+
+
+
+
+
+
+/* So, we're finished with the minimum needed WordPress styling.
+ *
+ * Now going through each area, starting with some globals, then header, menu, content,..
+ * Please remember this here is already overwriting the Bootstrap CSS.
+ *
+ */
+
+
+
+/** Globals **/
+
+body {
+  word-wrap: break-word;
+}
+a:focus {
+  outline: none;
+}
+ul, ol {
+  list-style: outside;
+  padding-left: 20px;
+}
+table {
+  font-size: inherit;
+}
+tr {
+  border-bottom: 1px solid @gray-lighter;
+}
+td {
+  padding: 5px 10px 5px 0;
+}
+cite {
+  font-style: italic;
+  font-size: small;
+}
+address {
+  border-left: 5px solid @gray-lighter;
+  padding-left: 20px;
+}
+code {
+  overflow: scroll;
+}
+/* Adapting a little bit the jumbotron */
+.jumbotron {
+  padding: 35px 45px;
+}
+/* h1-h6 will get no margin-top in jumbotrons */
+.jumbotron > h1,
+.jumbotron > h2,
+.jumbotron > h3,
+.jumbotron > h4,
+.jumbotron > h5,
+.jumbotron > h6 {
+  margin-top: 0;
+}
+
+/* Button Love
+ * First a little tweak for the bootstrap buttons */
+.btn {
+  font-size: 15px;
+  font-weight: 200; /* make the fonts sharper */
+  border: 1px solid rgba(0,0,0,0.08); /* Add a nice slight transparent border to make the button look sharper */
+}
+.btn:hover,
+.btn:focus {
+  font-size: 15px;
+  font-weight: 200;
+  border: 1px solid rgba(0,0,0,0.08);
+}
+/* Now resetting all other possible buttons and adapt them to Bootstrap style! */
+button,
+a.button,
+input[type="submit"] {
+  display: inline-block;
+  padding: 8px 12px;
+  margin: 0;
+  font-size: 15px;
+  font-weight: 200;
+  line-height: 1.428571429;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 4px;
+  color: @component-active-color;
+  text-shadow: none;
+  background-color: @link-color;
+  background-image: none;
+  /* Resetting possible IE Gradient Filters */
+  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(enabled=false)";
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+}
+button:hover,
+.button:hover,
+input[type="submit"]:hover {
+  display: inline-block;
+  padding: 8px 12px;
+  margin: 0;
+  font-size: 15px;
+  font-weight: 200;
+  line-height: 1.428571429;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 4px;
+  color: @component-active-color;
+  text-shadow: none;
+  background-color: @link-hover-color;
+  background-image: none;
+  /* Resetting possible IE Gradient Filters */
+  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(enabled=false)";
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+}
+
+
+
+
+
+/** Navigation **/
+.site-navigation {
+  .container {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  .navbar {
+    margin-bottom: 0;
+
+    li a {
+      //.transition(all 150ms ease-in-out);
+    }
+  }
+}
+/* the navbar branding */
+.navbar-brand {
+  color: @navbar-default-link-color;
+
+  &:hover {
+    color: @link-hover-color;
+  }
+}
+.navbar-inverse .navbar-brand {
+  color: @navbar-inverse-link-color;
+
+  &:hover {
+    color: @link-hover-color;
+  }
+}
+@media screen and (min-width: @screen-sm) {
+  // the dotted borders for inverse menu
+  .navbar-inverse li > a:first-child {
+    border-left: 1px solid #2f2f2f;
+  }
+  .navbar-inverse ul.nav {
+    border-right: 1px solid #2f2f2f;
+  }
+  // the dotted borders for inverse menu
+  .navbar-default li > a:first-child {
+    border-left: 1px solid rgba(0,0,0,.05);
+  }
+  .navbar-default ul.nav {
+    border-right: 1px solid rgba(0,0,0,.05);
+  }
+  // for the .active hover effect
+  .navbar li.active a:hover {
+    .transition(all 500ms ease-in-out);
+    background: @link-hover-color !important;
+  }
+}
+.navbar-default.navbar-static-top {
+  // border-width: 0;
+  border-color: rgba(0,0,0,.05);
+}
+.navbar-inverse.navbar-static-top {
+  border-width: 0;
+}
+.navbar-inverse {
+  border: 0;
+}
+
+
+
+
+
+
+
+/** Header **/
+.site-header {
+  border: 1px solid darken(@body-bg, 6.5%);
+}
+.site-header-inner {
+  padding: 0;
+  display: table;
+  width: 100%;
+}
+.site-branding {
+  padding: 20px 0 30px 0;
+  display: table-cell;
+  *display: inline-block; /* for ie7 and below */
+  vertical-align: middle;
+}
+/* the site title */
+.site-title {
+  margin-top: 20px;
+  margin-bottom: 0;
+
+  /* the site title should be never underlined */
+  a {
+    font-size: 72px;
+    text-decoration: none;
+  }
+}
+
+
+
+
+
+/** Content **/
+
+.main-content {
+  padding-top: 10px;
+}
+.main-content-inner {
+  margin-bottom: 30px;
+}
+.page-header {
+  padding-bottom: 0;
+  margin: 30px 0 20px;
+}
+.entry-meta {
+  margin: 10px 0;
+}
+
+
+
+
+
+/** Sidebars **/
+.sidebar-padder {
+  margin: 30px 0;
+}
+
+
+
+
+
+/** Widgets **/
+.widget {
+  margin-bottom: 2em;
+}
+.widgetarea ul,
+.widgetarea ol {
+  padding-left: 0;
+}
+.widgetarea li {
+  list-style: none outside none;
+  padding: 2px 0;
+}
+.widget_nav_menu .sub-menu li,
+.widget_pages .children li {
+  padding-left: 15px;
+}
+/* Hiding the search widget's button in widgets. thats just too old-skool. :) */
+.widget_search .search-form input[type="submit"] {
+  display: none;
+}
+
+
+
+
+
+
+
+
+/** The CC Slider **/
+
+#cc-slider-container {
+  display: block;
+}
+.cc-slider .cc-slider-wrap {
+  background-color: transparent;
+  overflow: hidden;
+  margin: 0 auto;
+  max-width: 100%;
+}
+/* center the image always */
+.cc-slider .carousel-inner > .item {
+  text-align: center;
+}
+/* slider nav */
+.cc-slider .carousel-control {
+  width: auto;
+  height: auto;
+  overflow: auto;
+  padding: 10px 12px;
+  opacity: 0.2;
+  transition: all 400ms;
+  -webkit-transition: all 400ms;
+  background: none;
+  top: 40%;
+  bottom: auto;
+}
+@media screen and (min-width: @screen-sm) {
+  .cc-slider .carousel-control {
+    padding: 20px 30px;
+  }
+}
+.cc-slider .cc-slider-secret-wrap:hover .carousel-control {
+  opacity: .85;
+}
+.cc-slider .carousel-control .glyphicon {
+  position: relative;
+  display: block;
+  font-size: 46px;
+  padding: 0;
+  margin: 0;
+}
+.cc-slider .carousel-control.left .glyphicon {
+  left: 0;
+}
+.cc-slider .carousel-control.right .glyphicon {
+  right: 0;
+}
+.cc-slider .carousel-indicators {
+  bottom: 7px;
+  margin-bottom: 0;
+  opacity: .75;
+}
+.cc-slider .carousel-indicators li {
+  margin: 2px;
+  opacity: 1;
+  border: 2px solid #fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+}
+.cc-slider .carousel-indicators .active {
+  margin: 2px;
+}
+/* caption, title, excerpt */
+.cc-slider .carousel-caption {
+  bottom: 0;
+  left: 15%;
+  right: 15%;
+}
+
+
+
+
+/** Slideshow Bubbles Template **/
+
+// first for the very small devices (xs)
+
+// the bubble list
+.cc-slider .carousel-indicators.cc-slider-bubbles {
+  width: auto;
+  position: relative;
+  left: 0;
+  bottom: 47px;
+  float: right;
+  margin-top: 0px;
+  margin-left: 5%;
+  margin-right: 5%;
+  opacity: 1;
+}
+// the bubble items
+.cc-slider .carousel-indicators li.cc-slider-bubble-wrap {
+  width: 90px;
+  height: 90px;
+  overflow: hidden;
+  border-radius: 500px;
+  margin: 4px;
+  opacity: 1;
+  border: 2px solid #fff;
+  float: left;
+}
+// the bubble preview image
+.cc-slider img.cc-slider-bubble {
+  transition: all 200ms ease-in-out;
+  display: block;
+  opacity: 1;
+  height: 100%;
+  max-width: none;
+  width: auto;
+}
+// the active bubble's overlay
+.cc-slider .cc-slider-bubble-active {
+  position: absolute;
+  top: 0;
+  margin-top: 6px;
+  width: 86px;
+  height: 86px;
+  background: #f2694b;
+  opacity: 0;
+  border-radius: 500px;
+  transition: all 200ms ease;
+}
+.cc-slider .active .cc-slider-bubble-active {
+  opacity: 0.8;
+}
+// the bubble caption wrap
+.cc-slider .cc-slider-bubble-title-wrap {
+  position: absolute;
+  top: 0;
+  margin-top: 6px;
+  width: 86px;
+  height: 86px;
+  background: #000;
+  opacity: 0.6;
+  border-radius: 500px;
+  text-align: center;
+  padding: 30px 5px 0;
+  color: white;
+  display: none;
+}
+.cc-slider li.cc-slider-bubble-wrap:hover .cc-slider-bubble-title-wrap,
+.cc-slider li.cc-slider-bubble-wrap:focus .cc-slider-bubble-title-wrap {
+  display: block;
+}
+// the bubble caption text
+.cc-slider .cc-slider-bubble-title {
+  display: block;
+  text-indent: 0;
+  text-shadow: none;
+  font-size: 11px;
+}
+// the bubble slider main caption
+.cc-slider .cc-slider-bubbles-wrap .carousel-caption {
+  bottom: 30%;
+}
+
+// hide the bubbles on very small devices
+@media screen and (max-width: @screen-xs) {
+  .cc-slider .carousel-indicators.cc-slider-bubbles {
+    display: none;
+  }
+}
+
+// changes for small devices and up
+@media screen and (min-width: @screen-sm) {
+  // the bubble list
+  .cc-slider .carousel-indicators.cc-slider-bubbles {
+    bottom: 60px;
+    margin-top: 0;
+  }
+  // the bubble item
+  .cc-slider .carousel-indicators li.cc-slider-bubble-wrap {
+    width: 120px;
+    height: 120px;
+    border-width: 4px;
+    margin: 8px;
+  }
+  // the bubble caption wrap
+  .cc-slider .cc-slider-bubble-title-wrap {
+    padding-top: 40px;
+  }
+  // the bubble caption on hover and active overlay
+  .cc-slider li.cc-slider-bubble-wrap:hover .cc-slider-bubble-title-wrap,
+  .cc-slider li.cc-slider-bubble-wrap:focus .cc-slider-bubble-title-wrap,
+  .cc-slider .cc-slider-bubble-active {
+    top: 0;
+    margin-top: 12px;
+    width: 112px;
+    height: 112px;
+  }
+  // the bubble caption text
+  .cc-slider .cc-slider-bubble-title {
+    font-size: 12px;
+  }
+}
+
+// changes for medium devices and up
+@media screen and (min-width: @screen-md) {
+  // the bubble list
+  .cc-slider .carousel-indicators.cc-slider-bubbles {
+    bottom: 70px;
+  }
+  // the bubble item
+  .cc-slider .carousel-indicators li.cc-slider-bubble-wrap {
+    width: 150px;
+    height: 150px;
+    border-width: 5px;
+    margin: 8px;
+  }
+  // the bubble caption wrap
+  .cc-slider .cc-slider-bubble-title-wrap {
+    padding-top: 50px;
+  }
+  // the bubble caption on hover and active overlay
+  .cc-slider li.cc-slider-bubble-wrap:hover .cc-slider-bubble-title-wrap,
+  .cc-slider li.cc-slider-bubble-wrap:focus .cc-slider-bubble-title-wrap,
+  .cc-slider .cc-slider-bubble-active {
+    top: 0px;
+    margin-top: 12px;
+    width: 141px;
+    height: 142px;
+  }
+  // the bubble caption text
+  .cc-slider .cc-slider-bubble-title {
+    font-size: 14px;
+  }
+}
+
+
+
+
+
+
+/** Slideshow - Side Preview **/
+.cc-slider .carousel-indicators.cc-slider-side-preview {
+  width: 35%;
+  top: 0;
+  left: 0;
+  background: #fff;
+  height: 100%;
+  position: relative;
+  opacity: 1;
+  box-shadow: -2px 0px 4px rgba(0,0,0,0.4);
+  float: right;
+  margin-left: 0;
+}
+.cc-slider .carousel-indicators li.cc-slider-side-preview-wrap {
+  width: 100%;
+  height: 105px;
+  overflow: hidden;
+  border-radius: 0;
+  margin: 0;
+  padding: 10px;
+  opacity: 1;
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+  float: none;
+  display: block;
+  border-radius: 0;
+  text-align: left;
+}
+.cc-slider .carousel-indicators li.cc-slider-side-preview-wrap:hover {
+  background: #fafafa;
+}
+.cc-slider .carousel-indicators li.cc-slider-side-preview-wrap:focus,
+.cc-slider .carousel-indicators li.cc-slider-side-preview-wrap.active {
+  background: #f4f4f4;
+}
+.cc-slider .cc-slider-side-preview-img-wrap {
+  width: 120px;
+  height: 80px;
+  overflow: hidden;
+  margin: 0 10px 0 0;
+  opacity: 1;
+  border: 4px solid #ededed;
+  box-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+  float: left;
+  display: block;
+}
+.carousel-inner.cc-carousel-inner-side-preview > .item > img {
+  max-width: none;
+  height: 420px;
+  width: auto;
+  transition: all 200ms ease-in-out;
+  display: block;
+  opacity: 1;
+}
+.cc-slider .cc-slider-side-preview-title {
+  display: block;
+  text-indent: 0;
+  text-shadow: none;
+  font-size: 17px;
+  line-height: 140%;
+  word-wrap: break-word;
+}
+.cc-slider .cc-slider-side-preview-excerpt {
+  display: block;
+  text-indent: 0;
+  text-shadow: none;
+  font-size: 13px;
+  line-height: 120%;
+  word-wrap: break-word;
+}
+.cc-carousel-inner-side-preview {
+  width: 65%;
+  float: left;
+}
+
+/**
+ * Some improvements for the widgets
+ */
+
+body.cc2-bootstrap-support .widget_recent_comments ul#recentcomments {
+	list-style: none;
+	padding-left: 0;
+}
+
+

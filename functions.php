@@ -39,8 +39,8 @@ if( !isset( $cc2_color_scheme_class ) ) {
  * Next: Add theme activation / deactivation hooks - mostly used for future enhancements and updates
  */
 
-add_action('after_switch_theme', 'cc2_theme_initial_setup' );
-function cc2_theme_initial_setup() {
+add_action('after_switch_theme', 'cc2_theme_initial_setup', 10, 2 );
+function cc2_theme_initial_setup( $old_name, $old_theme = false) {
 	update_option( 'cc2_theme_version', CC2_THEME );
 	update_option( 'cc2_theme_status', 'enabled');
 	
@@ -62,7 +62,7 @@ function cc2_theme_initial_setup() {
 }
 
 add_action('switch_theme', 'cc2_theme_deactivation' );
-function cc2_theme_deactivation() {
+function cc2_theme_deactivation($new_name, $new_theme) {
 	update_option( 'cc2_theme_status', 'disabled' );
 	set_transient( 'cc2_theme_active', false );
 }
