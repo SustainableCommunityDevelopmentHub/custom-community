@@ -107,12 +107,11 @@ if( !class_exists( 'cc2_ColorSchemes' ) ) :
 			
 			//new __debug( array('current_scheme' => $current_scheme ), 'switch_color_scheme' );
 			
-			if( !empty( $current_scheme ) && isset( $current_scheme['slug'] ) && $current_scheme['slug'] != 'default' ) {
+			//if( !empty( $current_scheme ) && isset( $current_scheme['slug'] ) && $current_scheme['slug'] != 'default' ) {
 				//new __debug( array('current_scheme' => $current_scheme ), 'switch_color_scheme = true' );
-				
-				if( !empty( $current_scheme['style_url'] ) ) {
-					$return = apply_filters('cc2_set_style_url', $current_scheme['style_url'] );
-				}
+			
+			if( !empty( $current_scheme ) && isset( $current_scheme['slug'] ) && !empty( $current_scheme['style_url'] ) ) {
+				$return = apply_filters('cc2_set_style_url', $current_scheme['style_url'] );
 			}
 			
 			return $return;

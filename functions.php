@@ -61,7 +61,7 @@ function cc2_theme_initial_setup( $old_name, $old_theme = false) {
 	
 }
 
-add_action('switch_theme', 'cc2_theme_deactivation' );
+add_action('switch_theme', 'cc2_theme_deactivation', 10, 2 );
 function cc2_theme_deactivation($new_name, $new_theme) {
 	update_option( 'cc2_theme_status', 'disabled' );
 	set_transient( 'cc2_theme_active', false );

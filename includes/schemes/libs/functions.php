@@ -40,6 +40,26 @@ if( !function_exists( 'cc2_init_scheme_helper' ) ) {
 	
 }
 
+/**
+ * Simple function to set the default scheme if none is present. Mostly used during theme and plugin setup.
+ * @author Fabian Wolf
+ * @since 2.0r2
+ * @package cc2
+ */
+
+if( !function_exists( 'cc2_set_default_scheme' ) ) {
+	function cc2_set_default_scheme() {
+		$current_scheme = get_theme_mod('color_scheme', false );
+		
+		if( empty( $current_scheme) ) {
+			$return = set_theme_mod( 'color_scheme', 'default');
+		}
+		
+		return $return;
+	}
+	
+}
+
 
 if( !function_exists('cc2_get_current_color_scheme') ) {
 	function cc2_get_current_color_scheme() {

@@ -67,6 +67,16 @@ jQuery(function() {
 		
 		
 	});
+	
+	/**
+	 * Color Schemes helper
+	 * 
+	 * Features:
+	 * - change colors if scheme is switched (preview)
+	 * - reset colors if scheme is switched back to default 
+	 * - preview colors
+	 */
+	 
 
 	/*
 	jQuery( document).on('click','#customize-control-dark_top_nav',  function(event) {
