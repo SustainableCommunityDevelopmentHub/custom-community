@@ -73,6 +73,11 @@ function cc2_theme_deactivation($new_name, $new_theme) {
 
 add_action( 'after_setup_theme', 'cc2_theme_activation' );
 function cc2_theme_activation() {
+	// set default scheme for initial theme set up
+	if( get_theme_mod('color_scheme', false ) == false ) {
+		set_theme_mod('color_scheme', 'default' );
+	}
+	
 	
     if ( is_admin() && isset( $_GET['activated'] ) && 'themes.php' == $GLOBALS['pagenow'] ) {
         wp_redirect(admin_url('customize.php'));
