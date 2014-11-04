@@ -77,14 +77,19 @@ class _cc2_BootStrapSupplements {
 		$buttons = ob_get_contents();
 		ob_end_clean();
 		
-		$button_dom = new simple_html_dom();
-		$button_dom->load ( $buttons );
-		$button_dom->find( '#commentsubmit',0 )->class = 'btn btn-primary';
+		$return = $buttons;
 		
-		//new __debug( $button_dom->save() );
-		echo $button_dom->save();
+		if( !empty( $buttons ) && strip_tags( $buttons ) !== $buttons ) {
 		
+			$button_dom = new simple_html_dom();
+			$button_dom->load ( $buttons );
+			$button_dom->find( '#commentsubmit',0 )->class = 'btn btn-primary';
+			
+			//new __debug( $button_dom->save() );
+			$return = $button_dom->save();
+		}
 		
+		echo $return;
 	}
 	
 	/**

@@ -19,10 +19,10 @@
 					<div id="footer-fullwidth" class="col-12">
 						
 						<?php if( !dynamic_sidebar( 'footer-fullwidth' ) && current_user_can('edit_theme_options') ) { ?>
-								<div class="widgetarea">
-									<h3 class="widgettitle" ><?php _e('Add a widget', 'cc2'); ?> <a href="<?php echo admin_url('widgets.php') ?>"><?php _e('here', 'cc2'); ?></a>.</h3>
-									<p><i>* only visible for admins ;)</i></p>
-								</div>	
+						<div class="widgetarea">
+							<h3 class="widgettitle" ><?php _e('Add a widget', 'cc2'); ?> <a href="<?php echo admin_url('widgets.php') ?>"><?php _e('here', 'cc2'); ?></a>.</h3>
+							<p><i>* only visible for admins ;)</i></p>
+						</div>	
 						<?php } ?>
 						
 					</div>	

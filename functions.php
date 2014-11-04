@@ -228,6 +228,16 @@ add_action( 'widgets_init', 'cc_widgets_init' );
   
 function cc_widgets_init() {
 	register_sidebar( array(
+		'name'          => __( 'Sidebar Header', 'cc2' ),
+		'id'            => 'sidebar-header',
+		'description'   => 'The header widgetarea will pop up in your frontend once you add a widget here..',
+		'before_widget' => '<aside id="%1$s" class="widget %2$s">',
+		'after_widget'  => '</aside>',
+		'before_title'  => '<h3 class="widget-title">',
+		'after_title'   => '</h3>',
+	) ); 
+	
+	register_sidebar( array(
 		'name'          => __( 'Sidebar Right', 'cc2' ),
 		'id'            => 'sidebar-right',
 		'description'   => 'That\'s the primary sidebar. If no other sidebar is called, this one will be used (if there should be a sidebar displayed at all, setup in Customizer, Sidebar options).',

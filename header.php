@@ -43,8 +43,11 @@
 
 			</div>
 		</div>
+		
+		<?php get_sidebar('header'); ?>
 	</div><!-- .container -->
 </header><!-- #masthead -->
 
-<?php do_action( 'cc_after_header'); // @hooked -> add_default_nav() -> includes/template-tags.php 
-?>
+<?php 
+
+do_action( 'cc_after_header'); // @hooked -> add_default_nav() -> includes/template-tags.php 
