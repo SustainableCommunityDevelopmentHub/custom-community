@@ -463,49 +463,21 @@ include( get_template_directory() . '/includes/schemes/libs/functions.php' );
 
 /**
  * Helps with initialization, esp. if you're using a child theme or want to extend or override the class with your own.
- *
- * NOTE: Experimental usage of anonymous function call. WP 3.9+ requires at least PHP 5.3 to work, AND PHP 5.2 is officially being deprecated, so it shouldnt be a problem anyway.
  * 
- * @requires WP 3.9
- * @requires PHP 5.3.8
- */
-if (version_compare(PHP_VERSION, '5.4.3') >= 0) :
+ * NOTE: Some plugins plus several modules for PHP (including eAccellerator) break the Closure support or do not support them at all - DESPITE the correct PHP version 5.3+ - thus the original anonymous function call was replaced with this outdated regular init function.
+*/
+if( !function_exists( '__cc2_init_color_schemes_call' ) ) :
+	//__debug::log('outdated private function call fires', 'cc2_init_color_schemes');
 
-	add_action('init', function() {
+	function __cc2_init_color_schemes_call() {
+
 		
-		//__debug::log('anonymous function call fires', 'cc2_init_color_schemes');
-		
-		//new __debug('init CHECK fires');
-		
-		
-		if( !isset( $GLOBALS['$cc2_color_schemes']) ) {
-			//new __debug('init fires');
-			
+		if( !isset( $GLOBALS['cc2_color_schemes'] ) ) {
 			do_action('cc2_init_color_schemes');
-		} else {
-			/*$current_scheme = _cc2_get_current_color_scheme();
-			new __debug( $current_scheme, 'current color scheme' );
-			*/
 		}
-	}, 10 );
-
-else : // outdated PHP version (< 5.3.8 )
+	}
 	
-	if( !function_exists( '_cc2_init_color_schemes_call' ) ) :
-		//__debug::log('outdated private function call fires', 'cc2_init_color_schemes');
-	
-		function _cc2_init_color_schemes_call() {
-	
-			
-			if( !isset( $GLOBALS['$cc2_color_schemes'] ) ) {
-				do_action('cc2_init_color_schemes');
-			}
-		}
-		
-		add_action('init', '_cc2_init_color_schemes_call', 10 );
-	endif;
-
-
+	add_action('init', '__cc2_init_color_schemes_call', 10 );
 endif;
 
 
