@@ -17,13 +17,6 @@ if( !class_exists('__debug') && file_exists( get_template_directory() . '/includ
 	include_once( get_template_directory() . '/includes/debug.class.php' );
 endif;
 
-global $cc2_color_scheme_class;
-if( !isset( $cc2_color_scheme_class ) ) {
-	$cc2_color_scheme_class = 'cc2_ColorScheme';
-}
-
-
-
 
 /**
  * Possible bugfix for randomly appearing "blank" screen in the Theme Customizer
@@ -45,6 +38,25 @@ function cc2_theme_initial_setup( $old_name, $old_theme = false) {
 	update_option( 'cc2_theme_status', 'enabled');
 	
 	set_transient( 'cc2_theme_active', true );
+	
+	
+	
+	// check theme settings + restore if possible
+	// option_name = theme_mods_{$theme_name}
+	$theme_mods_backup = get_option( 'cc2_theme_mods_backup', false );
+	if( empty( $theme_mods_backup ) ) { // fetch default settings
+		include( trailingslashit( get_template_directory() ) . 'includes/default-settings.php' );
+		if( defined('CC2_DEFAULT_SETTINGS' ) ) {
+			$default_theme_settings = maybe_unserialize( CC2_DEFAULT_SETTINGS );
+		
+			$theme_mods_backup = $default_theme_settings['theme_mods'];
+		}
+	}
+	
+	if( !empty( $theme_mods_backup ) ) {
+		update_option( 'theme_mods_cc2', $theme_mods_backup );
+	}
+	
 	/**
 	 * NOTE: the update script should hook into this
 	 */
@@ -59,18 +71,39 @@ function cc2_theme_initial_setup( $old_name, $old_theme = false) {
 		
 	}*/
 	
+	// set default scheme for initial theme set up
+	if( get_theme_mod('color_scheme', false ) == false ) {
+		set_theme_mod('color_scheme', 'default' );
+	}
+	
+	// first activation
+	
+    if ( is_admin() && isset( $_GET['activated'] ) && 'themes.php' == $GLOBALS['pagenow'] ) {
+        wp_redirect(admin_url('customize.php'));
+        exit;
+    }
+	
 }
 
 add_action('switch_theme', 'cc2_theme_deactivation', 10, 2 );
 function cc2_theme_deactivation($new_name, $new_theme) {
+	// save current theme settings
+	update_option( 'cc2_theme_mods_backup', get_theme_mods() );
+	
+	// disable theme
+	
 	update_option( 'cc2_theme_status', 'disabled' );
 	set_transient( 'cc2_theme_active', false );
+	
+
 }
 
 /**
  * FIXME: Might be the wrong action to hook into - for the "why", just see above code.
+ * NOTE: Moved into @function cc2_theme_initial_setup.
  */
 
+/*
 add_action( 'after_setup_theme', 'cc2_theme_activation' );
 function cc2_theme_activation() {
 	// set default scheme for initial theme set up
@@ -83,7 +116,7 @@ function cc2_theme_activation() {
         wp_redirect(admin_url('customize.php'));
         exit;
     }
-}
+}*/
 
 // much more helping buddy
 if( !function_exists( 'is_customizer_preview' ) ) :
@@ -454,9 +487,11 @@ add_action('admin_enqueue_scripts', 'cc2_js_aid', 1 ); // admin
 require( get_template_directory() . '/includes/schemes/libs/color-schemes.class.php' );
 
 
+/*
 if( !class_exists( 'cc2_ColorSchemes_ThemeHandler' ) ) {
 	require( get_template_directory() . '/includes/schemes/libs/theme_handler.class.php' );	
 } 
+*/
 
 include( get_template_directory() . '/includes/schemes/libs/functions.php' );
 
@@ -466,6 +501,7 @@ include( get_template_directory() . '/includes/schemes/libs/functions.php' );
  * 
  * NOTE: Some plugins plus several modules for PHP (including eAccellerator) break the Closure support or do not support them at all - DESPITE the correct PHP version 5.3+ - thus the original anonymous function call was replaced with this outdated regular init function.
 */
+	
 if( !function_exists( '__cc2_init_color_schemes_call' ) ) :
 	//__debug::log('outdated private function call fires', 'cc2_init_color_schemes');
 
@@ -479,6 +515,9 @@ if( !function_exists( '__cc2_init_color_schemes_call' ) ) :
 	
 	add_action('init', '__cc2_init_color_schemes_call', 10 );
 endif;
+
+
+//endif;
 
 
 /**

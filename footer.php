@@ -82,14 +82,11 @@
 				<div class="branding-footer-inner col-12">
 					<div class="site-info">
 						<?php do_action( '_tk_credits' ); ?>
-						<p class="alignright"><small><a href="http://wordpress.org/" title="A Semantic Personal Publishing Platform">Proudly powered by WordPress</a>
-						<span class="sep"> | </span>
-						<a href="http://themekraft.com/store/custom-community-2-free-responsive-wordpress-bootstrap-theme/" title="WordPress Theme Custom Community 2">WordPress Theme Custom Community 2</a> developed by <a href="http://themekraft.com/" title="WordPress Themes and Plugins by ThemeKraft">ThemeKraft</a></small></p>
 					</div><!-- close .site-info -->
 				</div>	
 			</div>
 		</div>
-	</div><!-- cloase #branding -->
+	</div><!-- close #branding -->
 	
 </footer><!-- close #colophon -->
 

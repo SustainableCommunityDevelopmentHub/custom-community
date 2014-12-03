@@ -337,6 +337,40 @@ if( !function_exists( 'cc2_top_nav_class' ) ) :
 endif;
 
 /**
+ * Add default branding to the footer
+ * 
+ * @author Fabian Wolf
+ * @package cc2
+ * @since 2.0.11
+ */
+
+if( !function_exists( 'cc2_default_footer_branding' ) ) :
+	function cc2_default_footer_branding() {
+		
+
+?>
+		
+		<p class="alignright">
+			<small><a href="http://wordpress.org/" title="A Semantic Personal Publishing Platform">Proudly powered by WordPress</a>
+		
+			<span class="sep"> | </span>
+			
+			<a href="http://themekraft.com/store/custom-community-2-free-responsive-wordpress-bootstrap-theme/" title="WordPress Theme Custom Community 2">WordPress Theme Custom Community 2</a> developed by <a href="http://themekraft.com/" title="WordPress Themes and Plugins by ThemeKraft">ThemeKraft</a></small>
+			
+		</p>
+		<!-- footer branding -->
+
+<?php
+
+	}
+	
+	if( get_theme_mod('footer_branding_show_credits', true ) != false ) :
+		add_action('_tk_credits', 'cc2_default_footer_branding', 10 );
+	endif;
+endif;
+
+
+/**
  * Check if both sidebars should be displayed in current view
  *
  * @author Konrad Sroka

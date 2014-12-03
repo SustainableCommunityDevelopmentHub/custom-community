@@ -668,7 +668,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			) );
 
 			// Tagline color
-				$wp_customize->add_setting('tagline_text_color', array(
+			$wp_customize->add_setting('tagline_text_color', array(
 				'default'           	=> '#a9a9a9',
 				'capability'        	=> 'edit_theme_options',
 				'transport'   			=> 'refresh',
@@ -676,11 +676,11 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'sanitize_js_callback' 	=> 'maybe_hash_hex_color',
 				) );
 				
-				$wp_customize->add_control( new WP_Customize_Color_Control($wp_customize, 'tagline_text_color', array(
+			$wp_customize->add_control( new WP_Customize_Color_Control($wp_customize, 'tagline_text_color', array(
 				'label'    				=> __('Tagline Color', 'cc2'),
 				'section'  				=> 'title_tagline',
 				'priority'				=> 201,
-				) ) );
+			) ) );
 
 		}
 		
@@ -1240,9 +1240,13 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			//$branding_section_priority++;  
 			
 			// Header Top Nav - Add Branding
+			/**
+			 * NOTE: Missing default value!
+			 */
 			$wp_customize->add_setting( 'top_nav_brand', array(
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'default'		=> false,
 			) );
 			$wp_customize->add_control('top_nav_brand', array(
 				'label'    		=> 	__('for top nav', 'cc2'),
@@ -1269,9 +1273,12 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			
 			
 			// Header Top Nav - Branding: Image instead text
+			/**
+			 * FIXME: default value seems to be wrong / impossible / bug-prone
+			 */
 			
 			$wp_customize->add_setting('top_nav_brand_image', array(
-				'default'           	=> 'logo',
+				'default'           	=> '',
 				'capability'        	=> 'edit_theme_options',
 				'transport'   			=> 'refresh',
 			) );
@@ -1288,9 +1295,13 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			
 			$branding_section_priority+=5;
 			
+			/**
+			 * NOTE: missing default value
+			 */
 
 			// Header Bottom Nav - Add Branding
 			$wp_customize->add_setting( 'bottom_nav_brand', array(
+				'default'		=> true,
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
 			) );
@@ -1317,8 +1328,12 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			) ) );
 			//$branding_section_priority++;
 			
+			/**
+			 * NOTE: default value seems to be wrong as well
+			 */
+			
 			$wp_customize->add_setting('bottom_nav_brand_image', array(
-				'default'           	=> 'logo',
+				'default'           	=> '',
 				'capability'        	=> 'edit_theme_options',
 				'transport'   			=> 'refresh',
 			) );
@@ -1371,6 +1386,9 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			// Hide selected page titles
 			
 			// Display Header
+			/**
+			 * NOTE: Missing default
+			 */
 			$wp_customize->add_setting( 'display_page_title_heading', array(
 				'capability'    => 	'edit_theme_options',
 			) );
@@ -1471,6 +1489,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 		
 		// Center titles
 			$center_title_priority = $display_page_title_priority + 1;
+		
 		
 			$wp_customize->add_setting( 'center_title_heading', array(
 				'capability'    => 	'edit_theme_options',
@@ -2084,7 +2103,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 		
 			// footer fullwidth background image (footer fullwidth-wrap)
 			$wp_customize->add_setting('footer_fullwidth_background_image', array(
-				'default'           	=> 'logo',
+				'default'           	=> '',
 				'capability'        	=> 'edit_theme_options',
 				'transport'   			=> 'refresh',
 			) );
@@ -2511,6 +2530,9 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				) );
 
 				// Caption Title Font Weight
+				/**
+				 * NOTE: Missing default value
+				 */
 				$wp_customize->add_setting( 'caption_title_font_weight', array(
 					'capability'    => 	'edit_theme_options',
 					'transport'   	=> 	'refresh',
