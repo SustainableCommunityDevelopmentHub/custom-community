@@ -587,86 +587,106 @@ jQuery(function() {
  * Backup settings: Simple form validation
  */
  
-// export settings
-if( document.getElementById('init-settings-export') ) { 
-	jQuery( document ).on('click', '#init-settings-export', function( e ) {
-		var $return = false;
-		//console.info( 'export form fires' );
-		
-		if( jQuery('#select-export-settings input[type=checkbox]:checked').length < 1 ) { // stop
-			//console.info('error')
-			e.preventDefault();
-			alert( cc2_admin_js.i10n.settings_export.error_missing_fields );
+	// export settings
+	if( document.getElementById('init-settings-export') ) { 
+		jQuery( document ).on('click', '#init-settings-export', function( e ) {
+			var $return = false;
+			//console.info( 'export form fires' );
 			
-		} else {
-			//console.info(' aaaaall right!');
-			$return = true; // continue
-		}
-		return $return;
-	} );
-}
+			if( jQuery('#select-export-settings input[type=checkbox]:checked').length < 1 ) { // stop
+				//console.info('error')
+				e.preventDefault();
+				alert( cc2_admin_js.i10n.settings_export.error_missing_fields );
+				
+			} else {
+				//console.info(' aaaaall right!');
+				$return = true; // continue
+			}
+			return $return;
+		} );
+	}
 
-// import settings
-if( document.getElementById('init-settings-import') ) { 
-	jQuery( document ).on('click', '#init-settings-import', function( e ) {
-		var $return = false;
-		//console.info( 'import form fires' );
-		
-		if( jQuery('#field-import-data').val() != '' ) { // continue
-			$return = true;
-		} else { // stop
-			//console.info('error')
-			e.preventDefault();
-			alert( cc2_admin_js.i10n.settings_import.error_missing_data );
+	// import settings
+	if( document.getElementById('init-settings-import') ) { 
+		jQuery( document ).on('click', '#init-settings-import', function( e ) {
+			var $return = false;
+			//console.info( 'import form fires' );
 			
-		}
-		return $return;
-	} );
-}
-	
-/**
- * Backup settings: auto-mark on click
- */
- 
-if( document.getElementById('export-data-result') ) {
-	jQuery('.tab-container-backup .result #select-export-result').show();
-
-	jQuery( document ).on('click', '#select-export-result', function(e) {
-		e.preventDefault();
-		jQuery('#export-data-result').select();
-		
-	})
-}
-
-/**
- * Reset settings: disable + show message if no settings are selected
- */
- 
-jQuery('#init-settings-reset').on('click', function( e ) {
-	var $stop = [],
-		iStopCount = 0;
-		
-	var resetItems = jQuery('.field-reset-items');
-	
-	jQuery('.field-reset-items').each( function( i ) {
-		
-		console.log( i, jQuery( this ).attr('checked') );
-		if( jQuery( this ).attr('checked') != 'checked' ) {
-			//console.log(i, 'checked');
-			
-			$stop[iStopCount] = true;
-			iStopCount++;
-		}
-	})
-	
-	console.log( $stop.length, resetItems.length );
-	if( $stop.length == resetItems.length ) {
-		alert( 'No settings selected.' );
-		e.preventDefault();
+			if( jQuery('#field-import-data').val() != '' ) { // continue
+				$return = true;
+			} else { // stop
+				//console.info('error')
+				e.preventDefault();
+				alert( cc2_admin_js.i10n.settings_import.error_missing_data );
+				
+			}
+			return $return;
+		} );
 	}
 	
-});
+	
+	
+	if( jQuery('.import-result-amount').length > 0 ) {
+		jQuery('.import-result-list').on('click', 'a.import-result-details-link', function(e) {
+			e.preventDefault();
+			jQuery( this.hash ).slideToggle();
+		});
+	}
+		
+	/**
+	 * Backup settings: auto-mark on click
+	 */
+	 
+	if( document.getElementById('export-data-result') ) {
+		jQuery('.tab-container-backup .result #select-export-result').show();
 
+		jQuery( document ).on('click', '#select-export-result', function(e) {
+			e.preventDefault();
+			jQuery('#export-data-result').select();
+			
+		})
+	}
+
+	/**
+	 * Reset settings: disable + show message if no settings are selected
+	 */
+	 
+	jQuery('#init-settings-reset').on('click', function( e ) {
+		var $stop = [],
+			iStopCount = 0;
+			
+		var resetItems = jQuery('.field-reset-items');
+		
+		jQuery('.field-reset-items').each( function( i ) {
+			
+			console.log( i, jQuery( this ).attr('checked') );
+			if( jQuery( this ).attr('checked') != 'checked' ) {
+				//console.log(i, 'checked');
+				
+				$stop[iStopCount] = true;
+				iStopCount++;
+			}
+		})
+		
+		console.log( $stop.length, resetItems.length );
+		if( $stop.length == resetItems.length ) {
+			alert( 'No settings selected.' );
+			e.preventDefault();
+		}
+	});
+	
+	/**
+	 * Reset settings: abort
+	 */
+	if( document.getElementById('init-settings-confirm-abort') ) {
+		
+		jQuery('#init-settings-confirm-abort').on('click', function( e ) {
+			e.preventDefault();
+			
+			history.back(-1);
+			
+		});
+	}
 	
 });
 

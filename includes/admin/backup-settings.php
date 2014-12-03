@@ -219,8 +219,8 @@ class cc2_Admin_ExportImport {
 			
 			// do it
 			if( !empty( $arrResetSettings ) ) {
-				new __debug( $arrResetSettings, '_reset_settings() would fire ..' );
-				//$reset_result = $this->_reset_settings( $arrResetSettings );
+				//new __debug( $arrResetSettings, '_reset_settings() would fire ..' );
+				$reset_result = $this->_reset_settings( $arrResetSettings );
 			}
 			
 		}
@@ -247,8 +247,19 @@ class cc2_Admin_ExportImport {
 		}
 		
 		foreach( $arrSettings as $strDataItemID => $arrItemAttributes ) {
-			
-			$resetStatus = delete_option( $arrItemAttributes['option_name'] );
+			if( $strDataItemID == 'theme_mods' ) {
+				
+				set_theme_mod('theme_mods_reset', time() );
+				remove_theme_mods();
+				set_theme_mod('color_scheme', 'default' );
+				
+				if( get_theme_mod( 'theme_mods_reset', true ) == true ) {
+					$resetStatus = true;
+				}
+				
+			} else {
+				$resetStatus = delete_option( $arrItemAttributes['option_name'] );
+			}
 			
 			$arrReturn[ $strDataItemID ] = array(
 				'title' => $arrItemAttributes['title'],
@@ -390,11 +401,19 @@ class cc2_Admin_ExportImport {
 			$arrDataItems = array('settings', 'theme_mods', 'slideshows');
 		}
 		
+		
 		$strDataItems = implode('||', $arrDataItems ); // faster lookup using strings
+		
 		
 		foreach( $this->arrDataItems as $strDataItemID => $arrItemAttributes ) {
 			if( stripos( $strDataItems, $strDataItemID ) !== false ) {
-				$arrReturn[ $strDataItemID ] = get_option( $arrItemAttributes['option_name'], false );
+				if( $strDataItemID == 'theme_mods' ) { // avoid strange values wrecking havoc in the result
+					$arrReturn[ $strDataItemID ] = get_theme_mods();
+				} else {
+					$arrReturn[ $strDataItemID ] = get_option( $arrItemAttributes['option_name'], false );
+				}
+				
+				
 			}
 		}
 		
@@ -424,6 +443,7 @@ class cc2_Admin_ExportImport {
 				case 'json':
 				default:
 					// convert to json
+					
 					if( defined('JSON_PRETTY_PRINT' ) ) {
 						$return = json_encode( $data, JSON_PRETTY_PRINT );
 					} else {
@@ -457,7 +477,10 @@ class cc2_Admin_ExportImport {
 				
 				case 'json':
 				default:
-					$import_data = json_decode( $cleaned_data, true );
+					// json might not like pretty print, so we remove some stuff
+					$uglified_data = str_replace("\n", '', $cleaned_data );
+				
+					$import_data = json_decode( $uglified_data, true );
 					//new __debug( $import_data, 'json: imported data' );
 					break;
 			}
