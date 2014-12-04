@@ -428,12 +428,20 @@ class cc2_Admin_ExportImport {
 		
 		foreach( $this->arrDataItems as $strDataItemID => $arrItemAttributes ) {
 			if( stripos( $strDataItems, $strDataItemID ) !== false ) {
-				if( $strDataItemID == 'theme_mods' ) { // avoid strange values wrecking havoc in the result
+				
+				switch( $strDataItemID ) {
+					case 'theme_mods': // avoid strange values wrecking havoc in the result
 					
-					$arrReturn[ $strDataItemID ] = $this->remove_empty_pairs( get_theme_mods() );
+						$arrReturn[ $strDataItemID ] = $this->remove_empty_pairs( get_theme_mods() );
+						break;
+					case 'slideshows': // uses a different option name, but we want it to be called differently during output (improves usability)
+						$arrReturn[ $strDataItemID ] = get_option( 'cc_slider_options', false );
+						
 					
-				} else {
-					$arrReturn[ $strDataItemID ] = get_option( $arrItemAttributes['option_name'], false );
+						break;
+					default:
+						$arrReturn[ $strDataItemID ] = get_option( $arrItemAttributes['option_name'], false );
+						break;
 				}
 				
 				
