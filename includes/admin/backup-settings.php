@@ -4,7 +4,7 @@
  * 
  * @author Fabian Wolf
  * @package cc2
- * @since 2.0r1
+ * @since 2.0
  */
 
 
@@ -19,7 +19,17 @@ class cc2_Admin_ExportImport {
 	var $classPrefix = 'cc2_export_import_',
 		$className = 'Backup & Reset Settings',
 		$optionName = 'cc2_export_import_settings',
-		$arrKnownFormats = array('json' => 'JSON');
+		$arrKnownFormats = array(
+		
+			'json' => 'JSON',
+			'php' => 'PHP code (array)',
+			'serialized' => 'Serialized data',
+			
+		),
+		$strDefaultFormat = 'json',
+		$arrDisabledImportFormats = array(
+			'php'
+		);
 		
 	/**
 	 * Plugin instance.
@@ -284,6 +294,8 @@ class cc2_Admin_ExportImport {
 	
 	function admin_setting_export() {
 		$available_formats = $this->arrKnownFormats;
+		$strExportFormat = $this->strDefaultFormat;
+		
 		$data_items = $this->arrDataItems;
 		$do_export = false;
 		//$strExportFormat = 'json';
@@ -302,8 +314,6 @@ class cc2_Admin_ExportImport {
 		
 		// do the export
 		if( $do_export != false && isset( $strExportFormat ) && !empty( $_POST['export_items'] ) ) {
-			
-		
 		
 			// gather data
 			// if items are set .. use em
@@ -315,9 +325,12 @@ class cc2_Admin_ExportImport {
 				$export_data = $this->compile_export_data();
 			}
 			
+			//new __debug( array('export_format' => $strExportFormat, 'export_data' => $export_data ), __METHOD__ . ': before prepare_data' );
+			
 			// convert data to correct format
 			$export_data = $this->prepare_data( $export_data, $strExportFormat );
 			
+			//new __debug( array( 'export_data' => $export_data ), __METHOD__ . ': AFTER prepare_data ' );
 		}
 
 		
@@ -335,8 +348,16 @@ class cc2_Admin_ExportImport {
 	
 	function admin_setting_import() {
 		// set up some variables
-		$strImportFormat = 'json';
+		$strImportFormat = $this->strDefaultFormat;
 		$available_formats = $this->arrKnownFormats;
+		
+		if( !empty( $this->arrDisabledImportFormats ) ) {
+			foreach( $this->arrKnownFormats as $strFormatKey => $strFormatDesc ) {
+				if( in_array( $strFormatKey, $this->arrDisabledImportFormats ) != false ) {
+					unset( $available_formats[ $strFormatKey ] );
+				}
+			}
+		}
 		
 		$do_import = false;
 		
@@ -408,7 +429,9 @@ class cc2_Admin_ExportImport {
 		foreach( $this->arrDataItems as $strDataItemID => $arrItemAttributes ) {
 			if( stripos( $strDataItems, $strDataItemID ) !== false ) {
 				if( $strDataItemID == 'theme_mods' ) { // avoid strange values wrecking havoc in the result
-					$arrReturn[ $strDataItemID ] = get_theme_mods();
+					
+					$arrReturn[ $strDataItemID ] = $this->remove_empty_pairs( get_theme_mods() );
+					
 				} else {
 					$arrReturn[ $strDataItemID ] = get_option( $arrItemAttributes['option_name'], false );
 				}
@@ -424,6 +447,31 @@ class cc2_Admin_ExportImport {
 		
 		return $return;
 	}
+
+	/**
+	 * Sometimes, an empty pair, like array( 0 => false ), appears, and wrecks havoc
+	 */
+	
+	public function remove_empty_pairs( $data = array() ) {
+		$return = $data;
+		
+		if( !empty( $data ) ) {
+			foreach( $data as $key => $value ) {
+				if( $key == 0 && is_bool($value) && $value == false ) {
+					// do nothing ^_^
+				} else {
+					$arrReturn[ $key ] = $value;
+				}
+				
+			}
+			
+			if( !empty( $arrReturn ) ) {
+				$return = $arrReturn;
+			}
+		}
+		
+		return $return;
+	}
 	
 	public function prepare_data( $data, $strFormat = 'json' ) {
 		$return = false;
@@ -431,9 +479,12 @@ class cc2_Admin_ExportImport {
 		if( !empty( $data ) && is_array( $data ) ) {
 	
 			switch( strtolower($strFormat) ) {
-				case 'php': // simple serializing
+				case 'php': // export as valid php code
+					$return = var_export( $data, true );
+					break;
+				case 'serialized': // simple serializing
 					$return = maybe_serialize( $data );
-				
+					break;
 				case 'xml':
 					// fall-through for now
 				case 'wpxml':
@@ -443,14 +494,19 @@ class cc2_Admin_ExportImport {
 				case 'json':
 				default:
 					// convert to json
+					/**
+					 * @see https://php.net/manual/en/reserved.constants.php
+					 */
 					
-					if( defined('JSON_PRETTY_PRINT' ) ) {
+					if( PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION > 3 ) {
+						//new __debug( 'is PRETTY_PRINT' );
 						$return = json_encode( $data, JSON_PRETTY_PRINT );
 					} else {
 						$return = str_replace('\n', '', json_encode( $data ) );
 					}
 					break;
 			}
+			
 		}
 		
 		return $return;
@@ -470,8 +526,20 @@ class cc2_Admin_ExportImport {
 			//new __debug( $cleaned_data, 'import_data: cleaned_data' );
 		
 		
-			switch( strtolower( $type) ) {
-				case 'php':
+			switch( strtolower( $type ) ) {
+				/*
+				case 'php': // expects this to be an array WITHOUT prefixed variable!
+					$sanitized_data = $cleaned_data;
+					
+					if( strpos( $cleaned_data, ' = ' ) !== false ) {
+						$sanitized_data = rtrim( substr( $cleaned_data, strpos( $cleaned_data, ' = ' ), ';' );	
+					}
+					
+					eval( '$import_data = ' . $sanitized_data . ';' );
+					
+					break;
+				*/
+				case 'serialized':
 					$import_data = maybe_unserialize( $cleaned_data );
 					break;
 				
@@ -519,6 +587,7 @@ class cc2_Admin_ExportImport {
 			if( stripos( $strDataKeys, 'theme_mods') !== false ) { 
 				
 				$import_result = update_option( 'theme_mods_cc2', $import_data['theme_mods'] );
+			
 			
 				//new __debug( $import_data['theme_mods'], 'import_data:theme_mods' );
 				
