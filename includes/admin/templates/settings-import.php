@@ -1,6 +1,6 @@
 <?php
 /**
- * cc2 Template: Export settings
+ * cc2 Template: Import settings
  * @author Fabian Wolf
  * @package cc2
  * @since 2.0
@@ -8,14 +8,14 @@
 
 ?>
 
-	<div class="backup-settings settings-export">
-		<p><?php echo sprintf( __('Import theme settings from the %s.', 'cc2'), $strFormatOfChoice ); ?></p>
+	<div class="backup-settings settings-import">
+		<p><?php _e('Import theme settings from the format of your choice.', 'cc2'); ?></p>
 		
-	<?php if( !empty($available_formats) && !empty( $import_data) ) : ?>
+	<?php if( !empty($available_formats) ) : ?>
 		<p><label><?php _e('Select import format:', 'cc2'); ?>
 			<select name="import_format">
 		<?php foreach( $available_formats as $strFormat => $strFormatLabel ) : ?>
-			<option value="<?php echo $strFormat; ?>"><?php echo $strFormatLabel; ?></option>
+			<option value="<?php echo $strFormat; ?>" <?php selected( $strFormat, $strImportFormat ); ?>><?php echo $strFormatLabel; ?></option>
 		<?php endforeach; ?>
 			</select>
 		</label></p>
@@ -44,7 +44,6 @@
 		<p class="import-message">
 			<strong><?php printf(__('%s the following data:', 'cc2'), 'Imported'); ?></strong>
 		</p>	
-		
 		
 		<ul class="import-result-list">
 		<?php foreach( $import_result as $importedItem => $arrItemData ) :

@@ -11,12 +11,12 @@
 	<div class="backup-settings settings-export">
 		<p><?php echo sprintf( __('Export the current theme settings into the %s.', 'cc2'), $strFormatOfChoice ); ?></p>
 		
-	<?php if( $available_formats ) : ?>
+	<?php if( !empty($available_formats) ) : ?>
 		<p>
 			<label><?php _e('Select export format:', 'cc2'); ?>
 				<select name="export_format">
 		<?php foreach( $available_formats as $strFormat => $strFormatLabel ) : ?>
-					<option value="<?php echo $strFormat; ?>"><?php echo $strFormatLabel; ?></option>
+					<option value="<?php echo $strFormat; ?>" <?php selected( $strFormat, $strExportFormat ); ?>><?php echo $strFormatLabel; ?></option>
 		<?php endforeach; ?>
 				</select>
 			</label>
