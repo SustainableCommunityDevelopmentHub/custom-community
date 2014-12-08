@@ -11,7 +11,7 @@ if( !function_exists( 'cc2_init_scheme_helper' ) ) {
 		global $cc2_color_schemes;
 		
 		//$cc2_color_schemes = $GLOBALS['cc2_color_schemes'];
-		if( empty( $cc2_color_schemes) ) {
+		if( empty( $cc2_color_schemes ) || !is_object( $cc2_color_schemes ) ) {
 			//new __debug( array( 'cc2_color_schemes' => $cc2_color_schemes ), 'init_scheme_helper starts' );
 			
 			
@@ -19,23 +19,19 @@ if( !function_exists( 'cc2_init_scheme_helper' ) ) {
 			
 			do_action('cc2_init_color_schemes'); // should be unset-table / replaceable via plugin / filter hooks
 			
-			if( defined( 'CC2_COLOR_SCHEMES_CLASS') ) {
 				
-				
-				//new __debug( CC2_COLOR_SCHEMES_CLASS, __METHOD__ . ': CC2_COLOR_SCHEMES_CLASS' );
-				$_cc2_color_schemes_class = CC2_COLOR_SCHEMES_CLASS;
-				
-				if( class_exists( $_cc2_color_schemes_class ) ) {
-				
-					$cc2_color_schemes = $_cc2_color_schemes_class::init();
-				}
+			if( class_exists( 'cc2_ColorSchemes' ) ) {
+			
+				$cc2_color_schemes = cc2_ColorSchemes::init();
 			}
+
 		}
 		
 		//new __debug( $cc2_color_schemes, 'init_scheme_helper ends' );
 		
 		return $cc2_color_schemes;
 	}
+	
 	cc2_init_scheme_helper();
 	
 }
@@ -88,7 +84,7 @@ if( !function_exists('cc2_get_current_color_scheme') ) {
 }
 
 if( !function_exists('cc2_get_color_schemes') ) {
-	function cc2_get_color_schemes() {
+	function cc2_get_color_schemes( $include_settings = false ) {
 		global $cc2_color_schemes;
 		$return = false;
 		
@@ -98,7 +94,7 @@ if( !function_exists('cc2_get_color_schemes') ) {
 		
 		cc2_init_scheme_helper();
 		
-		$return = apply_filters('cc2_get_all_color_schemes', $cc2_color_schemes->get_color_schemes() );
+		$return = apply_filters('cc2_get_all_color_schemes', $cc2_color_schemes->get_color_schemes( $include_settings ) );
 				
 		return $return;
 	}
@@ -109,7 +105,13 @@ if( !function_exists('cc2_get_color_scheme_by_slug') ) {
 		$return = false;
 		global $cc2_color_schemes;
 	
-		if( !empty( $scheme_slug ) && function_exists( 'cc2_get_color_schemes') ) {
+		//if( !empty( $scheme_slug ) && function_exists( 'cc2_get_color_schemes') ) {
+		
+		if( !empty( $scheme_slug ) && isset( $cc2_color_schemes ) && method_exists( $cc2_color_schemes, 'get_single_color_scheme' ) ) {
+			$return = $cc2_color_schemes->get_single_color_scheme( $scheme_slug );
+			
+			$return = apply_filters('cc2_add_missing_scheme_variables', $return );
+		/*
 			$arrSchemes = cc2_get_color_schemes();
 			
 			//new __debug( array('scheme_slug' => $scheme_slug, 'schemes' => $arrSchemes ), __METHOD__ );
@@ -123,12 +125,11 @@ if( !function_exists('cc2_get_color_scheme_by_slug') ) {
 				if( empty( $return['slug'] ) != false ) {
 					$return['slug'] = $scheme_slug;
 				}
-				
 			
-				$return = $cc2_color_schemes->add_missing_scheme_variables( $return );
-				
+				//$return = $cc2_color_schemes->add_missing_scheme_variables( $return );
+				$return = apply_filters('cc2_add_missing_scheme_variables', $return );
 			}
-			
+		*/	
 		}
 
 		return $return;

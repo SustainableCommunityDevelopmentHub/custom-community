@@ -62,6 +62,8 @@ define('CC2_THEME_CONFIG', serialize(
 					'link_color' => 'f2694b',
 					'hover_color' => 'f2854b',
 				),
+				'settings' => 'default.settings.php',
+				'preview' => '%theme_screenshot%',
 			),
 			'dark' => array(
 				'title' => 'Dark Colours',
@@ -85,6 +87,20 @@ define('CC2_THEME_CONFIG', serialize(
 					'hover_color' => '1E90FF',
 				),
 			),
+			
+			'greenthumb' => array(
+				'title' => 'Greenthumb',
+				'file' => 'greenthumb.less', /** if no filename is given, we assume its {$slug}.less */
+				'settings' => 'greenthumb.settings.php', /** if no filename is given, default-settings.php is being used */
+				'scheme' => array(
+					'font_color' => '333333', /** @gray-dark: lighten(#000, 20%); // #333 */
+					'font_family' => 'font-family-sans-serif',
+					'link_color' => 'f2694b',
+					'hover_color' => 'f2854b',
+				),
+				'preview' => 'greenthumb.png',
+			),
+			
 			'_test' => array(
 				'title' => 'Test Scheme',
 				'file' => 'test.less',

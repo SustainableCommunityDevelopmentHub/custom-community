@@ -103,7 +103,7 @@ function cc2_theme_deactivation($new_name, $new_theme) {
  * NOTE: Moved into @function cc2_theme_initial_setup.
  */
 
-/*
+
 add_action( 'after_setup_theme', 'cc2_theme_activation' );
 function cc2_theme_activation() {
 	// set default scheme for initial theme set up
@@ -116,7 +116,7 @@ function cc2_theme_activation() {
         wp_redirect(admin_url('customize.php'));
         exit;
     }
-}*/
+}
 
 // much more helping buddy
 if( !function_exists( 'is_customizer_preview' ) ) :
@@ -265,16 +265,8 @@ endif; // end of cc_setup
 add_action( 'widgets_init', 'cc_widgets_init' );
   
 function cc_widgets_init() {
-	register_sidebar( array(
-		'name'          => __( 'Sidebar Header', 'cc2' ),
-		'id'            => 'sidebar-header',
-		'description'   => 'The header widgetarea will pop up in your frontend once you add a widget here..',
-		'before_widget' => '<aside id="%1$s" class="widget %2$s">',
-		'after_widget'  => '</aside>',
-		'before_title'  => '<h3 class="widget-title">',
-		'after_title'   => '</h3>',
-	) ); 
 	
+	// first sidebar => thus gets also filled with the initial widgets ;)
 	register_sidebar( array(
 		'name'          => __( 'Sidebar Right', 'cc2' ),
 		'id'            => 'sidebar-right',
@@ -294,6 +286,18 @@ function cc_widgets_init() {
 		'before_title'  => '<h3 class="widget-title">',
 		'after_title'   => '</h3>',
 	) ); 
+
+	// header widgetarea
+	register_sidebar( array(
+		'name'          => __( 'Sidebar Header', 'cc2' ),
+		'id'            => 'sidebar-header',
+		'description'   => 'The header widgetarea will pop up in your frontend once you add a widget here..',
+		'before_widget' => '<aside id="%1$s" class="widget %2$s">',
+		'after_widget'  => '</aside>',
+		'before_title'  => '<h3 class="widget-title">',
+		'after_title'   => '</h3>',
+	) ); 
+
 
 	// footer widgetareas
 
@@ -506,9 +510,9 @@ if( !function_exists( '__cc2_init_color_schemes_call' ) ) :
 	//__debug::log('outdated private function call fires', 'cc2_init_color_schemes');
 
 	function __cc2_init_color_schemes_call() {
-
+		global $cc2_color_schemes;
 		
-		if( !isset( $GLOBALS['cc2_color_schemes'] ) ) {
+		if( !isset( $GLOBALS['cc2_color_schemes'] ) && !isset($cc2_color_schemes) ) {
 			do_action('cc2_init_color_schemes');
 		}
 	}
@@ -845,6 +849,7 @@ endif;
 
 
 // Load Customizer Options
+include get_template_directory() . '/includes/admin/customizer-helper.class.php';
 require get_template_directory() . '/includes/admin/customizer-options.class.php';
 
 // Implement the Custom Header Feature

@@ -12,7 +12,7 @@ if( !class_exists( 'cc2_ColorSchemes' ) ) :
 /**
  * NOTE: Set current color scheme class for handling possible issues with the Them Customization API
  **/
- 
+
 
 //new __debug('cc2_ColorSchemes loaded');
 
@@ -64,7 +64,11 @@ if( !class_exists( 'cc2_ColorSchemes' ) ) :
 			 * NOTE: Possibly misplaced
 			 */
 			add_filter( 'cc2_style_css', array( $this, 'switch_color_scheme') );
-			add_filter( 'cc2_style_css', array( $this, 'use_compiled_stylesheet' ) );
+			
+			/**
+			 * FIXME: Broken in the plugin
+			 */
+			//add_filter( 'cc2_style_css', array( $this, 'use_compiled_stylesheet' ) );
 			
 		}
 
@@ -78,8 +82,12 @@ if( !class_exists( 'cc2_ColorSchemes' ) ) :
 			$strStylesheetURL = get_option('cc2_stylesheet_file', $return );
 			
 			if( !empty( $strStylesheetURL) && $strStylesheetURL != $return && stripos( $strStylesheetURL, '.css' ) !== false ) {
+				
+				
 				$return = $strStylesheetURL;
 			}
+			
+			
 			
 			//$return = get_option('cc2_stylesheet_file', $return );
 			
@@ -134,12 +142,13 @@ if( !class_exists( 'cc2_ColorSchemes' ) ) :
 			}
 		}
 		
-		public function get_color_schemes() {
+		public function get_color_schemes( $include_settings = false ) {
 			$return = false;
 			
 			// get default themes
 			if( !empty( $this->arrColorSchemes) && isset( $this->arrColorSchemes['default'] ) != false ) {
-				$return = $this->config['color_schemes'];
+				//$return = $this->config['color_schemes'];
+				$return = $this->arrColorSchemes;
 				//new __debug( $return, 'default schemes' );
 				
 				// check for scheme paths
@@ -150,11 +159,87 @@ if( !class_exists( 'cc2_ColorSchemes' ) ) :
 					if( empty( $arrBaseMeta['file'] ) ) { // default file = style.less
 						$return[ $strBaseSlug ]['file'] = 'style.less';
 					}
-				}	
+					
+					if( !empty( $include_settings ) ) {
+						$return[ $strBaseSlug ]['default_settings'] = $this->get_scheme_default_settings( $strBaseSlug );
+					}
+				}
 			}
 			
 			return $return;
 		}
+	
+	
+		function get_single_color_scheme( $slug = null ) {
+			$return = false;
+			
+			if( !empty( $slug ) ) {
+				$arrColorSchemes = $this->get_color_schemes();
+				if( !empty( $arrColorSchemes ) && !empty( $arrColorSchemes[ $slug ]['color_scheme'] ) ) {
+					$return = $arrColorSchemes[ $slug ];
+				}
+			}
+			
+			return $return;
+		}
+	
+		/**
+		 * Fetch the default settings of the current scheme (mostly for the customizer API).
+		 * 
+		 * @param string $scheme_slug	Required.
+		 * @return mixed $return		Returns FALSE if not found, missing scheme_slug or something else is broken. On success, returns the complete default settings data (array).
+		 */
+		
+		function get_scheme_default_settings( $scheme_slug = false ) {
+			$return = false;
+			
+			if( !empty( $scheme_slug ) ) {
+			
+				/**
+				 * NOTE: AVOID using get_single_color_scheme, because that one relies on THIS current method as well!
+				 */
+				//$scheme = $this->get_single_color_scheme( $scheme_slug );
+				if( !empty( $this->arrColorSchemes ) && !empty( $this->arrColorSchemes[ $scheme_slug ]['settings'] ) ) {
+					$scheme = $this->arrColorSchemes[ $scheme_slug ];
+					
+					
+					// theoretically, it could be the complete settings in an array instead
+					if( is_array( $scheme['settings'] ) ) {
+						$return = $scheme['settings'];
+						
+					} else {
+						
+						
+						if( $scheme['settings'] != '%default_settings%' && file_exists( get_template_directory() . '/includes/schemes/' . $scheme['settings'] ) != false ) {
+							//new __debug( $scheme_slug, __METHOD__ . ': fetching default settings' );
+							
+							include( get_template_directory() . '/includes/schemes/' . $scheme['settings'] );
+							if( !empty( $settings ) && is_array( $settings) != false ) {
+								$return = $settings;
+							}
+							
+							//new __debug( $settings, ': default settings for ' . $scheme_slug );
+							
+						} elseif( $scheme['settings'] == '%default_settings%') {
+							if( !defined( 'CC2_DEFAULT_SETTINGS') ) {
+								include( get_template_directory() . '/includes/default-settings.php' );
+							}
+							
+							$default_settings = maybe_unserialize( CC2_DEFAULT_SETTINGS );
+							
+							$return = $default_settings['theme_mods'];
+							
+							unset( $return['color_scheme'] ); // avoid overwriting the color scheme when the settings are being used inside the customizer
+						}
+					}
+				}
+				
+			}
+			
+			return $return;
+		}
+		
+	
 	
 		function get_current_color_scheme( $default = false ) {
 			$return = $default;
@@ -172,7 +257,7 @@ if( !class_exists( 'cc2_ColorSchemes' ) ) :
 				if( empty( $return['slug'] ) ) {
 					$return['slug'] = $current_scheme_slug;
 				}
-				
+			
 				
 				if( empty( $return['output_file'] ) != false ) {
 					$strOutputFile = $current_scheme_slug . '.css';
@@ -184,11 +269,16 @@ if( !class_exists( 'cc2_ColorSchemes' ) ) :
 					$return['output_file'] = $strOutputFile;
 				}
 				
+				if( empty( $return['settings'] ) ) {
+					$return['settings'] = '%default_settings%';
+				}
+				
 				// check paths
 				
 				/**
 				 * NOTE: A (do-)while-loop might be the better choice. Avoids nasty breaks.
 				 */
+				
 				
 				foreach( $this->arrKnownLocations as $strPath => $strURL ) { 
 					
@@ -198,12 +288,18 @@ if( !class_exists( 'cc2_ColorSchemes' ) ) :
 						break;
 					}
 				}
-	
+				
+				$return = apply_filters(' cc2_add_missing_scheme_variables', $return );
 			}
+			
+			$return['current_color_scheme_parser'][] = 'cc2_ColorSchemes';
 			
 			return $return;
 		}
-	}
+		
+	} // end of class
+	
+	
 	
 	if( !defined('CC2_COLOR_SCHEMES_CLASS' ) ) {
 		define( 'CC2_COLOR_SCHEMES_CLASS', 'cc2_ColorSchemes' );
