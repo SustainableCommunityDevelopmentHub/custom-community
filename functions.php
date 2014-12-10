@@ -849,7 +849,7 @@ endif;
 
 
 // Load Customizer Options
-include get_template_directory() . '/includes/admin/customizer-helper.class.php';
+//include get_template_directory() . '/includes/admin/customizer-helper.class.php';
 require get_template_directory() . '/includes/admin/customizer-options.class.php';
 
 // Implement the Custom Header Feature
