@@ -38,7 +38,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 		}
 		
 		public function init_customizer_hooks() {
-			__debug::log( __METHOD__ . ' fires ');
+			//__debug::log( __METHOD__ . ' fires ');
 			
 			// scripts
 			add_action( 'customize_controls_enqueue_scripts', array( $this, 'load_customizer_scripts' ) );
@@ -69,6 +69,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 		function load_customizer_scripts() {
 			
 			$customizer_data = self::prepare_preloaded_data();
+			
 			
 			wp_enqueue_script(
 				'cc2-customizer-helper', get_template_directory_uri() . '/includes/admin/js/customizer-helper.js', array('jquery', 'wp-color-picker')
@@ -124,11 +125,9 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			
 			// color schemes
 			if( function_exists( 'cc2_get_color_schemes' ) ) {
-				$return['color_schemes'] = cc2_get_color_schemes();
-			}	
-			
-			
-			
+				$return['color_schemes'] = cc2_get_color_schemes( true );
+			}
+
 		
 			return $return;
 		}
@@ -330,7 +329,9 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 		function customizer_sanitizer( $data ) {
 			$return = $data;
 			
-			__debug::log( $data, __METHOD__ );
+			if( class_exists('__debug' ) ) {
+				//new __debug::log( $data, __METHOD__ );
+			}
 			
 			return $return;
 		}
@@ -551,7 +552,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				 
 				$wp_customize->add_control( 
 					new Description( $wp_customize, 'notice_color_scheme', array(
-						'label' 		=> 	__('Note: Switching will also change a few other settings, including Font, Link and Link Hover Color.', 'cc2'),
+						'label' 		=> 	__('Note: Switching is also going to change quite a lot of other settings, including Font, Link and Link Hover Color. Better to save your current changes before-hand.', 'cc2'),
 						'type' 			=> 	'description',
 						'section' 		=> 	'colors',
 						'priority'		=> 	6,

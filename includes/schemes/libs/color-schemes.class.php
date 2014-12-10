@@ -7,8 +7,10 @@
  * @since 2.0-r2
  */
 
+//new __debug( basename(__FILE__) . ' is loaded' );
 
 if( !class_exists( 'cc2_ColorSchemes' ) ) :
+
 /**
  * NOTE: Set current color scheme class for handling possible issues with the Them Customization API
  **/
@@ -161,8 +163,13 @@ if( !class_exists( 'cc2_ColorSchemes' ) ) :
 					}
 					
 					if( !empty( $include_settings ) ) {
+						
+						//new __debug('fetching settings');
+						
 						$return[ $strBaseSlug ]['default_settings'] = $this->get_scheme_default_settings( $strBaseSlug );
 					}
+					
+					$return[$strBaseSlug]['_parser'] = 'plugin';
 				}
 			}
 			
@@ -271,6 +278,8 @@ if( !class_exists( 'cc2_ColorSchemes' ) ) :
 				
 				if( empty( $return['settings'] ) ) {
 					$return['settings'] = '%default_settings%';
+				} else {
+					$return['default_settings'] = $this->get_scheme_default_settings( $current_scheme_slug );
 				}
 				
 				// check paths
@@ -289,7 +298,7 @@ if( !class_exists( 'cc2_ColorSchemes' ) ) :
 					}
 				}
 				
-				$return = apply_filters(' cc2_add_missing_scheme_variables', $return );
+				$return = apply_filters('cc2_add_missing_scheme_variables', $return );
 			}
 			
 			$return['current_color_scheme_parser'][] = 'cc2_ColorSchemes';

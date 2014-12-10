@@ -95,7 +95,12 @@ if( !function_exists('cc2_get_color_schemes') ) {
 		cc2_init_scheme_helper();
 		
 		$return = apply_filters('cc2_get_all_color_schemes', $cc2_color_schemes->get_color_schemes( $include_settings ) );
-				
+		
+		
+		
+		
+		//new __debug( $return, __METHOD__ . ': available color schemes' );
+		
 		return $return;
 	}
 }
