@@ -54,15 +54,21 @@ define('CC2_THEME_CONFIG', serialize(
 		
 		'color_schemes' => array(
 			'default' => array(
-				'title' => 'Orange &amp; Black',
+				'title' => 'Custom Community Original',
 				'file' => 'style.less', /** if no filename is given, we assume its {$slug}.less */
 				'scheme' => array(
-					'font_color' => '333333', /** @gray-dark: lighten(#000, 20%); // #333 */
+					'font_color' => '494949',
+					'link_color' => '436882',
+					'hover_color' => '6ca4d8',
+					'font_family' => 'font-family-sans-serif',
+					
+					/*'font_color' => '333333', @gray-dark: lighten(#000, 20%); // #333 */
+					/*
 					'font_family' => 'font-family-sans-serif',
 					'link_color' => 'f2694b',
-					'hover_color' => 'f2854b',
+					'hover_color' => 'f2854b',*/
 				),
-				'settings' => 'default.settings.php',
+				'settings' => 'cc2-default.settings.php',
 				'preview' => '%theme_screenshot%',
 			),
 			'dark' => array(
@@ -93,10 +99,10 @@ define('CC2_THEME_CONFIG', serialize(
 				'file' => 'greenthumb.less', /** if no filename is given, we assume its {$slug}.less */
 				'settings' => 'greenthumb.settings.php', /** if no filename is given, default-settings.php is being used */
 				'scheme' => array(
-					'font_color' => '333333', /** @gray-dark: lighten(#000, 20%); // #333 */
+					'font_color' => '111', /** @gray-dark: lighten(#000, 20%); // #333 */
 					'font_family' => 'font-family-sans-serif',
-					'link_color' => 'f2694b',
-					'hover_color' => 'f2854b',
+					'link_color' => '84F24B',
+					'hover_color' => 'BFF15A',
 				),
 				'preview' => 'greenthumb.png',
 			),

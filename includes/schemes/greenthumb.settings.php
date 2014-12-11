@@ -30,18 +30,16 @@ $settings = array(
 	'tagline_text_color' => '#456B08',
 	 
 	/* Header Section*/
-	/**
-	 * Static frontpage is set, ie. home != blog
-	 * 
-	 * @see http://codex.wordpress.org/Function_Reference/is_home#Blog_Posts_Index_vs._Site_Front_Page
-	 */
-
+	
+	'header_textcolor' => '#aed132',
+	
 	'header_height' => 'auto',
 	'header_height_blog' => 'auto',
 	'header_height_home' => 'auto',
 
 	'header_background_color' => 'transparent', /* default: #ffffff */
 	'header_background_image' => '',
+	
 	 
 	/* Adding to Navigation Section (Nav) */
 	'fixed_top_nav' => true,
@@ -56,14 +54,14 @@ $settings = array(
 	 * Top nav color settings
 	 */
 
-	'top_nav_background_color' => '#2f2f2f',
+	'top_nav_background_color' => '#2F4A2F',
 	'top_nav_text_color' => '#a9a9a9',
 	'top_nav_hover_text_color' => '#ffffff',
 
 	/**
 	 * Secondary nav color settings (that's usually after the header)
 	 */
-	'secondary_nav_background_color' => '#2f2f2f',
+	'secondary_nav_background_color' => '#2F362F',
 	'secondary_nav_text_color' => '#a9a9a9',
 	'secondary_nav_hover_text_color' => '#ffffff',
 	 
@@ -137,7 +135,7 @@ $settings = array(
 	'slider_effect_excerpt' => 'bounceInRight',
 	'cc_slider_text_align' => 'center',
 	
-	'caption_title_bg_color' => 'f2694b', /** runs through maybe_hex .. shouldnt do any harm leaving out the hash char */
+	'caption_title_bg_color' => '#84F24B', /** runs through maybe_hex .. shouldnt do any harm leaving out the hash char */
 	'caption_title_font_color' => 'ffffff',
 	'caption_title_font_family' => 'Ubuntu Condensed',
 	'caption_title_font_weight' => false, /* bold => true|false */
