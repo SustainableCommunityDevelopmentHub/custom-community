@@ -182,7 +182,7 @@ if( !class_exists( 'cc2_ColorSchemes' ) ) :
 			
 			if( !empty( $slug ) ) {
 				$arrColorSchemes = $this->get_color_schemes();
-				if( !empty( $arrColorSchemes ) && !empty( $arrColorSchemes[ $slug ]['color_scheme'] ) ) {
+				if( !empty( $arrColorSchemes ) && !empty( $arrColorSchemes[ $slug ]['scheme'] ) ) {
 					$return = $arrColorSchemes[ $slug ];
 				}
 			}

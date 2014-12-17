@@ -7,7 +7,15 @@
  * @since 2.0
  */
  
-
+function maybe_hex( value ) {
+	var $return = value;
+	
+	if( value.substr(0,1) != '#' ) {
+		$return = '#' + value;
+	}
+	
+	return $return;
+}
 
 ( function( exports, $ ) {
 	var api = top.wp;
@@ -90,7 +98,7 @@
 					case 'color':
 						console.log( 'changing color of ' + settingName + ' to ' + settingValue );
 					
-						mySetColor( settingName, settingValue );
+						mySetColor( settingName, maybe_hex( settingValue ) );
 					
 						break;
 					
@@ -243,6 +251,8 @@
 		
 		var control = api.control.instance(cname);
 		var picker = control.container.find('.color-picker-hex')[0];
+		
+		
 		
 		
 		//console.log( control.setting() );
