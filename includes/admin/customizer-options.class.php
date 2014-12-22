@@ -139,6 +139,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 		 
 		function prepare_variables() {
 			$return = array();
+			$wp_date_format = trim( get_option('date_format', 'Y-m-d' ) ) . ' ' . trim( get_option('time_format', 'H:i:s' ) );
 			
 			// load base theme config
 			if( defined( 'CC2_THEME_CONFIG' ) ) {
@@ -153,9 +154,16 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				
 				if( !empty( $arrColorSchemes ) ) {
 					foreach( $arrColorSchemes as $strSchemeSlug => $arrSchemeData ) {
-						$return['color_schemes'][$strSchemeSlug] = $arrSchemeData['title'];
+						$strSchemeTitle = $arrSchemeData['title'];
+						
+						if( isset( $arrSchemeData['_modified'] ) ) {
+							$strSchemeTitle .= ' (' . date( $wp_date_format, $arrSchemeData['_modified'] ) . ')';	
+						}
+						$return['color_schemes'][$strSchemeSlug] = $strSchemeTitle;
 					}
 				}
+				//new __debug( $current_scheme, __METHOD__ . ': current scheme' );
+				
 				$return['current_color_scheme'] = $current_scheme['slug'];
 				
 				/**

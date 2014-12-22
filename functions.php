@@ -487,7 +487,7 @@ add_action('admin_enqueue_scripts', 'cc2_js_aid', 1 ); // admin
 //new __debug( 'loading color schemes', __FILE__ );
 
 
-
+require get_template_directory() . '/includes/extras.php';
 require( get_template_directory() . '/includes/schemes/libs/color-schemes.class.php' );
 
 
@@ -865,7 +865,7 @@ require get_template_directory() . '/includes/sidebars.php';
 require get_template_directory() . '/includes/template-tags.php';
 
 // Custom functions that act independently of the theme templates
-require get_template_directory() . '/includes/extras.php';
+//require get_template_directory() . '/includes/extras.php';
 
 // Load Jetpack compatibility file
 require get_template_directory() . '/includes/jetpack.php';

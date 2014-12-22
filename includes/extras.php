@@ -15,6 +15,7 @@
 if( !class_exists('cc2_Helper') ) :
 
 	class cc2_Helper {
+		static $strOptionPrefix = 'cc2_backup_';
 		
 		/**
 		 * Replacement for is_page, is_admin and is_plugin_page. Does not (yet) count in the AJAX situation. 
@@ -118,6 +119,85 @@ if( !class_exists('cc2_Helper') ) :
 			return $return;
 		}
 		
+		
+		public static function update_settings_backup( $strOptionSuffix = 'settings', $data = false ) {
+			$return = false;
+			
+			if( !empty( $data ) ) {
+				$return = self::backup_settings( $data, $strOptionSuffix );
+			}
+			
+			return $return;
+		}
+		
+		public static function backup_settings( $data, $strOptionSuffix = 'settings' ) {
+			$return = false;
+			
+			if( !empty( $data ) && self::is_assoc( $data ) != false ) {
+				if( self::has_settings_backup( $strOptionSuffix ) != false ) {
+					$created = self::get_settings_backup( $strOptionSuffix, '_created' );
+					
+					if( !empty($created) && is_int( $created ) ) {
+						$data['_created'] = $created;
+					}
+				}
+				
+				$data['_modified'] = time();
+				
+				$return = update_option( self::$strOptionPrefix . $strOptionSuffix, $data );
+			}
+			
+			return $return;
+		}
+		
+		public static function get_settings_backup( $strOptionSuffix = 'settings', $strFieldName = false ) {
+			$return = false;
+		
+			
+			if( !empty( $strOptionSuffix ) ) {
+				$settings = get_option( self::$strOptionPrefix . $strOptionSuffix, false );
+			}
+			
+			if( !empty( $settings ) && self::is_assoc( $settings) != false ) {
+				
+				if( !empty( $strFieldName ) ) {
+					$return = ( isset( $settings[ $strFieldName ] ) ? $settings[ $strFieldName ] : false );
+				} else {
+					$return = $settings;
+				}
+			}
+			
+			return $return;
+		}
+		
+		public static function has_settings_backup( $strOptionSuffix = 'settings' ) {
+			$return = false;
+			
+			$settings = get_option( self::$strOptionPrefix . $strOptionSuffix, false );
+			if( !empty( $settings ) && self::is_assoc( $settings ) != false ) {
+				$return = true;
+			}
+			
+			return $return;
+		}
+		
+		
+		
+		public static function is_assoc( $array = false ) {
+			$return = false;
+			
+			if( !empty( $array ) && is_array( $array) ) {
+				foreach($array as $key => $value) {
+					if ($key !== (int) $key) {
+						$return = true;
+					}
+				}
+			}
+			
+			return $return;
+		}
+		
+		
 	}
 
 
@@ -151,15 +231,18 @@ endif;
 /**
  * Get our wp_nav_menu() fallback, wp_page_menu(), to show a home link.
  */
+if( !function_exists( '_tk_page_menu_args' ) ):
 function _tk_page_menu_args( $args ) {
 	$args['show_home'] = true;
 	return $args;
 }
 add_filter( 'wp_page_menu_args', '_tk_page_menu_args' );
+endif;
 
 /**
  * Adds custom classes to the array of body classes.
  */
+if( !function_exists( '_tk_body_classes' ) ) :
 function _tk_body_classes( $classes ) {
 	// Adds a class of group-blog to blogs with more than 1 published author
 	if ( is_multi_author() ) {
@@ -169,10 +252,12 @@ function _tk_body_classes( $classes ) {
 	return $classes;
 }
 add_filter( 'body_class', '_tk_body_classes' );
+endif;
 
 /**
  * Filter in a link to a content ID attribute for the next/previous image links on image attachment pages
  */
+if( !function_exists( '_tk_enhanced_image_navigation' ) ) :
 function _tk_enhanced_image_navigation( $url, $id ) {
 	if ( ! is_attachment() && ! wp_attachment_is_image( $id ) )
 		return $url;
@@ -184,10 +269,12 @@ function _tk_enhanced_image_navigation( $url, $id ) {
 	return $url;
 }
 add_filter( 'attachment_link', '_tk_enhanced_image_navigation', 10, 2 );
+endif;
 
 /**
  * Filters wp_title to print a neat <title> tag based on what is being viewed.
  */
+if( !function_exists( '_tk_wp_title' ) ) :
 function _tk_wp_title( $title, $sep ) {
 	global $page, $paged;
 
@@ -209,3 +296,4 @@ function _tk_wp_title( $title, $sep ) {
 	return $title;
 }
 add_filter( 'wp_title', '_tk_wp_title', 10, 2 );
+endif;

@@ -138,7 +138,21 @@ if( !class_exists( 'cc2_ColorSchemes' ) ) :
 				$config = $this->config;
 				
 				if( !empty( $config['color_schemes'] ) ) {
+					
+					
+					
+					
 					$this->arrColorSchemes = $config['color_schemes'];
+					
+					
+				}
+				
+				if( cc2_Helper::has_settings_backup('scheme') != false ) {
+					$backup_scheme = cc2_Helper::get_settings_backup( 'scheme' );
+					
+					if( !empty( $backup_scheme ) && !empty( $backup_scheme['slug'] ) ) {
+						$this->arrColorSchemes[ $backup_scheme['slug'] ] = $backup_scheme;
+					}
 				}
 
 			}
@@ -173,6 +187,23 @@ if( !class_exists( 'cc2_ColorSchemes' ) ) :
 				}
 			}
 			
+			// look out for backed up scheme
+			if( cc2_Helper::has_settings_backup( 'scheme' ) != false ) {
+				$scheme_backup = cc2_Helper::get_settings_backup( 'scheme' );
+				
+				if( !empty( $scheme_backup ) && !empty( $scheme_backup['slug']) ) {
+					
+					//new __debug( $scheme_backup, __METHOD__ );
+					/*if( stripos( $scheme_backup['slug'], 'backup__' ) === false ) {
+					
+						$scheme_backup['slug'] = 'backup__'.$scheme_backup['slug'] ;
+					}*/
+					
+					$return[ $scheme_backup['slug'] ] = $scheme_backup;
+				}
+			}
+			
+			
 			return $return;
 		}
 	
@@ -184,6 +215,7 @@ if( !class_exists( 'cc2_ColorSchemes' ) ) :
 				$arrColorSchemes = $this->get_color_schemes();
 				if( !empty( $arrColorSchemes ) && !empty( $arrColorSchemes[ $slug ]['scheme'] ) ) {
 					$return = $arrColorSchemes[ $slug ];
+					$return['slug'] = $slug;
 				}
 			}
 			
@@ -240,7 +272,6 @@ if( !class_exists( 'cc2_ColorSchemes' ) ) :
 						}
 					}
 				}
-				
 			}
 			
 			return $return;
@@ -291,7 +322,7 @@ if( !class_exists( 'cc2_ColorSchemes' ) ) :
 				
 				foreach( $this->arrKnownLocations as $strPath => $strURL ) { 
 					
-					if( file_exists( $strPath . $return['output_file'] ) ) {
+					if( file_exists( $strPath . $return['output_file'] ) && empty( $return['style_path'] ) != false ) {
 						$return['style_path'] = $strPath . $return['output_file'];
 						$return['style_url'] = $strURL . $return['output_file'];
 						break;

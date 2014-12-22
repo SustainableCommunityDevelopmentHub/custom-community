@@ -118,6 +118,15 @@ span.customize-control-title.description {
 	font-style: italic;
 }
 
+/*
+.control-section #customize-control-alert_less_mode label span.customize-control-title.description em {
+	font-weight: bold !important;
+	font-size: 125% !important;
+	font-style: normal !important;
+	text-align: justify;
+}
+*/
+
 /* CC Slider Editor */
 
 #cc-slider-editor-buttons {
