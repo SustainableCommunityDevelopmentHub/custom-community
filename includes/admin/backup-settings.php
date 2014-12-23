@@ -66,10 +66,11 @@ class cc2_Admin_ExportImport {
 				'title' => __('Advanced Settings', 'cc2' ),
 				'option_name' => 'cc2_advanced_settings',
 			),
+			/*
 			'slideshows' => array(
 				'title' => __('Slideshows', 'cc2' ),
 				'option_name' => 'cc2_slideshows',
-			),
+			),*/
 		);
 		
 		// register required settings, sections etc.
@@ -84,10 +85,6 @@ class cc2_Admin_ExportImport {
 		
 		
 	}
-	
-	
-
-
 
 	/*
 	 * Register the admin settings
@@ -126,55 +123,45 @@ class cc2_Admin_ExportImport {
 			$strSettingsPage
 		);
 		
-			// add the reset confirmation to the TOP
-			if( isset( $_POST['backup_action']) && $_POST['backup_action'] == 'reset' ) {
-				
-				if( empty( $_POST['settings_reset_confirm'] ) || $_POST['settings_reset_confirm'] != 'yes' ) {
-					add_settings_field(
-						$this->classPrefix . 'reset_confirm',
-						'<strong class="delete">Confirm reset</strong>',
-						array( $this, 'admin_setting_reset_confirm' ), /* method callback  */
-						$strSettingsPage,
-						'section_general'
-					);
-				}
+		// add the reset confirmation to the TOP
+		if( isset( $_POST['backup_action']) && $_POST['backup_action'] == 'reset' ) {
+			
+			if( empty( $_POST['settings_reset_confirm'] ) || $_POST['settings_reset_confirm'] != 'yes' ) {
+				add_settings_field(
+					$this->classPrefix . 'reset_confirm',
+					'<strong class="delete">Confirm reset</strong>',
+					array( $this, 'admin_setting_reset_confirm' ), /* method callback  */
+					$strSettingsPage,
+					'section_general'
+				);
 			}
-		
-			add_settings_field(
-				$this->classPrefix . 'export',
-				'<strong>Export settings</strong>',
-				array( $this, 'admin_setting_export' ), /** method callback */
-				$strSettingsPage,
-				$strGlobalSection
-			);
-
-			
-			add_settings_field(
-				$this->classPrefix . 'import',
-				'<strong>Import settings</strong>',
-				array( $this, 'admin_setting_import' ), /* method callback */
-				$strSettingsPage,
-				$strGlobalSection
-			);
-			
-			
-			add_settings_field(
-				$this->classPrefix . 'reset',
-				'<strong class="delete">Reset settings</strong>',
-				array( $this, 'admin_setting_reset' ), /* method callback  */
-				$strSettingsPage,
-				'section_general'
-			);
-			
-
-			/*add_settings_field(
-				$this->classPrefix . 'bootstrap',
-				'<strong>Bootstrap Features</strong>',
-				array( $this, 'admin_setting_bootstrap_features' ), // method callback 
-				$strSettingsPage,
-				'section_general'
-			);*/
+		}
 	
+		add_settings_field(
+			$this->classPrefix . 'export',
+			'<strong>Export settings</strong>',
+			array( $this, 'admin_setting_export' ), /** method callback */
+			$strSettingsPage,
+			$strGlobalSection
+		);
+
+		
+		add_settings_field(
+			$this->classPrefix . 'import',
+			'<strong>Import settings</strong>',
+			array( $this, 'admin_setting_import' ), /* method callback */
+			$strSettingsPage,
+			$strGlobalSection
+		);
+		
+		
+		add_settings_field(
+			$this->classPrefix . 'reset',
+			'<strong class="delete">Reset settings</strong>',
+			array( $this, 'admin_setting_reset' ), /* method callback  */
+			$strSettingsPage,
+			'section_general'
+		);
 
 	}
 	
@@ -257,18 +244,25 @@ class cc2_Admin_ExportImport {
 		}
 		
 		foreach( $arrSettings as $strDataItemID => $arrItemAttributes ) {
-			if( $strDataItemID == 'theme_mods' ) {
+			
+			switch( $strDataItemID ) {
+				case 'theme_mods': // customizer / theme-specific settings
 				
-				set_theme_mod('theme_mods_reset', time() );
-				remove_theme_mods();
-				set_theme_mod('color_scheme', 'default' );
+					set_theme_mod('theme_mods_reset', time() );
+					remove_theme_mods();
+					set_theme_mod('color_scheme', 'default' );
+					
+					if( get_theme_mod( 'theme_mods_reset', true ) == true ) { // has been set BEFORE removing all theme_mods .. should return true, instead of an integer!
+						$resetStatus = true;
+					}
+					break;
+				case 'slideshows': // alias for another option name
+					$resetStatus = delete_option( 'cc_slider_options' );
 				
-				if( get_theme_mod( 'theme_mods_reset', true ) == true ) {
-					$resetStatus = true;
-				}
-				
-			} else {
-				$resetStatus = delete_option( $arrItemAttributes['option_name'] );
+					break;
+				default:
+					$resetStatus = delete_option( $arrItemAttributes['option_name'] );
+					break;
 			}
 			
 			$arrReturn[ $strDataItemID ] = array(
@@ -529,6 +523,8 @@ class cc2_Admin_ExportImport {
 		$return = false;
 		
 		if( !empty( $data ) ) {
+			// major sanitizer
+			require_once( get_template_directory() . '/includes/pasteur.class.php' );
 		
 			$cleaned_data = stripslashes( $data );
 			//new __debug( $cleaned_data, 'import_data: cleaned_data' );
@@ -564,9 +560,6 @@ class cc2_Admin_ExportImport {
 			
 		}
 		
-		// note: just for testing purposes
-		//$opt_prefix = 'test_';
-		
 		//new __debug( $import_data, 'import_data: before import' );
 		
 		if( !empty( $import_data ) && is_array( $import_data) ) {
@@ -593,15 +586,44 @@ class cc2_Admin_ExportImport {
 			
 			// theme mods: options => theme_mods_cc2
 			if( stripos( $strDataKeys, 'theme_mods') !== false ) { 
+				//$import_result = update_option( 'theme_mods_cc2', $import_data['theme_mods'] );
 				
-				$import_result = update_option( 'theme_mods_cc2', $import_data['theme_mods'] );
+				include( get_template_directory() . '/includes/admin/customizer-settings.php' );
+				
+				
 			
+				foreach( $import_data['theme_mods'] as $strModKey => $value ) {
+					$import_value = $value; // import raw data
+					
+					if( !empty( $customizer_settings['theme_mods'][ $strModKey ]['sanitize_callback'] ) ) { // validate + sanitize
+						$import_value = call_user_func( $customizer_settings['theme_mods'][ $strModKey ]['sanitize_callback'], $value );
+					}
+					
+					$import_result = self::update_theme_mod( $strModKey, $value );
+					if( !empty( $import_result ) ) {
+						$arrImportSuccess[ $strModKey ] = $value;
+					} else {
+						$arrImportFailure[ $strModKey ] = $value;
+					}
+				}
+			
+				if( !empty( $arrImportSuccess ) ) {
+					$import_status = true;
+				}
 			
 				//new __debug( $import_data['theme_mods'], 'import_data:theme_mods' );
 				
 				
-				$arrReturn[] = array( 'title' => __('Customizer options', 'cc2' ), 'number' => sizeof( $import_data['theme_mods']), 'test_data_result' => get_option( 'theme_mods_cc2', false ), 'status' => $import_result );
-				unset( $import_result );
+				$arrReturn[] = array( 
+					'title' => __('Customizer options', 'cc2' ), 
+					'number' => sizeof( $arrImportSuccess ), 
+					'original_number' => sizeof($import_data['theme_mods']), 
+					'test_data_result' => array('imported' => $arrImportSuccess, 'failed' => $arrImportFailure ), 
+					/*'test_data_result' => get_option( 'theme_mods_cc2', false ), 	*/
+					'status' => $import_status 
+				);
+				
+				unset( $import_result, $arrImportSuccess, $import_status );
 			
 			}
 			
@@ -629,6 +651,30 @@ class cc2_Admin_ExportImport {
 		return $return;
 	}
 	
+	/**
+	 * Wrapper for chained set_theme_mod + get_theme_mod. Ie. set_theme_mod with return code (fail / success)
+	 */
+	
+	public static function update_theme_mod( $name, $value ) {
+		$return = false;
+		
+		set_theme_mod( $name, $value );
+		
+		if( !is_bool( $value ) ) {
+			$result = get_theme_mod( $name, false );
+			if( $result != false ) {
+				$return = true;
+			}
+		} else {
+			$result = get_theme_mod( $name, 'nope' );
+			
+			if( $result != 'nope' ) {
+				$return = true;
+			}
+		}
+		
+		return $return;
+	}
 	
 	
 	/**

@@ -40,10 +40,13 @@ function cc2_theme_initial_setup( $old_name, $old_theme = false) {
 	set_transient( 'cc2_theme_active', true );
 	
 	
-	
+	/**
+	 * TODO: Replace with backup settings API
+	 */
 	// check theme settings + restore if possible
 	// option_name = theme_mods_{$theme_name}
 	$theme_mods_backup = get_option( 'cc2_theme_mods_backup', false );
+	
 	if( empty( $theme_mods_backup ) ) { // fetch default settings
 		include( trailingslashit( get_template_directory() ) . 'includes/default-settings.php' );
 		if( defined('CC2_DEFAULT_SETTINGS' ) ) {
@@ -60,16 +63,6 @@ function cc2_theme_initial_setup( $old_name, $old_theme = false) {
 	/**
 	 * NOTE: the update script should hook into this
 	 */
-	/*if( get_transient( 'cc2_theme_first_run', true ) != false ) { // actual first run
-		
-		// call update script
-		require_once( get_template_directory() . '/includes/admin/updates/cc20-update.php' );
-		
-		set_transient( 'cc2_theme_first_run', false );
-	} else { 
-		// only show notice in the admin section (which will be handled THERE)
-		
-	}*/
 	
 	// set default scheme for initial theme set up
 	if( get_theme_mod('color_scheme', false ) == false ) {
@@ -79,6 +72,15 @@ function cc2_theme_initial_setup( $old_name, $old_theme = false) {
 	// first activation
 	
     if ( is_admin() && isset( $_GET['activated'] ) && 'themes.php' == $GLOBALS['pagenow'] ) {
+		// setup menu
+		/*if( ! has_nav_menu( 'top' ) ) {
+		
+			$available_nav_menus = wp_get_nav_menus();
+			if( !empty( $available_nav_menus ) && is_array( $available_nav_menus ) ) { // assign first menu to the primary nav location
+				
+			}
+		}*/
+		
         wp_redirect(admin_url('customize.php'));
         exit;
     }

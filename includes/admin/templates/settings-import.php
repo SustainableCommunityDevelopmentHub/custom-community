@@ -50,7 +50,12 @@
 			$importedItemKey = (is_int( $importedItem ) ? $importedItem+1 : $importedItem );
 		 ?>
 			<li>
-				<span class="import-result-count"><?php echo sprintf( ( is_int($importedItem ) ? '#%d - ' : '%s: ' ), $importedItemKey ); ?></span> <span class="import-result-title"><?php echo $arrItemData['title']; ?></span> <span class="import-result-amount"><?php printf( __( '(%d items)', 'cc2' ), $arrItemData['number'] ) ; ?></span> 
+				<span class="import-result-count"><?php echo sprintf( ( is_int($importedItem ) ? '#%d - ' : '%s: ' ), $importedItemKey ); ?></span> <span class="import-result-title"><?php echo $arrItemData['title']; ?></span> <span class="import-result-amount"><?php 
+				if( !empty($arrItemData['original_number'] ) ) {
+					printf( __( '(%1$d/%2$d items)', 'cc2' ), $arrItemData['number'], $arrItemData['original_number'] );
+				} else {
+					printf( __( '(%d items)', 'cc2' ), $arrItemData['number'] );
+				} ?></span> 
 				<a href="#import-result-<?php echo $importedItemKey . '-' . $arrItemData['number']; ?>" class="import-result-details-link"><?php _e('Display details', 'cc2'); ?></a>
 				<div class="import-result-details" id="import-result-<?php echo $importedItemKey . '-' . $arrItemData['number']; ?>" style="display:none">
 					<pre><?php print_r( $arrItemData['test_data_result'] ); ?></pre>
