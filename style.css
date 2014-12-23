@@ -6390,6 +6390,15 @@ button.close {
   display: block;
   margin: 0 auto;
 }
+/**
+ * Some WP Theme Repository requirements
+ */
+.sticky {
+  opacity: 1;
+}
+.bypostauthor {
+  opacity: 1;
+}
 /* Images and wp-captions should always fit and be responsive */
 img {
   display: inline-block;
@@ -6400,19 +6409,23 @@ img[class*="wp-image-"] {
   margin-top: 10px;
   margin-bottom: 10px;
 }
-.wp-caption {
+.wp-caption,
+.gallery-caption {
   margin-bottom: 10px;
   max-width: 100%;
   border-radius: 4px;
   padding: 0;
 }
-.wp-caption.aligncenter {
+.wp-caption.aligncenter,
+.gallery-caption.aligncenter {
   margin-bottom: 10px;
 }
-.wp-caption img[class*="wp-image-"] {
+.wp-caption img[class*="wp-image-"],
+.gallery-caption img[class*="wp-image-"] {
   display: block;
 }
-.wp-caption .wp-caption-text {
+.wp-caption .wp-caption-text,
+.gallery-caption .wp-caption-text {
   text-align: center;
   margin-top: 10px;
 }
@@ -7272,6 +7285,3 @@ body.cc2-bootstrap-support .widget_recent_comments ul#recentcomments {
   list-style: none;
   padding-left: 0;
 }
-/**
- * Some WP Theme Repository requirements
- */
