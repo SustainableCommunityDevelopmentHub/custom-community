@@ -16,7 +16,7 @@ if( file_exists( get_stylesheet_directory() . '/includes/theme-config.php' ) && 
 if( !class_exists('__debug') && file_exists( get_template_directory() . '/includes/debug.class.php' ) ) :
 	include_once( get_template_directory() . '/includes/debug.class.php' );
 endif;
-
+require_once( get_template_directory() . '/includes/extras.php' );
 
 /**
  * Possible bugfix for randomly appearing "blank" screen in the Theme Customizer
@@ -39,12 +39,29 @@ function cc2_theme_initial_setup( $old_name, $old_theme = false) {
 	
 	set_transient( 'cc2_theme_active', true );
 	
-	
-	/**
-	 * TODO: Replace with backup settings API
-	 */
+
+	//require_once( get_template_directory() . '/includes/extras.php' );
+	 
 	// check theme settings + restore if possible
 	// option_name = theme_mods_{$theme_name}
+	
+	$theme_mods_backup = cc2_Helper::get_settings_backup('theme_mods' );
+	
+	//if( empty( $theme_mods_backup ) ) { // fetch default settings
+		include( get_template_directory()  . '/includes/default-settings.php' );
+		
+		if( defined('CC2_DEFAULT_SETTINGS' ) ) {
+			$default_theme_settings = maybe_unserialize( CC2_DEFAULT_SETTINGS );
+		
+			$theme_mods_backup = $default_theme_settings['theme_mods'];
+		}
+	//}
+	
+	if( !empty( $theme_mods_backup ) ) {
+		update_option( 'theme_mods_cc2', $theme_mods_backup );
+	}
+	
+	/*
 	$theme_mods_backup = get_option( 'cc2_theme_mods_backup', false );
 	
 	if( empty( $theme_mods_backup ) ) { // fetch default settings
@@ -59,7 +76,7 @@ function cc2_theme_initial_setup( $old_name, $old_theme = false) {
 	if( !empty( $theme_mods_backup ) ) {
 		update_option( 'theme_mods_cc2', $theme_mods_backup );
 	}
-	
+	*/
 	/**
 	 * NOTE: the update script should hook into this
 	 */
@@ -90,13 +107,18 @@ function cc2_theme_initial_setup( $old_name, $old_theme = false) {
 add_action('switch_theme', 'cc2_theme_deactivation', 10, 2 );
 function cc2_theme_deactivation($new_name, $new_theme) {
 	// save current theme settings
-	update_option( 'cc2_theme_mods_backup', get_theme_mods() );
+	//update_option( 'cc2_theme_mods_backup', get_theme_mods() );
+	//require_once( get_template_directory() . '/includes/extras.php' );
+	cc2_Helper::update_settings_backup( 'theme_mods', get_theme_mods() );
 	
 	// disable theme
 	
 	update_option( 'cc2_theme_status', 'disabled' );
 	set_transient( 'cc2_theme_active', false );
 	
+	//new __debug( cc2_Helper::get_settings_backup( 'theme_mods' ), 'backup of theme_mods' );
+	
+	//exit('and now for  ... brutal break!');
 
 }
 
@@ -108,10 +130,21 @@ function cc2_theme_deactivation($new_name, $new_theme) {
 
 add_action( 'after_setup_theme', 'cc2_theme_activation' );
 function cc2_theme_activation() {
+	//require_once( get_template_directory() . '/includes/extras.php' );
+	 
+	// check theme settings + restore if possible
+	// option_name = theme_mods_{$theme_name}
+	
+	$theme_mods_backup = cc2_Helper::get_settings_backup('theme_mods' );
+	if( !empty( $theme_mods_backup ) ) {
+		update_option( 'theme_mods_cc2', $theme_mods_backup );
+	}
+	
 	// set default scheme for initial theme set up
 	if( get_theme_mod('color_scheme', false ) == false ) {
 		set_theme_mod('color_scheme', 'default' );
 	}
+	
 	
 	
     if ( is_admin() && isset( $_GET['activated'] ) && 'themes.php' == $GLOBALS['pagenow'] ) {
