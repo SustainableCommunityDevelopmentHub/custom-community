@@ -10,7 +10,11 @@
  
 class cc2_Pasteur {
 
-	public static function sanitize_customizer_value( $value, $wp_settings_instance = false ) {
+	/**
+	 * Generic sanitizer for the Theme Customizer
+	 */
+
+	public static function sanitize_value( $value, $wp_settings_instance = false ) {
 		$return = $value;
 		
 		if( !empty( $value ) ) { 
@@ -32,6 +36,14 @@ class cc2_Pasteur {
 		}
 		
 		return $return;
+	}
+	
+	/**
+	 * Alias for @method sanitize_boolean
+	 */
+	
+	public static function sanitize_bool( $value, $wp_settings_instance = false ) {
+		return self::sanitize_boolean( $value, $wp_settings_instance );
 	}
 	
 	/**
@@ -63,6 +75,32 @@ class cc2_Pasteur {
 	
 	public static function sanitize_hex_color( $value, $wp_settings_instance = false ) {
 		return sanitize_hex_color( $value );
+	}
+
+	public static function sanitize_scheme_slug( $value, $wp_settings_instance = false ) {
+		return sanitize_key( $value );
+		
+	}
+	
+	/**
+	 * The literal "do nothing" filter
+	 */
+	
+	public static function passthrough( $value, $wp_settings_instance = false ) {
+		return $value;
+	}
+	
+	public static function sanitize_raw( $value, $wp_settings_instance = false ) {
+		return self::passthrough( $value, $wp_settings_instance );
+	}
+	
+	/**
+	 * The even MORE literal "do nothing" filter - takes value, returns void(). Primarily reserved for Customizer Labels, Descriptions and other only cleary information-only, dysfunctional "form fields"
+	 * @param [mixed]$value
+	 * @return (void)
+	 */
+	public static function none( $value, $wp_settings_instance = false ) {
+		return;
 	}
 
 }

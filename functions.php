@@ -18,6 +18,9 @@ if( !class_exists('__debug') && file_exists( get_template_directory() . '/includ
 endif;
 require_once( get_template_directory() . '/includes/extras.php' );
 
+// generic validator / sanitization class
+require( get_template_directory() . '/includes/pasteur.class.php' );
+
 /**
  * Possible bugfix for randomly appearing "blank" screen in the Theme Customizer
  * @link http://www.mhthemes.com/support/theme-customizer-not-working/

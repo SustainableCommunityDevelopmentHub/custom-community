@@ -6,6 +6,10 @@
  *
  * @package _tk
  */
+ 
+$display_footer = apply_filters('cc2_display_footer', true );
+
+if( !empty( $display_footer ) ) :
 ?>
 
 <footer id="colophon" class="site-footer" role="contentinfo">
@@ -75,6 +79,7 @@
 	
 	<?php endif; ?>
 	
+<?php endif; ?>
 	
 	<div id="branding">
 		<div class="container">

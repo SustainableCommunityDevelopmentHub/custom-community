@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Registering for the WordPress Customizer
  * Block-wise structured OOP version - to easier detect possible bugs
@@ -540,9 +539,10 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			
 				// Color Scheme
 				 $wp_customize->add_setting( 'color_scheme', array(
-					 'default'      => 'default',
-					 'capability'   => 'edit_theme_options',
-					 'transport'   	=> 	'refresh',
+					'default'      => 'default',
+					'capability'   => 'edit_theme_options',
+					'transport'   	=> 	'refresh',
+					'sanitize_callback' 	=> 'sanitize_key',
 				 ) );
 				 
 				 $wp_customize->add_control( 'color_scheme', array(
@@ -556,6 +556,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				// Color Scheme Notice
 				 $wp_customize->add_setting( 'notice_color_scheme', array(
 					 'capability'   => 'edit_theme_options',
+					 'sanitize_callback' => array( 'cc2_Pasteur', 'none' ),
 				 ) );
 				 
 				$wp_customize->add_control( 
@@ -602,6 +603,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'       =>  false,
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_boolean'),
 			) );
 			$wp_customize->add_control('hide_front_page_content', array(
 				'label'    		=> 	__('Hide all content on the front page', 'cc2'),
@@ -626,6 +628,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'       => 	'Pacifico',
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_text'),
 			) );
 			$wp_customize->add_control( 'site_title_font_family', array(
 				'label'   		=> 	__('Site Title Font Family', 'cc2'),
@@ -652,6 +655,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'       => 	'left',
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_text'),
 			) );
 			$wp_customize->add_control( 'site_title_position', array(
 				'label'   		=> 	__('Site Title Position', 'cc2'),
@@ -667,6 +671,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'default'       => 	'inherit',
 					'capability'    => 	'edit_theme_options',
 					'transport'   	=> 	'refresh',
+					'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_text'),
 				) );
 			$wp_customize->add_control( 'tagline_font_family', array(
 				'label'   		=> 	__('Tagline Font Family', 'cc2'),
@@ -727,6 +732,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 						'default'		=>	false,
 						'capability'    => 	'edit_theme_options',
 						'transport'   	=> 	'refresh',
+						'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_bool'),
 					) );
 					$wp_customize->add_control('display_header_home', array(
 						'label'    		=> 	__('on blog', 'cc2'),
@@ -741,6 +747,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 						'default'		=>	true,
 						'capability'    => 	'edit_theme_options',
 						'transport'   	=> 	'refresh',
+						'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_bool'),
 					) );
 					$wp_customize->add_control('display_header_static_frontpage', array(
 						'label'    		=> 	__('on static frontpage', 'cc2'),
@@ -754,6 +761,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 						'default'		=>	true,
 						'capability'    => 	'edit_theme_options',
 						'transport'   	=> 	'refresh',
+						'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_bool'),
 					) );
 					$wp_customize->add_control('display_header_home', array(
 						'label'    		=> 	__('on homepage', 'cc2'),
@@ -770,6 +778,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'default'		=>	true,
 					'capability'    => 	'edit_theme_options',
 					'transport'   	=> 	'refresh',
+					'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_bool'),
 				) );
 				$wp_customize->add_control('display_header_posts', array(
 					'label'    		=> 	__('on posts', 'cc2'),
@@ -783,6 +792,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'default'		=>	true,
 					'capability'    => 	'edit_theme_options',
 					'transport'   	=> 	'refresh',
+					'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_bool'),
 				) );
 				$wp_customize->add_control('display_header_pages', array(
 					'label'    		=> 	__('on pages', 'cc2'),
@@ -796,6 +806,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'default'		=>	true,
 					'capability'    => 	'edit_theme_options',
 					'transport'   	=> 	'refresh',
+					'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_bool'),
 				) );
 				$wp_customize->add_control('display_header_archive', array(
 					'label'    		=> 	__('on archive', 'cc2'),
@@ -809,6 +820,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'default'		=>	true,
 					'capability'    => 	'edit_theme_options',
 					'transport'   	=> 	'refresh',
+					'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_bool'),
 				) );
 				$wp_customize->add_control('display_header_search', array(
 					'label'    		=> 	__('on search', 'cc2'),
@@ -822,6 +834,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'default'		=>	true,
 					'capability'    => 	'edit_theme_options',
 					'transport'   	=> 	'refresh',
+					'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_bool'),
 				) );
 				$wp_customize->add_control('display_header_404', array(
 					'label'    		=> 	__('on 404: not-found', 'cc2'),
@@ -970,6 +983,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'		=>	true,
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_bool'),
 			) );
 			$wp_customize->add_control('fixed_top_nav', array(
 				'label'    		=> 	__('Top nav fixed to top?', 'cc2'),
@@ -983,6 +997,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'       => 	'left',
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				
 			) );
 			$wp_customize->add_control( 'top_nav_position', array(
 				'label'   		=> 	__('Top Nav Position', 'cc2'),
@@ -1256,6 +1271,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
 				'default'		=> false,
+				'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_bool'),
 			) );
 			$wp_customize->add_control('top_nav_brand', array(
 				'label'    		=> 	__('for top nav', 'cc2'),
@@ -1313,6 +1329,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'		=> true,
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_bool'),
 			) );
 			$wp_customize->add_control('bottom_nav_brand', array(
 				'label'    		=> 	__('for bottom nav', 'cc2'),
@@ -1414,6 +1431,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'		=>	true,
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_bool'),
 			) );
 			$wp_customize->add_control('display_page_title[home]', array(
 				'label'    		=> 	__('on homepage', 'cc2'),
@@ -1428,6 +1446,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'		=>	true,
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_bool'),
 			) );
 			$wp_customize->add_control('display_page_title[posts]', array(
 				'label'    		=> 	__('on posts', 'cc2'),
@@ -1442,6 +1461,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'		=>	true,
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_bool'),
 			) );
 			$wp_customize->add_control('display_page_title[pages]', array(
 				'label'    		=> 	__('on pages', 'cc2'),
@@ -1457,6 +1477,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'		=>	true,
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_bool'),
 			) );
 			$wp_customize->add_control('display_page_title[archive]', array(
 				'label'    		=> 	__('on archive', 'cc2'),
@@ -1471,6 +1492,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'		=>	true,
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_bool'),
 			) );
 			$wp_customize->add_control('display_page_title[search]', array(
 				'label'    		=> 	__('on search', 'cc2'),
@@ -1486,6 +1508,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'		=>	true,
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_bool'),
 			) );
 			$wp_customize->add_control('display_page_title[error]', array(
 				'label'    		=> 	__('on 404: not-found', 'cc2'),
@@ -1516,6 +1539,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'		=>	false,
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_bool'),
 			) );
 			$wp_customize->add_control('center_title[global]', array(
 				'label'    		=> 	__('everywhere', 'cc2'),
@@ -1530,6 +1554,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'		=>	false,
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_bool'),
 			) );
 			$wp_customize->add_control('center_title[home]', array(
 				'label'    		=> 	__('on homepage', 'cc2'),
@@ -1544,6 +1569,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'		=>	false,
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_bool'),
 			) );
 			$wp_customize->add_control('center_title[posts]', array(
 				'label'    		=> 	__('on posts', 'cc2'),
@@ -1558,6 +1584,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'		=>	false,
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_bool'),
 			) );
 			$wp_customize->add_control('center_title[pages]', array(
 				'label'    		=> 	__('on pages', 'cc2'),
@@ -1573,6 +1600,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'		=>	false,
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_bool'),
 			) );
 			$wp_customize->add_control('center_title[archive]', array(
 				'label'    		=> 	__('on archive', 'cc2'),
@@ -1587,6 +1615,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'		=>	false,
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_bool'),
 			) );
 			$wp_customize->add_control('center_title[search]', array(
 				'label'    		=> 	__('on search', 'cc2'),
@@ -1602,6 +1631,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'		=>	false,
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_bool'),
 			) );
 			$wp_customize->add_control('center_title[error]', array(
 				'label'    		=> 	__('on 404: not-found', 'cc2'),
@@ -1723,6 +1753,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'       =>  true,
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_bool'),
 			) );
 			$wp_customize->add_control('hide_left_sidebar_on_phones', array(
 				'label'    		=> 	sprintf( __('Hide %s sidebar on phones?', 'cc2'), __('left', 'cc2') ),
@@ -1736,6 +1767,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'       =>  false,
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_bool'),
 			) );
 			$wp_customize->add_control('hide_right_sidebar_on_phones', array(
 				'label'    		=> 	sprintf( __('Hide %s sidebar on phones?', 'cc2'), __('right', 'cc2') ),
@@ -1936,6 +1968,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'       =>  false,
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_bool'),
 			) );
 			$wp_customize->add_control('title_font_weight', array(
 				'label'    		=> 	__('Bold', 'cc2'),
@@ -1949,6 +1982,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'       =>  false,
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_bool'),
 			) );
 			$wp_customize->add_control('title_font_style', array(
 				'label'    		=> 	__('Italic', 'cc2'),
@@ -2226,6 +2260,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'		=>	true,
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_bool'),
 			) );
 			$wp_customize->add_control('show_date', array(
 				'label'    		=> 	__('show date', 'cc2'),
@@ -2239,6 +2274,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'		=>	true,
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_bool'),
 			) );
 			$wp_customize->add_control('show_category', array(
 				'label'    		=> 	__('show category', 'cc2'),
@@ -2252,6 +2288,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'		=>	true,
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_bool'),
 			) );
 			$wp_customize->add_control('show_author', array(
 				'label'    		=> 	__('show author', 'cc2'),
@@ -2265,6 +2302,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'		=>	false,
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_bool'),
 			) );
 			$wp_customize->add_control('show_author_image[archive]', array(
 				'label'    		=> 	__('show author image / avatar', 'cc2'),
@@ -2290,6 +2328,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'		=>	true,
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_bool'),
 			) );
 			$wp_customize->add_control('single_show_date', array(
 				'label'    		=> 	__('show date', 'cc2'),
@@ -2303,6 +2342,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'		=>	true,
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_bool'),
 			) );
 			$wp_customize->add_control('single_show_category', array(
 				'label'    		=> 	__('show category', 'cc2'),
@@ -2316,6 +2356,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'		=>	true,
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_bool'),
 			) );
 			$wp_customize->add_control('single_show_author', array(
 				'label'    		=> 	__('show author', 'cc2'),
@@ -2329,6 +2370,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'		=>	false,
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_bool'),
 			) );
 			$wp_customize->add_control('show_author_image[single_post]', array(
 				'label'    		=> 	__('show author image / avatar', 'cc2'),
@@ -2558,6 +2600,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'default'		=>	true,
 					'capability'    => 	'edit_theme_options',
 					'transport'   	=> 	'refresh',
+					'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_bool'),
 				) );
 				$wp_customize->add_control('caption_title_font_style', array(
 					'label'    		=> 	__('Italic', 'cc2'),
@@ -2571,6 +2614,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'default'		=>	true,
 					'capability'    => 	'edit_theme_options',
 					'transport'   	=> 	'refresh',
+					'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_bool'),
 				) );
 				$wp_customize->add_control('caption_title_shadow', array(
 					'label'    		=> 	__('Text Shadow', 'cc2'),
@@ -2664,6 +2708,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'default'		=>	false,
 					'capability'    => 	'edit_theme_options',
 					'transport'   	=> 	'refresh',
+					'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_bool'),
 				) );
 				$wp_customize->add_control('caption_text_shadow', array(
 					'label'    		=> 	__('Text Shadow', 'cc2'),
