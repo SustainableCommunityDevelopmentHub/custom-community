@@ -82,6 +82,18 @@ class cc2_Pasteur {
 		
 	}
 	
+	public static function sanitize_hex_with_transparency( $value, $wp_settings_instance = false ) {
+		$return = $value;
+		
+		if( is_string( $value ) && strtolower( trim( $value ) ) == 'transparent' ) {
+			$return = 'transparent';
+		} else {
+			$return = sanitize_hex( $value, $wp_settings_instance );	
+		}
+		
+		return $return;
+	}
+	
 	/**
 	 * The literal "do nothing" filter
 	 */

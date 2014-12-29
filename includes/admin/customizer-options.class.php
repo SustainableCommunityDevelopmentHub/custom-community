@@ -333,11 +333,12 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 	
 	
 	
-		function customizer_sanitizer( $data ) {
+		function customizer_sanitizer( $data, $wp_instance = false ) {
 			$return = $data;
 			
-			if( class_exists('__debug' ) ) {
-				//new __debug::log( $data, __METHOD__ );
+			
+			if( class_exists('Pasteur') ) {
+				$return = Pasteur::sanitize_value( $data, $wp_instance );
 			}
 			
 			return $return;
@@ -603,7 +604,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'       =>  false,
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
-				'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_boolean'),
+				'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_bool'),
 			) );
 			$wp_customize->add_control('hide_front_page_content', array(
 				'label'    		=> 	__('Hide all content on the front page', 'cc2'),
@@ -641,6 +642,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			// TK Google Fonts Ready! - A Quick Note
 			$wp_customize->add_setting( 'google_fonts_note_site_title', array(
 				'capability'    => 	'edit_theme_options',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'none' ),
 			) );
 			$wp_customize->add_control( new Description( $wp_customize, 'google_fonts_note_site_title', array(
 				'label' 		=> 	__('Add Google Fonts and make them available in the theme options with <a href="http://themekraft.com/store/tk-google-fonts-wordpress-plugin/" target="_blank">TK Google Fonts</a>.', 'cc2'),
@@ -686,6 +688,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'           	=> '#a9a9a9',
 				'capability'        	=> 'edit_theme_options',
 				'transport'   			=> 'refresh',
+				
 				'sanitize_callback' 	=> 'sanitize_hex_color_no_hash',
 				'sanitize_js_callback' 	=> 'maybe_hash_hex_color',
 				) );
@@ -713,6 +716,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				// Display Header
 				$wp_customize->add_setting( 'display_header_heading', array(
 					'capability'    => 	'edit_theme_options',
+					'sanitize_callback' => array( 'cc2_Pasteur', 'none' ),
 				) );
 				$wp_customize->add_control( new Label( $wp_customize, 'display_header_heading', array(
 					'label' 		=> 	__('Display Header', 'cc2'),
@@ -848,6 +852,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'default' 		=> 'auto',
 					'capability'    => 'edit_theme_options',
 					'transport'   	=> 'refresh',
+					'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 				) );
 				$wp_customize->add_control('header_height', array(
 					'label'      	=> __('Header Height', 'cc2'),
@@ -858,6 +863,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				// Notice on Header Height
 				$wp_customize->add_setting( 'header_height_note', array(
 					'capability'    => 	'edit_theme_options',
+					'sanitize_callback' => array( 'cc2_Pasteur', 'none' ),
 				) );
 				$wp_customize->add_control( new Description( $wp_customize, 'header_height_note', array(
 					'label' 		=> 	__('<small><em>Write "auto" or in px, like "200px"</em></small>', 'cc2'),
@@ -874,6 +880,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 						'default' 		=> 'auto',
 						'capability'    => 'edit_theme_options',
 						'transport'   	=> 'refresh',
+						'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 					) );
 					$wp_customize->add_control('header_height_blog', array(
 						'label'      	=> __('Header Height on Blog', 'cc2'),
@@ -884,6 +891,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					// Notice on Header Height Homepage
 					$wp_customize->add_setting( 'header_height_blog_note', array(
 						'capability'    => 	'edit_theme_options',
+						'sanitize_callback' => array( 'cc2_Pasteur', 'none' ),
 					) );
 					$wp_customize->add_control( new Description( $wp_customize, 'header_height_blog_note', array(
 						'label' 		=> 	sprintf( __('<small><em>Just for the %s, also &quot;auto&quot; or in px</em></small>', 'cc2'), __('blog', 'cc2') ),
@@ -897,6 +905,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 						'default' 		=> 'auto',
 						'capability'    => 'edit_theme_options',
 						'transport'   	=> 'refresh',
+						'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 					) );
 					$wp_customize->add_control('header_height_home', array(
 						'label'      	=> __('Header Height on Homepage', 'cc2'),
@@ -907,6 +916,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					// Notice on Header Height Homepage
 					$wp_customize->add_setting( 'header_height_home_note', array(
 						'capability'    => 	'edit_theme_options',
+						'sanitize_callback' => array( 'cc2_Pasteur', 'none' ),
 					) );
 					$wp_customize->add_control( new Description( $wp_customize, 'header_height_home_note', array(
 						'label' 		=> 	sprintf( __('<small><em>Just for the %s, also &quot;auto&quot; or in px</em></small>', 'cc2'), __('Homepage', 'cc2') ),
@@ -923,6 +933,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 						'default' 		=> 'auto',
 						'capability'    => 'edit_theme_options',
 						'transport'   	=> 'refresh',
+						'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 					) );
 					$wp_customize->add_control('header_height_home', array(
 						'label'      	=> __('Header Height on Homepage', 'cc2'),
@@ -933,6 +944,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					// Notice on Header Height Homepage
 					$wp_customize->add_setting( 'header_height_home_note', array(
 						'capability'    => 	'edit_theme_options',
+						'sanitize_callback' => array( 'cc2_Pasteur', 'none' ),
 					) );
 					$wp_customize->add_control( new Description( $wp_customize, 'header_height_home_note', array(
 						'label' 		=> 	__('<small><em>Just for the homepage, also "auto" or in px</em></small>', 'cc2'),
@@ -962,6 +974,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'default'           	=> '',
 					'capability'        	=> 'edit_theme_options',
 					'transport'   			=> 'refresh',
+					'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 				) );
 				$wp_customize->add_control( new WP_Customize_Image_Control($wp_customize, 'header_background_image', array(
 					'label'    				=> __('Header Background Image', 'cc2'),
@@ -997,6 +1010,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'       => 	'left',
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 				
 			) );
 			$wp_customize->add_control( 'top_nav_position', array(
@@ -1012,6 +1026,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'       => 	'left',
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 			) );
 			$wp_customize->add_control( 'secondary_nav_position', array(
 				'label'   		=> 	__('Secondary Nav Position', 'cc2'),
@@ -1026,6 +1041,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			// Use dark colors - a small Heading
 			$wp_customize->add_setting( 'heading_nav_use_dark_colors', array(
 				'capability'    => 	'edit_theme_options',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'none' ),
 			) );
 			$wp_customize->add_control( new Label( $wp_customize, 'heading_nav_use_dark_colors', array(
 				'label' 		=> 	__('Use dark colors?', 'cc2'),
@@ -1035,23 +1051,14 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			) ) );
 
 			// Header Top Nav - Dark Colors
-			/*$wp_customize->add_setting( 'dark_top_nav', array(
-				'default'		=>	true,
-				'capability'    => 	'edit_theme_options',
-				'transport'   	=> 	'refresh',
-			) );
-			$wp_customize->add_control('dark_top_nav', array(
-				'label'    		=> 	__('for top nav', 'cc2'),
-				'section'  		=> 	'nav',
-				'type'     		=> 	'checkbox',
-				'priority'		=> 	80,
-			) );*/
+
 			
 			// Header Top Nav - Dark Colors
 			$wp_customize->add_setting( 'color_scheme_top_nav', array(
 				'default'		=>	'light',
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 			) );
 			$wp_customize->add_control('color_scheme_top_nav', array(
 				'label'    		=> 	__('Top nav color scheme', 'cc2'),
@@ -1070,6 +1077,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'		=>	'light',
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 			) );
 			$wp_customize->add_control('color_scheme_bottom_nav', array(
 				'label'    		=> 	__('Bottom nav color scheme', 'cc2'),
@@ -1082,23 +1090,12 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				),
 				'priority'		=> 	83,
 			) );
-	/*
-			// Header Bottom Nav - Dark Colors
-			$wp_customize->add_setting( 'dark_bottom_nav', array(
-				'capability'    => 	'edit_theme_options',
-				'transport'   	=> 	'refresh',
-			) );
-			$wp_customize->add_control('dark_bottom_nav', array(
-				'label'    		=> 	__('for bottom nav'),
-				'section'  		=> 	'nav',
-				'type'     		=> 	'checkbox',
-				'priority'		=> 	100,
-			) );
-	*/
+
 			// Header Bottom Nav - Dark Colors
 			$wp_customize->add_setting( 'info_dark_nav', array(
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'none' ),
 			) );
 			$wp_customize->add_control(new Description( $wp_customize, 'info_dark_nav', array(
 				'label'    		=> 	sprintf( __('<strong>Warning:</strong> Changing any of the above options is likely going to <strong>reset</strong> your current navigation color settings. It\'s suggested to either save the current customizer setup or <a href="%s">backup your current settings</a> before-hand.', 'cc2'), admin_url( apply_filters('cc2_tab_admin_url', 'themes.php?page=cc2-settings&tab=backup') ) ),
@@ -1114,17 +1111,6 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 		 * 
 		 * TODO: Add some kind of additional sectioning / partitioning .. or maybe an "Advanced Settings" or "Quick / Advanced Settings" switch
 		 */
-		 
-		// Top nav colors - small Heading
-		/*$wp_customize->add_setting( 'top_nav_colors', array(
-			'capability'    => 	'edit_theme_options',
-		) );
-		$wp_customize->add_control( new Label( $wp_customize, 'top_nav_colors', array(
-			'label' 		=> 	__('Top Navigation Color Settings'),
-			'type' 			=> 	'label',
-			'section' 		=> 	'nav',
-			'priority'		=> 	170,
-		) ) );*/
 
 		$nav_section_priority = 170;
 
@@ -1254,6 +1240,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			// Add Branding - A small Heading
 			$wp_customize->add_setting( 'add_nav_brand', array(
 				'capability'    => 	'edit_theme_options',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'none' ),
 			) );
 			$wp_customize->add_control( new Label( $wp_customize, 'add_nav_brand', array(
 				'label' 		=> 	__('Add your branding?', 'cc2'),
@@ -1306,6 +1293,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'           	=> '',
 				'capability'        	=> 'edit_theme_options',
 				'transport'   			=> 'refresh',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 			) );
 			
 			$wp_customize->add_control( new  WP_Customize_Image_Control($wp_customize, 'top_nav_brand_image', array(
@@ -1362,6 +1350,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'           	=> '',
 				'capability'        	=> 'edit_theme_options',
 				'transport'   			=> 'refresh',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 			) );
 			
 			$wp_customize->add_control( new  WP_Customize_Image_Control($wp_customize, 'bottom_nav_brand_image', array(
@@ -1389,11 +1378,13 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			
 
 				/*
+				 * NOTE: The theme_check plugin is too dumb programmed to recognize commented out code.
 				 // Hide all Content
 				$wp_customize->add_setting( 'hide_page_content', array(
 					'default'       =>  false,
 					'capability'    => 	'edit_theme_options',
 					'transport'   	=> 	'refresh',
+					'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 				) );
 				$wp_customize->add_control('hide_page_content', array(
 					'label'    		=> 	__('Hide all content on all (!) pages', 'cc2'),
@@ -1417,6 +1408,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			 */
 			$wp_customize->add_setting( 'display_page_title_heading', array(
 				'capability'    => 	'edit_theme_options',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'none' ),
 			) );
 			$wp_customize->add_control( new Label( $wp_customize, 'display_page_title_heading', array(
 				'label' 		=> 	__('Display Page Title ...', 'cc2'),
@@ -1525,6 +1517,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 		
 			$wp_customize->add_setting( 'center_title_heading', array(
 				'capability'    => 	'edit_theme_options',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'none' ),
 			) );
 			$wp_customize->add_control( new Label( $wp_customize, 'center_title_heading', array(
 				'label' 		=> 	__('Center Page Title ...', 'cc2'),
@@ -1678,6 +1671,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			// Layouts Description - A quick note
 			$wp_customize->add_setting( 'layouts_note', array(
 				'capability'    => 	'edit_theme_options',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'none' ),
 			) );
 			$wp_customize->add_control( new Description( $wp_customize, 'layouts_note', array(
 				'label' 		=> 	__('Where do you like your sidebars? *Collapse&nbsp;options or zoom out if your display is too small*', 'cc2'),
@@ -1691,6 +1685,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'       => 	'left',
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 			) );
 			$wp_customize->add_control( 'default_layout', array(
 				'label'   		=> 	__('Default Layout', 'cc2'),
@@ -1707,6 +1702,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'       => 	'default',
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 			) );
 			$wp_customize->add_control( 'default_page_layout', array(
 				'label'   		=> 	__('Page Layout', 'cc2'),
@@ -1721,6 +1717,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'       => 	'default',
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 			) );
 			$wp_customize->add_control( 'default_post_layout', array(
 				'label'   		=> 	__('Post Layout', 'cc2'),
@@ -1735,6 +1732,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'       => 	'default',
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 			) );
 			$wp_customize->add_control( 'default_archive_layout', array(
 				'label'   		=> 	__('Archive Layout', 'cc2'),
@@ -1795,27 +1793,12 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			
 
 			$widget_section_priority+=2;
-
-
-			// The widgets Font Sizes - Small Heading
-			/*
-			$wp_customize->add_setting( 'widget_title_attributes', array(
-				'capability'    => 	'edit_theme_options',
-			) );
-			$wp_customize->add_control( new Label( $wp_customize, 'widget_title_attributes', array(
-				'label' 		=> 	__('Widget Title Attributes'),
-				'type' 			=> 	'label',
-				'section' 		=> 	'widgets',
-				'priority'		=> 	$widget_section_priority,
-			) ) );
-			
-			$widget_section_priority++;
-			*/
-
+		
 			// The widgets Title attributes - A Quick Note
 			
 			$wp_customize->add_setting( 'widget_title_attributes_note', array(
 				'capability'    => 	'edit_theme_options',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'none' ),
 			) );
 			$wp_customize->add_control( new Description( $wp_customize, 'widget_title_attributes_note', array(
 				'label' 		=> 	__('Get more options to style your header and footer widgets with the CC2 Premium Pack', 'cc2'),
@@ -1861,6 +1844,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default' 		=> '',
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 			) );
 			$wp_customize->add_control('widget_title_font_size', array(
 				'label'      	=> __('Title Font Size', 'cc2'),
@@ -1939,6 +1923,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				// A Quick Note on Bootstrap Variables
 				$wp_customize->add_setting( 'bootstrap_typography_note', array(
 					'capability'    => 	'edit_theme_options',
+					'sanitize_callback' => array( 'cc2_Pasteur', 'none' ),
 				) );
 				$wp_customize->add_control( new Description( $wp_customize, 'bootstrap_typography_note', array(
 					'label' 		=> 	sprintf( __('Most Typography just work with Bootstrap Variables, which cannot be compiled within the theme, as this is plugin territory. Get all typography options with the <a href="%s" target="_blank">premium extension.</a>', 'cc2'), 'http://themekraft.com/store/custom-community-2-premium-pack/' ),
@@ -1954,6 +1939,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'       => 	'Ubuntu Condensed',
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'postMessage',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 			) );
 			$wp_customize->add_control( 'title_font_family', array(
 				'label'   		=> 	__('Headline Font Family', 'cc2'),
@@ -2008,6 +1994,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			// The Headline Font Sizes - Small Heading
 			$wp_customize->add_setting( 'titles_font_sizes', array(
 				'capability'    => 	'edit_theme_options',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'none' ),
 			) );
 			$wp_customize->add_control( new Label( $wp_customize, 'titles_font_sizes', array(
 				'label' 		=> 	__('Headline Font Sizes', 'cc2'),
@@ -2019,6 +2006,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			// The Titles Font Sizes - A Quick Note
 			$wp_customize->add_setting( 'titles_font_sizes_note', array(
 				'capability'    => 	'edit_theme_options',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'none' ),
 			) );
 			$wp_customize->add_control( new Description( $wp_customize, 'titles_font_sizes_note', array(
 				'label' 		=> 	__('For displays from 768px and up', 'cc2'),
@@ -2032,6 +2020,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default' 		=> '48px',
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 			) );
 			$wp_customize->add_control('h1_font_size', array(
 				'label'      	=> __('H1', 'cc2'),
@@ -2044,6 +2033,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default' 		=> '32px',
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 			) );
 			$wp_customize->add_control('h2_font_size', array(
 				'label'      	=> __('H2', 'cc2'),
@@ -2056,6 +2046,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default' 		=> '28px',
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 			) );
 			$wp_customize->add_control('h3_font_size', array(
 				'label'      	=> __('H3', 'cc2'),
@@ -2068,6 +2059,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default' 		=> '24px',
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 			) );
 			$wp_customize->add_control('h4_font_size', array(
 				'label'      	=> __('H4', 'cc2'),
@@ -2080,6 +2072,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default' 		=> '22px',
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 			) );
 			$wp_customize->add_control('h5_font_size', array(
 				'label'      	=> __('H5', 'cc2'),
@@ -2092,6 +2085,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default' 		=> 	'20px',
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 			) );
 			$wp_customize->add_control('h6_font_size', array(
 				'label'      	=> __('H6', 'cc2'),
@@ -2132,6 +2126,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			// A Quick Note on Bootstrap Variables
 			$wp_customize->add_setting( 'footer_fullwidth_note', array(
 				'capability'    => 	'edit_theme_options',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'none' ),
 			) );
 			$wp_customize->add_control( new Labeled_Description( $wp_customize, 'footer_fullwidth_note', array(
 				'label' 		=> 	 array(
@@ -2149,6 +2144,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'           	=> '',
 				'capability'        	=> 'edit_theme_options',
 				'transport'   			=> 'refresh',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 			) );
 			
 			$wp_customize->add_control( new  WP_Customize_Image_Control($wp_customize, 'footer_fullwidth_background_image', array(
@@ -2164,7 +2160,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'           	=> '#eee',
 				'capability'        	=> 'edit_theme_options',
 				'transport'   			=> 'refresh',
-				'sanitize_callback' 	=> array('cc2_Sanitizer', 'sanitize_hex_color_no_hash_with_transparency' ),
+				'sanitize_callback' 	=> array('Pasteur', 'sanitize_hex_with_transparency' ),
 				/*'sanitize_callback' 	=> 'sanitize_hex_color_no_hash',*/
 				'sanitize_js_callback' 	=> 'maybe_hash_hex_color',
 			) );
@@ -2224,6 +2220,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default'       => 	'blog-style',
 				'capability'    => 	'edit_theme_options',
 				'transport'   	=> 	'refresh',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 			) );
 			$wp_customize->add_control( 'cc_list_post_style', array(
 				'label'   		=> 	__('Blog Archive View - List Post Style', 'cc2'),
@@ -2236,6 +2233,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			// Loop Designer Ready! - A Quick Note
 			$wp_customize->add_setting( 'loop_designer_note', array(
 				'capability'    => 	'edit_theme_options',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'none' ),
 			) );
 			$wp_customize->add_control( new Description( $wp_customize, 'loop_designer_note', array(
 				'label' 		=> 	__('Loop-Designer-Ready! Get more loop templates available here, which you can easily customize, or simply create new ones. Get full control of how your post listings look with the <a href="http://themekraft.com/store/customize-wordpress-loop-with-tk-loop-designer/" target="_blank">TK Loop Designer Plugin</a>.', 'cc2'),
@@ -2247,6 +2245,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			// Blog Archive Post Meta - Small Heading
 			$wp_customize->add_setting( 'blog_archive_post_meta', array(
 				'capability'    => 	'edit_theme_options',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'none' ),
 			) );
 			$wp_customize->add_control( new Label( $wp_customize, 'blog_archive_post_meta', array(
 				'label' 		=> 	__('Blog Archive View - Display Post Meta', 'cc2'),
@@ -2315,6 +2314,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			// Blog Single Post Meta - Small Heading
 			$wp_customize->add_setting( 'blog_single_post_meta', array(
 				'capability'    => 	'edit_theme_options',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'none' ),
 			) );
 			$wp_customize->add_control( new Label( $wp_customize, 'blog_single_post_meta', array(
 				'label' 		=> 	__('Blog Single View - Display Post Meta', 'cc2'),
@@ -2391,21 +2391,10 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'priority'      => 	400,
 			) );
 
-				// Introduction Note on the Slider
-		//        $wp_customize->add_setting( 'slider_introduction', array(
-		//            'capability'    => 	'edit_theme_options',
-		//        ) );
-		//        $wp_customize->add_control( new Description( $wp_customize, 'slider_introduction', array(
-		//            'label' 		=> 	__('Play with the demo images until you have your own slideshow setup.', 'cc2'),
-		//            'type' 			=> 	'description',
-		//            'section' 		=> 	'cc_slider',
-		//            'priority'		=> 	4,
-		//        ) ) );
-
-				//$adminurl = get_admin_url();
 				// Create A Slideshow Note
 				$wp_customize->add_setting( 'slider_create_note', array(
 					'capability'    => 	'edit_theme_options',
+					'sanitize_callback' => array( 'cc2_Pasteur', 'none' ),
 				) );
 				$wp_customize->add_control( new Description( $wp_customize, 'slider_create_note', array(
 					'label' 		=> 	'<a href="'.admin_url('admin.php?page=cc2-settings&tab=slider-options') . '" target="_blank">Create a new slideshow </a>, or ..',
@@ -2419,6 +2408,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'default'       => 	'none',
 					'capability'    => 	'edit_theme_options',
 					'transport'   	=> 	'refresh',
+					'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 				) );
 				$wp_customize->add_control( 'cc_slideshow_template', array(
 					'label'   		=> 	__('Select A Slideshow', 'cc2'),
@@ -2433,6 +2423,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'default'       => 	'slides-only',
 					'capability'    => 	'edit_theme_options',
 					'transport'   	=> 	'refresh',
+					'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 				) );
 				$wp_customize->add_control( 'cc2_slideshow_style', array(
 					'label'   		=> 	__('Slideshow Style', 'cc2'),
@@ -2451,6 +2442,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'default'       => 	'home',
 					'capability'    => 	'edit_theme_options',
 					'transport'   	=> 	'refresh',
+					'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 				) );
 				$wp_customize->add_control( 'cc_slider_display', array(
 					'label'   		=> 	__('Display Slideshow', 'cc2'),
@@ -2470,6 +2462,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'default'       => 	'cc_after_header',
 					'capability'    => 	'edit_theme_options',
 					'transport'   	=> 	'refresh',
+					'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 				) );
 				$wp_customize->add_control( 'cc_slider_position', array(
 					'label'   		=> 	__('Slideshow Position', 'cc2'),
@@ -2479,28 +2472,12 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'choices'    	=> 	$slider_positions
 				) );
 
-				// Effect on image
-				// $wp_customize->add_setting( 'slider_effect_image', array(
-					// 'default'       => 	'fade',
-					// 'capability'    => 	'edit_theme_options',
-					// 'transport'   	=> 	'refresh',
-				// ) );
-				// $wp_customize->add_control( 'slider_effect_image', array(
-					// 'label'   		=> 	__('Animation Effect on Image', 'cc2'),
-					// 'section' 		=> 	'cc_slider',
-					// 'priority'		=> 	50,
-					// 'type'    		=> 	'select',
-					// 'choices'    	=> 	array(
-											// 'slide' 	=> 'slide',
-											// 'fade' 		=> 'fade',
-										// )
-				// ) );
-
 				// Effect on title
 				$wp_customize->add_setting( 'slider_effect_title', array(
 					'default'       => 	'bounceInLeft',
 					'capability'    => 	'edit_theme_options',
 					'transport'   	=> 	'refresh',
+					'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 				) );
 				$wp_customize->add_control( 'slider_effect_title', array(
 					'label'   		=> 	__('Animation Effect on Caption Title', 'cc2'),
@@ -2515,6 +2492,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'default'       => 	'bounceInRight',
 					'capability'    => 	'edit_theme_options',
 					'transport'   	=> 	'refresh',
+					'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 				) );
 				$wp_customize->add_control( 'slider_effect_excerpt', array(
 					'label'   		=> 	__('Animation Effect on Caption Text', 'cc2'),
@@ -2529,6 +2507,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'default'       => 	'center',
 					'capability'    => 	'edit_theme_options',
 					'transport'   	=> 	'refresh',
+					'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 				) );
 				$wp_customize->add_control( 'cc_slider_text_align', array(
 					'label'   		=> 	__('Text Align', 'cc2'),
@@ -2571,6 +2550,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'default'       => 	'Ubuntu Condensed',
 					'capability'    => 	'edit_theme_options',
 					'transport'   	=> 	'refresh',
+					'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 				) );
 				$wp_customize->add_control( 'caption_title_font_family', array(
 					'label'   		=> 	__('Caption Title Font Family', 'cc2'),
@@ -2587,6 +2567,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				$wp_customize->add_setting( 'caption_title_font_weight', array(
 					'capability'    => 	'edit_theme_options',
 					'transport'   	=> 	'refresh',
+					'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_bool' ),
 				) );
 				$wp_customize->add_control('caption_title_font_weight', array(
 					'label'    		=> 	__('Bold', 'cc2'),
@@ -2628,6 +2609,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'default'        => '0.9',
 					'capability'    => 	'edit_theme_options',
 					'transport'   	=> 	'refresh',
+					'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 				) );
 
 				$wp_customize->add_control( 'caption_title_opacity', array(
@@ -2670,6 +2652,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'default'       => 	'',
 					'capability'    => 	'edit_theme_options',
 					'transport'   	=> 	'refresh',
+					'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 				) );
 				$wp_customize->add_control( 'caption_text_font_family', array(
 					'label'   		=> 	__('Caption Text Font Family', 'cc2'),
@@ -2683,6 +2666,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				$wp_customize->add_setting( 'caption_text_font_weight', array(
 					'capability'    => 	'edit_theme_options',
 					'transport'   	=> 	'refresh',
+					'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_bool' ),
 				) );
 				$wp_customize->add_control('caption_text_font_weight', array(
 					'label'    		=> 	__('Bold', 'cc2'),
@@ -2695,6 +2679,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				$wp_customize->add_setting( 'caption_text_font_style', array(
 					'capability'    => 	'edit_theme_options',
 					'transport'   	=> 	'refresh',
+					'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_bool' ),
 				) );
 				$wp_customize->add_control('caption_text_font_style', array(
 					'label'    		=> 	__('Italic', 'cc2'),
@@ -2722,6 +2707,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'default'        => '0.8',
 					'capability'    => 	'edit_theme_options',
 					'transport'   	=> 	'refresh',
+					'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 				) );
 
 				$wp_customize->add_control( 'caption_text_opacity', array(
@@ -2760,6 +2746,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'default'		=>	true,
 					'capability'    => 	'edit_theme_options',
 					'transport'   	=> 	'refresh',
+					* 'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_bool' ),
 				) );
 				$wp_customize->add_control('caption_title_font_style', array(
 					'label'    		=> 	__('Italic'),
@@ -2772,6 +2759,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'default'		=>	false,
 					'capability'    => 	'edit_theme_options',
 					'transport'   	=> 	'refresh',
+					'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_bool' ),
 				) );
 				$wp_customize->add_control('slider_controls_show', array(
 					'label'    		=> 	__('Enable Prev/Next Controls', 'cc2'),
@@ -2799,6 +2787,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				// Sub Heading for Slider Dimensions
 				$wp_customize->add_setting( 'slider_dimensions_heading', array(
 					'capability'    => 	'edit_theme_options',
+					'sanitize_callback' => array( 'cc2_Pasteur', 'none' ),
 				) );
 				$wp_customize->add_control( new Label( $wp_customize, 'slider_dimensions_heading', array(
 					'label' 		=> 	__('Slideshow Dimensions', 'cc2'),
@@ -2810,6 +2799,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				// Note for Slider Height and Width
 				$wp_customize->add_setting( 'slider_dimensions_note', array(
 					'capability'    => 	'edit_theme_options',
+					'sanitize_callback' => array( 'cc2_Pasteur', 'none' ),
 				) );
 				$wp_customize->add_control( new Description( $wp_customize, 'slider_dimensions_note', array(
 					'label' 		=> 	__('You don\'t need to set the width and height of the slider: just make all your images the size you want to have as your slideshow size. You can still define a width and max height here, but we recommend to leave it automatic. <a href="https://themekraft.zendesk.com/hc/en-us/articles/200270762" target="_blank">Read more.</a>', 'cc2'),
@@ -2823,6 +2813,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'default'        => 'auto',
 					'capability'    => 	'edit_theme_options',
 					'transport'   	=> 	'refresh',
+					'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 				) );
 
 				$wp_customize->add_control( 'cc_slider_width', array(
@@ -2837,6 +2828,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'default'        => 'none',
 					'capability'    => 	'edit_theme_options',
 					'transport'   	=> 	'refresh',
+					'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 				) );
 
 				$wp_customize->add_control( 'cc_slider_height', array(
@@ -2869,6 +2861,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			// Sub Heading for Container Width
 			$wp_customize->add_setting( 'heading_bootstrap_container_width', array(
 				'capability'    => 	'edit_theme_options',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'none' ),
 			) );
 			$wp_customize->add_control( new Label( $wp_customize, 'heading_bootstrap_container_width', array(
 				'label' 		=> 	__('Bootstrap Container Width', 'cc2'),
@@ -2880,6 +2873,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			// Note for Container Width
 			$wp_customize->add_setting( 'note_bootstrap_container_width', array(
 				'capability'    => 	'edit_theme_options',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'none' ),
 			) );
 			$wp_customize->add_control( new Description( $wp_customize, 'note_bootstrap_container_width', array(
 				'label' 		=> 	sprintf( __('Customize the width values of the .container class, for each different screen size. Leave the field empty for default width.<br /><a href="%s">Screen size info</a>', 'cc2'), 'http://getbootstrap.com/css/#grid-options' ),
@@ -2895,6 +2889,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default' 		=> '750px',
 				'capability'    => 'edit_theme_options',
 				'transport'   	=> 'refresh',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 			) );
 			$wp_customize->add_control('bootstrap_container_width[small]', array(
 				'label'      	=> __('Container Width (Small Screen)', 'cc2'),
@@ -2909,6 +2904,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default' 		=> '970px',
 				'capability'    => 'edit_theme_options',
 				'transport'   	=> 'refresh',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 			) );
 			$wp_customize->add_control('bootstrap_container_width[medium]', array(
 				'label'      	=> __('Container Width (Medium Screen)', 'cc2'),
@@ -2922,6 +2918,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default' 		=> '1170px',
 				'capability'    => 'edit_theme_options',
 				'transport'   	=> 'refresh',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 			) );
 			$wp_customize->add_control('bootstrap_container_width[large]', array(
 				'label'      	=> __('Container Width (large Screen)', 'cc2'),
@@ -2937,6 +2934,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			// Sub Heading for Custom Sidebar Columns (ie. 1 - 12)
 			$wp_customize->add_setting( 'heading_bootstrap_custom_sidebar_cols', array(
 			'capability'    => 	'edit_theme_options',
+			'sanitize_callback' => array( 'cc2_Pasteur', 'none' ),
 			) );
 			$wp_customize->add_control( new Label( $wp_customize, 'heading_bootstrap_custom_sidebar_cols', array(
 			'label' 		=> 	__('Custom Sidebar Size', 'cc2'),
@@ -2950,6 +2948,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			// Note for Container Width
 			$wp_customize->add_setting( 'note_bootstrap_custom_sidebar_cols', array(
 			'capability'    => 	'edit_theme_options',
+			'sanitize_callback' => array( 'cc2_Pasteur', 'none' ),
 			) );
 			$wp_customize->add_control( new Description( $wp_customize, 'note_bootstrap_custom_sidebar_cols', array(
 			'label' 		=> 	__('Adjust the <strong>column numbers</strong>, which are used for setting the size of the sidebars. <a href="http://getbootstrap.com/css/#grid">Read about the Bootstrap Grid system</a>', 'cc2'),
@@ -2968,6 +2967,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default' 		=> '4',
 				'capability'    => 'edit_theme_options',
 				'transport'   	=> 'refresh',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 			) );
 			$wp_customize->add_control('bootstrap_custom_sidebar_cols[left]', array(
 				'label'      	=> __('Left sidebar', 'cc2'),
@@ -2983,6 +2983,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default' 		=> '4',
 				'capability'    => 'edit_theme_options',
 				'transport'   	=> 'refresh',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 			) );
 			$wp_customize->add_control('bootstrap_custom_sidebar_cols[right]', array(
 				'label'      	=> __('Right sidebar', 'cc2'),
@@ -3002,6 +3003,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default' 		=> '3',
 				'capability'    => 'edit_theme_options',
 				'transport'   	=> 'refresh',
+				* 'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 			) );
 			$wp_customize->add_control('bootstrap_custom_sidebar_cols[left-right]', array(
 				'label'      	=> __('Layout: Both sidebars visible', 'cc2'),
@@ -3019,6 +3021,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 		// Sub Heading for Comment customization
 			$wp_customize->add_setting( 'heading_bootstrap_comment_form', array(
 			'capability'    => 	'edit_theme_options',
+			* 'sanitize_callback' => array( 'cc2_Pasteur', 'none' ),
 			) );
 			$wp_customize->add_control( new Label( $wp_customize, 'heading_bootstrap_comment_form', array(
 			'label' 		=> 	__('Comment forms', 'cc2'),
@@ -3033,10 +3036,12 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'default' 		=> 'vertical',
 				'capability'    => 'edit_theme_options',
 				'transport'   	=> 'refresh',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 			) );
 			$wp_customize->add_control('cc2_comment_form_orientation', array(
 				'label'      	=> __('Comment form orientation', 'cc2'),
 				'section'    	=> 'cc2_customize_bootstrap',
+				
 				'type'			=> 'select',
 				'choices'		=> array('vertical' => __('Vertical (default)', 'cc2'), 'horizontal' => __('Horizontal', 'cc2') ),
 				'priority'   	=> $customize_bootstrap_priority,

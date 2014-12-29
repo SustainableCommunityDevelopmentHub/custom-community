@@ -190,7 +190,10 @@ input[type="submit"]:hover {
 
 /** Header **/
 .site-header {
-  border: 1px solid darken(@body-bg, 6.5%);
+  /* border: 1px solid darken(@body-bg, 6.5%); */
+  /** NOTE: Leads to issues, as there is no setting to adjust this styling; aside of that, its rather .. useless */
+  border: 0;
+  
 }
 .site-header-inner {
   padding: 0;

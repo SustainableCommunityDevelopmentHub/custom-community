@@ -258,6 +258,12 @@ function cc_setup() {
 
     if ( function_exists( 'add_theme_support' ) ) {
 
+		/** 
+		 * Enable standardized title tag output and filtering
+		 * @since WP 4.1
+		 */
+		add_theme_support( 'title-tag' );
+
 		// Add default posts and comments RSS feed links to head
 		add_theme_support( 'automatic-feed-links' );
 		
