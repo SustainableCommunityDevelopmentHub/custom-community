@@ -7,7 +7,10 @@
  * @package cc2
  * @since 2.0.20
  */
- 
+
+if( !class_exists('cc2_Pasteur') ) :
+
+
 class cc2_Pasteur {
 
 	/**
@@ -94,6 +97,48 @@ class cc2_Pasteur {
 		return $return;
 	}
 	
+	public static function is_hex( $value, $default = false ) {
+		$return = $default;
+		
+		if( substr( $value, 0, 1) == '#' ) {
+			$value = substr( $value, 1 );
+		}
+		
+		if( ctype_xdigit( $value ) != false ) {
+			$return = true;
+		}
+		
+		return $return;
+	}
+	
+	public static function maybe_hex( $value ) {
+		$return = $value;
+		
+		
+		if( !empty( $return ) && strpos( $return, '#' ) === false && self::is_hex( $value ) != false ) {
+			$return = '#' . $return;
+		}
+	
+		return $return;
+	}
+	
+	public static function sanitize_hex_color_with_transparency( $value, $wp_settings_instance = false ) {
+		$return = $value;
+		
+		if( !empty( $value ) ) {
+		
+			if( strtolower( trim( $value ) ) == 'transparent' ) {
+				$return = 'transparent';
+			
+			} elseif( self::is_hex( $value ) != false ) {
+				$return = self::maybe_hex( $value );
+			}
+		}
+		
+		return $return;
+	}
+		
+	
 	/**
 	 * The literal "do nothing" filter
 	 */
@@ -116,6 +161,9 @@ class cc2_Pasteur {
 	}
 
 }
+
+
+endif; // class_exists
 
 /**
  * NOTE: Fallbacks - because of the rather short-sighted structure of the Theme Customization API functions.
