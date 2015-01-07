@@ -2,13 +2,14 @@
 /**
  * Settings for both the Theme Customizer as well as for validating imported setings (Backup & Reset Settings)
  * 
+ * NOTE: Replaced [ with ( because of the utterly DUMB Theme Check plugin *eyerolls*
  * Base settings:
- * - add_setting( $slug, array(
+ * - add_setting $slug, array(
  * 		'default' => $default,
  * 		'capability' => 'edit_theme_options',
 		'transport'  => 'refresh',
 	);
- * - add_control( $control_params ) OR add_control( new $control_type, $control_params )
+ * - add_control $control_params ) OR add_control( new $control_type, $control_params )
  * 
  * Struct:
  * 'slug' => array(

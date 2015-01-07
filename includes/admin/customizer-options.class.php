@@ -2775,6 +2775,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'default'        => '5000',
 					'capability'    => 	'edit_theme_options',
 					'transport'   	=> 	'refresh',
+					'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
 				) );
 
 				$wp_customize->add_control( 'cc_sliding_time', array(
@@ -2994,42 +2995,6 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			) );
 			$customize_bootstrap_priority++;
 			
-			// Left + Content + Right Sidebar: Custom Columns
-			//$default_sidebar_cols = $bootstrap_cols; // reset
-			/*$default_sidebar_cols = array_slice( $bootstrap_cols, 0, 6);
-			$default_sidebar_cols[3] =  __('3 (default)', 'cc2');
-
-			$wp_customize->add_setting('bootstrap_custom_sidebar_cols[left-right]', array(
-				'default' 		=> '3',
-				'capability'    => 'edit_theme_options',
-				'transport'   	=> 'refresh',
-				* 'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
-			) );
-			$wp_customize->add_control('bootstrap_custom_sidebar_cols[left-right]', array(
-				'label'      	=> __('Layout: Both sidebars visible', 'cc2'),
-				'section'    	=> 'cc2_customize_bootstrap',
-				'type'			=> 'select',
-				'choices'		=> $default_sidebar_cols,
-				'priority'   	=> $customize_bootstrap_priority,
-			) );
-			
-			
-			
-			$customize_bootstrap_priority++;
-			*/
-		/*
-		// Sub Heading for Comment customization
-			$wp_customize->add_setting( 'heading_bootstrap_comment_form', array(
-			'capability'    => 	'edit_theme_options',
-			* 'sanitize_callback' => array( 'cc2_Pasteur', 'none' ),
-			) );
-			$wp_customize->add_control( new Label( $wp_customize, 'heading_bootstrap_comment_form', array(
-			'label' 		=> 	__('Comment forms', 'cc2'),
-			'type' 			=> 	'label',
-			'section' 		=> 	'cc2_customize_bootstrap',
-			'priority'		=> 	$customize_bootstrap_priority,
-			) ) );
-			*/
 			$customize_bootstrap_priority+=5;
 
 			 $wp_customize->add_setting('cc2_comment_form_orientation', array(
