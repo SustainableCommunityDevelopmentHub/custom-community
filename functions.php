@@ -901,9 +901,6 @@ require get_template_directory() . '/includes/custom-header.php';
 
 // Load the customizer style file for the frontend & customizer preview
 require get_template_directory() . '/style.php';
-		
-// Load the sidebars
-require get_template_directory() . '/includes/sidebars.php';
 
 // Custom template tags for this theme
 require get_template_directory() . '/includes/template-tags.php';

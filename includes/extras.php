@@ -222,7 +222,6 @@ if( !class_exists('cc2_Helper') ) :
 	endif;
 
 endif;
-
  
  /*
  * @package _tk

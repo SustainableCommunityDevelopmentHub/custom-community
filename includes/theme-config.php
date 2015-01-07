@@ -75,37 +75,52 @@ define('CC2_THEME_CONFIG', serialize(
 				'title' => 'Dark Colours',
 				'file' => 'dark.less', /** if no filename is given, we assume its {$slug}.less */
 				'scheme' => array(
-					'font_color' => '111111', /** @gray-dark: lighten(#000, 20%); // #333 */
-					'font_family' => 'font-family-sans-serif',
-					'link_color' => '73605B',
-					'hover_color' => '737373',
+					'font_color' => 'cecece', /** @gray-dark: lighten(#000, 20%); // #333 */
+					'font_family' => '"Lato", "Droid Sans", "Helvetica Neue", Tahoma, Arial, sans-serif',
+					'link_color' => '6e9aad',
+					'hover_color' => '31526b',
 				),
+				'settings' => 'dark.settings.php', /** if no filename is given, default-settings.php is being used  */
+				
+			),
+			'natural' => array(
+				'title' => 'Natural',
+				'file' => 'natural.less',
+				'scheme' => array(
+					'font_color' => '515151',
+					'font_family' => '"Lato", "Droid Sans", "Helvetica Neue", Tahoma, Arial, sans-serif',
+					'link_color' => '8f9e68',
+					'hover_color' => '336629',
+				),
+				'settings' => 'natural.settings.php',
 			),
 			
 			
+			/*
 			'light' => array(
 				'title' => 'Light Colours',
-				'file' => 'light.less', /** if no filename is given, we assume its {$slug}.less */
+				'file' => 'light.less',
 				'scheme' => array(
-					'font_color' => '555555', /** @gray-dark: lighten(#000, 20%); // #333 */
+					'font_color' => '555555',
 					'font_family' => 'font-family-sans-serif',
 					'link_color' => '00B4EE',
 					'hover_color' => '1E90FF',
 				),
+				'settings' => 'light.settings.php',
 			),
 			
 			'greenthumb' => array(
 				'title' => 'Greenthumb',
-				'file' => 'greenthumb.less', /** if no filename is given, we assume its {$slug}.less */
-				'settings' => 'greenthumb.settings.php', /** if no filename is given, default-settings.php is being used */
+				'file' => 'greenthumb.less',
+				'settings' => 'greenthumb.settings.php',
 				'scheme' => array(
-					'font_color' => '111', /** @gray-dark: lighten(#000, 20%); // #333 */
+					'font_color' => '111',
 					'font_family' => 'font-family-sans-serif',
 					'link_color' => '84F24B',
 					'hover_color' => 'BFF15A',
 				),
 				'preview' => 'greenthumb.png',
-			),
+			),*/
 			
 			'_test' => array(
 				'title' => 'Test Scheme',

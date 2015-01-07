@@ -388,6 +388,87 @@ function cc2_display_both_sidebars() {
 	return $return;
 }
 
+
+/**
+ * Test if a given sidebar is available in the current VIEW
+ * 
+ * @author Fabian Wolf
+ * @package cc2
+ * @since 2.0.12
+ */
+
+function cc2_has_sidebar( $location = 'right' ) {
+	$current_view = '';
+	$return = false;
+	
+	$default_layout = get_theme_mod('default_layout');
+	
+	if( is_page() ) {
+		$current_view = 'page';
+	}
+	
+	if( is_post() ) {
+		$current_view = 'post';
+	}
+	
+	if( is_archive() ) {
+		$current_view = 'archive';
+	}
+	
+	/**
+	 * NOTE: Does this account for is_front_page as well?
+	 */
+	if( is_home() ) {
+		$current_view = 'home';
+	}
+	
+	if( is_front_page() ) {
+		$current_view = 'front-page';
+	}
+	
+	
+	
+	switch( $current_view ) {
+		default:
+			$layout_part = '';
+		
+			break;
+		case 'post':
+		case 'page':
+		case 'archive':
+			$layout_part = $current_view . '_';
+			break;
+		case 'home':
+			$layout_part = 'archive_';
+		
+		case 'front-page':
+			$layout_part = 'page_';
+		
+			break;
+		case 'single':
+			$layout_part = 'post_';
+			break;
+	}
+	
+	$current_layout = get_theme_mod( 'default_' . $layout_part . 'layout', false);
+	
+	if( $location == $current_layout || 'left-right' == $current_layout ) {
+		$return = true;
+	}
+	
+	return $return;
+}
+
+
+/**
+ * Wrapper for _cc2_display_sidebar / cc2_has_sidebar
+ */
+
+function cc2_display_sidebar( $sidebar_location = 'right' ) {
+	return _cc2_display_sidebar( $sidebar_location );
+}
+
+
 /**
  * Check if to display a sidebar in current view
  *
@@ -397,7 +478,7 @@ function cc2_display_both_sidebars() {
  *
  */
 
-function cc2_display_sidebar( $side = 'right' ){
+function _cc2_display_sidebar( $side = 'right' ){
 
     if( is_page() ) {
 
