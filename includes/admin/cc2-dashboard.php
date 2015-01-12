@@ -117,18 +117,21 @@ class cc2_Admin {
 		$step = 1;
 		
 		$is_theme_activated = get_transient('cc2_theme_active', false );
+		$strSettingsPage = 'cc2_options';
+		$strSection = 'section_general';
+		
 		
 		register_setting( 'cc2_options', 'cc2_options' );
 		
 		// Settings fields and sections
-		add_settings_section( 'section_general'	, '', array( $this, 'setting_page_general'), 'cc2_options' );
+		add_settings_section( $strSection, '', array( $this, 'setting_page_general'), 'cc2_options' );
 		
 		// add_settings_section( $id, $title, $callback, $page = $menu_slug )
 		
 		// updates pending or initial run
 		
-		if( $is_theme_activated ) {
-		
+		//if( $is_theme_activated ) {
+		/*
 			add_settings_field(
 				'cc2_theme_activation',
 				sprintf( '<strong>Step %d</strong><br /><em>Import old data</em>', $step ),
@@ -138,11 +141,79 @@ class cc2_Admin {
 			);
 			
 			$step++;
+		//}
+		
+		*/
+		
+		/**
+		 * Syntax:
+		 * array(
+		 * 		'id' => 'field_id',
+		 * 		'title' => 'optional title',
+		 * 		'callback' => array( $object | 'myClass', 'method' ),
+		 * 		'page' => false | '' | 'some_string',
+		 * 		'params' => array('additional' => 'parameters', 'for_the' => 'callback' )
+		 * )
+		 * 
+		 * If $page is empty (= false; or not set), the default will be used (ie. section_general)
+		 * 
+		 */
+		$arrAdditionalFields = array();
+		/**
+		 * NOTE: Test data. Uncomment = tests the additional fields "function" ;)
+		 * 
+		$arrAdditionalFields = array(
+			array(
+				'id' => 'cc2_theme_activation',
+				'title' => __('<strong>Step %d</strong><br /><em>Import old data</em>'),
+				'callback' => array( $this, 'setting_page_pending_updates' ),
+				'page' => 'cc2_options',
+			),
+		);
+		*/
+		
+		
+		$arrAdditionalFields = apply_filters('cc2_section_general_add_fields', $arrAdditionalFields );
+		if( !empty( $arrAdditionalFields ) ) {
+			
+			foreach( $arrAdditionalFields as $arrAddFieldData ) {
+				
+				if( isset( $arrAddFieldData['id'] ) && isset( $arrAddFieldData['callback'] ) ) {
+					$strAddFieldPage = ( !empty( $arrAddFieldData['page'] ) ? $arrAddFieldData['page'] : $strSettingsPage );
+					
+					$strAddFieldTitle = ( !empty( $arrAddFieldData['title'] ) ? $arrAddFieldData['title'] : '<span class="empty-field-title"></span>' );
+					
+					if( !empty( $arrAddFieldData['title']) && strpos( $arrAddFieldData['title'], '%d' ) !== false ) { // %d indicates a step #
+						$strAddFieldTitle = sprintf( $strAddFieldTitle, $step );
+						
+						$step++;
+					}
+					
+					if( !empty( $arrAddFieldData['params'] ) ) {
+						add_settings_field(
+							$arrAddFieldData['id'],
+							$strAddFieldTitle,
+							$arrAddFieldData['callback'],
+							$strAddFieldPage,
+							$strSection,
+							$arrAddFieldData['params']
+						);
+					} else {
+						add_settings_field(
+							$arrAddFieldData['id'],
+							$strAddFieldTitle,
+							$arrAddFieldData['callback'],
+							$strAddFieldPage,
+							$strSection
+						);
+					}	
+				}
+			}
+			
 		}
+	
 		
-		
-		// regular
-		
+		// regular	
 		add_settings_field(	
 			'cc2_setup', 
 			sprintf('<strong>Step %d</strong><br /><em>Customize</em>', $step ),
@@ -213,8 +284,11 @@ class cc2_Admin {
 		
 		//if( $exec_update == false || ( !isset( $update_result ) && ( !isset( $has_old_settings ) || $has_old_settings == false ) ) ) {
 		// false = empty, but also !isset
-		if( empty($exec_update) || ( !isset( $update_result ) && ( !isset( $has_old_settings ) || empty($has_old_settings) ) ) ) {
-			_e("Look's like there aint no old settings to import. So, on to a fresh start! ;-)", 'cc2');
+		
+		
+		
+		if( empty( $exec_update ) || ( !isset( $update_result ) && empty($has_old_settings) ) ) {
+			_e('Look\'s like there aint no old settings to import. So, on to a fresh start! ;-)', 'cc2');
 			return; // early bail-out
 		}
 		
