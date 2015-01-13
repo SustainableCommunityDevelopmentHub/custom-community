@@ -45,6 +45,8 @@ class updateHelper {
 
 	/**
 	 * Check if there are actually ANY old settings
+	 * @param array $arrImportData
+	 * @return bool
 	 */
 	
 	public static function has_importable_settings( $arrImportData = array() ) {
@@ -73,11 +75,13 @@ class updateHelper {
 		return $return;
 	}
 
-	
+
 	/**
 	 * Convert a given value to a new value set if possible
-	 * 
-	 * @param array $old_to_new	Associative array; array( 'old_value' => 'new_value', 'other_old_value' => 'other_new_value', ... )
+	 *
+	 * @param $value
+	 * @param array $old_to_new Associative array; array( 'old_value' => 'new_value', 'other_old_value' => 'other_new_value', ... )
+	 * @return
 	 */
 	
 	public static function convert_value_choice( $value, $old_to_new = array() ) {
@@ -217,20 +221,23 @@ class updateHelper {
 		
 		return $return;
 	}
-	
+
 	/**
 	 * Adapted redux version of the regular debug class / plugin
-	 * 
+	 *
 	 * Applies the following filter hooks:
-	 * 
-	 * @hook cc2_debug_return_data_raw				Unfiltered debug data (basically print_r( $data ))
-	 * @hook cc2_debug_return_data_filtered			Using the modern htmlentities2 function.
-	 * @hook cc2_debug_return_data_htmlentities		If out of some strange reasone the wp-based htmlentities2() is not available (eg. while bootstrapping WP and other nasty stuff), the fallback to the regular, less considerate htmlentities is being used.
-	 * @hook cc2_debug_return						The final "product".
-	 * 
+	 *
+	 * @hook cc2_debug_return_data_raw                Unfiltered debug data (basically print_r( $data ))
+	 * @hook cc2_debug_return_data_filtered            Using the modern htmlentities2 function.
+	 * @hook cc2_debug_return_data_htmlentities        If out of some strange reasone the wp-based htmlentities2() is not available (eg. while bootstrapping WP and other nasty stuff), the fallback to the regular, less considerate htmlentities is being used.
+	 * @hook cc2_debug_return                        The final "product".
+	 *
 	 * Actions:
-	 * @hook cc2_debug_before_return				Runs AFTER cc2_debug_return, but before the data is being return-ed (ie. echoed)
-	 * @hook cc2_debug_shutting_down				Runs at the very end of the function.
+	 * @hook cc2_debug_before_return                Runs AFTER cc2_debug_return, but before the data is being return-ed (ie. echoed)
+	 * @hook cc2_debug_shutting_down                Runs at the very end of the function.
+	 * @param $data
+	 * @param string $title
+	 * @param bool $arrParams
 	 */
 	 
 	public static function debug( $data, $title = 'Debug: ', $arrParams = false ) {

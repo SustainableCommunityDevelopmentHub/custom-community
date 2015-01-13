@@ -40,6 +40,8 @@ class cc2_SliderAdminAjax {
 
 	/**
 	 * Wrapper to avoid future fuck-ups and repetitive works (aka DRY!)
+	 * @param array $default
+	 * @return mixed|void
 	 */
 
 	function get_slider_settings( $default = array() ) {

@@ -354,5 +354,3 @@ $arrOptions['custom_options'] = array(
     [cap_roles_and_capabilities_min_role] => Administrator
 )
 */
-
-?>

@@ -4,7 +4,7 @@
 	'file': 'greenthumb.less',
 	'output_file': 'greenthumb.css',
 	'output_dir': '%cc2_schemes%',
-	'settings' => 'greenthumb.settings.php',
+	'settings': 'greenthumb.settings.php',
 	'scheme': {
 		'_font_color':'111',
 		'_font_family':'font-family-sans-serif',

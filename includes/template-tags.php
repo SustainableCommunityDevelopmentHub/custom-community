@@ -241,17 +241,15 @@ function add_bottom_nav_brand() {
 }
 
 
-
-
 /**
  * Echo the Branding (title or image) for Navigations
  * Used by add_top_nav_brand() and add_bottom_nav_brand()
- * 
+ *
  * @author Konrad Sroka
  * @author Fabian Wolf
  * @package cc2
  * @since 2.0.1
- * 
+ * @param string $position
  */
 function add_nav_brand( $position = 'top' ) {
 	$strSiteName = get_bloginfo( 'name', 'display' );
@@ -391,10 +389,12 @@ function cc2_display_both_sidebars() {
 
 /**
  * Test if a given sidebar is available in the current VIEW
- * 
+ *
  * @author Fabian Wolf
  * @package cc2
  * @since 2.0.12
+ * @param string $location
+ * @return bool
  */
 
 function cc2_has_sidebar( $location = 'right' ) {
@@ -440,10 +440,9 @@ function cc2_has_sidebar( $location = 'right' ) {
 			break;
 		case 'home':
 			$layout_part = 'archive_';
-		
+			break;
 		case 'front-page':
 			$layout_part = 'page_';
-		
 			break;
 		case 'single':
 			$layout_part = 'post_';
@@ -462,6 +461,8 @@ function cc2_has_sidebar( $location = 'right' ) {
 
 /**
  * Wrapper for _cc2_display_sidebar / cc2_has_sidebar
+ * @param string $sidebar_location
+ * @return bool
  */
 
 function cc2_display_sidebar( $sidebar_location = 'right' ) {
@@ -475,7 +476,8 @@ function cc2_display_sidebar( $sidebar_location = 'right' ) {
  * @author Konrad Sroka
  * @package cc2
  * @since 2.0
- *
+ * @param string $side
+ * @return bool
  */
 
 function _cc2_display_sidebar( $side = 'right' ){
@@ -1143,16 +1145,17 @@ if( !class_exists( 'cc2_htmlClass' ) ) :
 			
 			return $return;
 		}
-		
+
 		/**
 		 * Replace single or multiple classes within the given class string
-		 * 
-		 * @param string $haystack		HTML class string to parse.
-		 * @param mixed $search			String or array containing the value(s) to search for.
-		 * @param mixed $replace		String or array which replace(s) the above given value(s).
-		 * @param string $return_type	Return parsed data either as array or string. Defaults to 'string'.
-		 * 
-		 * @return mixed $result		
+		 *
+		 * @param $class
+		 * @param mixed $search String or array containing the value(s) to search for.
+		 * @param mixed $replace String or array which replace(s) the above given value(s).
+		 * @param bool $case_sensitive
+		 * @param string $return_type Return parsed data either as array or string. Defaults to 'string'.
+		 * @return mixed $result
+		 * @internal param string $haystack HTML class string to parse.
 		 */
 		public static function replaceClass( $class, $search = null, $replace = null, $case_sensitive = true, $return_type = 'string' ) {
 			$return = $class;

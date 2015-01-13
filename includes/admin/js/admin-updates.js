@@ -29,6 +29,6 @@ jQuery(function() {
                 console.info('Something went wrong.. ;-(sorry)');
             }
         });
-	}
+	});
 	
 });

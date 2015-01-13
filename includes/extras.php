@@ -16,13 +16,14 @@ if( !class_exists('cc2_Helper') ) :
 
 	class cc2_Helper {
 		static $strOptionPrefix = 'cc2_backup_';
-		
+
 		/**
-		 * Replacement for is_page, is_admin and is_plugin_page. Does not (yet) count in the AJAX situation. 
+		 * Replacement for is_page, is_admin and is_plugin_page. Does not (yet) count in the AJAX situation.
 		 * NOTE: A check like admin.page?page=my-page&some=parame would also be valid if it was admin.page?page=my-page&some-param&other=param
-		 * 
-		 * @param [optional]string $path	Could be a single file, a query or a more or less full path, eg. admin.php?page=my-page
-		 * @return boolean $return			Returns true if this is indeed is_admin() (w/o the optional $path parameter), or false if not (or if we are not on that specific url / path)
+		 *
+		 * @param bool $path
+		 * @return bool $return            Returns true if this is indeed is_admin() (w/o the optional $path parameter), or false if not (or if we are not on that specific url / path)
+		 * @internal param $ [optional]string $path    Could be a single file, a query or a more or less full path, eg. admin.php?page=my-page
 		 */
 		
 		public static function is_admin_page( $path = false ) {
@@ -82,11 +83,13 @@ if( !class_exists('cc2_Helper') ) :
 			
 			return $return;
 		}
-		
-		
-			
+
+
 		/**
 		 * Adapted wp_parse_args for options, settings, etc.
+		 * @param bool $defaults
+		 * @param array $new_params
+		 * @return bool
 		 */
 
 		public static function parse_args( $defaults = false, $new_params = array() ) {

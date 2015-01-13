@@ -15,6 +15,9 @@ class cc2_Pasteur {
 
 	/**
 	 * Generic sanitizer for the Theme Customizer
+	 * @param $value
+	 * @param bool $wp_settings_instance
+	 * @return string
 	 */
 
 	public static function sanitize_value( $value, $wp_settings_instance = false ) {
@@ -26,9 +29,12 @@ class cc2_Pasteur {
 		
 		return $return;
 	}
-	
+
 	/**
 	 * Truethy + falsey
+	 * @param $value
+	 * @param bool $wp_settings_instance
+	 * @return bool
 	 */
 	
 	public static function sanitize_boolean( $value, $wp_settings_instance = false ) {
@@ -40,17 +46,23 @@ class cc2_Pasteur {
 		
 		return $return;
 	}
-	
+
 	/**
 	 * Alias for @method sanitize_boolean
+	 * @param $value
+	 * @param bool $wp_settings_instance
+	 * @return bool
 	 */
 	
 	public static function sanitize_bool( $value, $wp_settings_instance = false ) {
 		return self::sanitize_boolean( $value, $wp_settings_instance );
 	}
-	
+
 	/**
 	 * NOTE: Basically a wrapper for sanitize text field
+	 * @param $value
+	 * @param bool $wp_settings_instance
+	 * @return string
 	 */
 	public static function sanitize_text( $value, $wp_settings_instance = false ) {
 		$return = $value;
@@ -61,9 +73,12 @@ class cc2_Pasteur {
 		
 		return $return;
 	}
-	
+
 	/**
 	 * HEXadecimal = sanitize_hex_color_no_hash
+	 * @param $value
+	 * @param bool $wp_settings_instance
+	 * @return null|string
 	 */
 	
 	public static function sanitize_hex( $value, $wp_settings_instance = false ) {
@@ -71,9 +86,12 @@ class cc2_Pasteur {
 		
 		return $return;
 	}
-	
+
 	/**
 	 * HEXadecimal COLOR = sanitize_hex_color
+	 * @param $value
+	 * @param bool $wp_settings_instance
+	 * @return null|string
 	 */
 	
 	public static function sanitize_hex_color( $value, $wp_settings_instance = false ) {
@@ -137,10 +155,13 @@ class cc2_Pasteur {
 		
 		return $return;
 	}
-		
-	
+
+
 	/**
 	 * The literal "do nothing" filter
+	 * @param $value
+	 * @param bool $wp_settings_instance
+	 * @return
 	 */
 	
 	public static function passthrough( $value, $wp_settings_instance = false ) {
@@ -150,11 +171,11 @@ class cc2_Pasteur {
 	public static function sanitize_raw( $value, $wp_settings_instance = false ) {
 		return self::passthrough( $value, $wp_settings_instance );
 	}
-	
+
 	/**
 	 * The even MORE literal "do nothing" filter - takes value, returns void(). Primarily reserved for Customizer Labels, Descriptions and other only cleary information-only, dysfunctional "form fields"
 	 * @param [mixed]$value
-	 * @return (void)
+	 * @param bool $wp_settings_instance
 	 */
 	public static function none( $value, $wp_settings_instance = false ) {
 		return;

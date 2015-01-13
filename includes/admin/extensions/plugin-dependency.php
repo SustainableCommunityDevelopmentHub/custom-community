@@ -77,4 +77,3 @@ if (!class_exists('Theme_Plugin_Dependency')) {
         }
     }
 }
-?>

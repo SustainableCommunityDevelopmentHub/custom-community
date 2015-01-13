@@ -45,7 +45,6 @@ define( 'CC2_DEFAULT_SETTINGS', serialize(
 			 */
 			'display_header_home' => false,
 			'display_header_static_frontpage' => true,
-			'display_header_home' => true,
 			'display_header_posts' => true,
 			'display_header_pages' => true,
 			'display_header_archive' => true,

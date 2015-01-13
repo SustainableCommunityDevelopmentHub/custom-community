@@ -101,10 +101,12 @@ class cc20_slideshowImport extends updateHelper {
 		
 		return $return;
 	}
-	
-		
+
+
 	/**
 	 * Add new slide
+	 * @param array $arrParams
+	 * @return bool
 	 */
 	 
 	function add_slide( $arrParams = array() ) {
@@ -176,9 +178,11 @@ if( !empty( $arrPreparedSlideshows ) && is_array( $arrPreparedSlideshows) ) {
 		$slideshowImport->add_slideshow( $name );
 		
 		if( !empty($arrSlideshowData['images'] ) ) {
-			foreach( $arrSlideshowData['images'] as $strSlide ) {		
-				$slideshowImport->add_slide( 
-		
+			foreach ($arrSlideshowData['images'] as $strSlide) {
+				$slideshowImport->add_slide();
+			}
+		}
+
 	}
 }
 
@@ -197,12 +201,13 @@ if( !empty( $arrPreparedSlideshows ) && is_array( $arrPreparedSlideshows) ) {
  */
 
 $arrSlideshowImport = array(
-	'enable_slideshow_home' => 'cc_slider_display' => array(
+	'enable_slideshow_home',
+	'cc_slider_display' => array(
 		'value_conversion' => array(
 			'home' => 'home',
 			'all' => 'always',
 			'off' => 'off',
-		),
+		)
 	),
 	'slideshow_img',
 	'slideshow_small_img',
@@ -210,15 +215,16 @@ $arrSlideshowImport = array(
 	'slideshow_post_type', // only supported within premium extension
 	'slideshow_time',
 	'slideshow_orderby',
-	'slideshow_style' => 'cc2_slideshow_style' => array(
+	'slideshow_style',
+	'cc2_slideshow_style' => array(
 		'value_conversion' => array(
 			'default' => 'bubble-preview',
 			'fullwidth' => 'slides-only', // this one's ACTUALLY the regular default, but makes more sense the other way (at least transition-wise)
-		),
+		)
 	),
 	'slideshow_caption',
 	'slideshow_shadow',
-	'slideshow_direct_links',
+	'slideshow_direct_links'
 	
 );
 	/*

@@ -343,11 +343,12 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			
 			return $return;
 		}
-		
-	
-	
+
+
 		/**
 		 * Does not sanitize anything, basically.
+		 * @param $data
+		 * @return
 		 */
 	
 		function sanitize_default( $data ) {
@@ -482,9 +483,10 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			
 			//add_action( 'customize_register', 'tk_customizer_support' );
 		}
-		
+
 		/**
 		 * Goes first
+		 * @param $wp_customize
 		 */
 		
 		function customize_default_sections( $wp_customize ) {
@@ -513,11 +515,11 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 		/**
 		 * Regular sections
 		 */
-		
-	
-		
+
+
 		/**
 		 * Switch color schemes
+		 * @param $wp_customize
 		 */
 		
 		function section_color_schemes( $wp_customize ) {
@@ -571,9 +573,10 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				) );
 			}
 		}
-		
+
 		/**
 		 * Background section
+		 * @param $wp_customize
 		 */
 
 
@@ -585,10 +588,11 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'priority'      => 	45,
 			) );
 		}
-		
+
 		/**
 		 * static_front_page aka Home Page
 		 * NOTE: Built-in section
+		 * @param $wp_customize
 		 */
 		
 		
@@ -614,9 +618,10 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			) );
 
 		}
-		
+
 		/**
 		 * Site Title & Tagline
+		 * @param $wp_customize
 		 */
 		function section_title_tagline( $wp_customize ) {
 			extract( $this->prepare_variables() );
@@ -1217,9 +1222,10 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 
 			
 		}
-		
+
 		/**
 		 * Seperate Branding section (before navigation, below header section)
+		 * @param $wp_customize
 		 */
 		
 		function section_branding( $wp_customize ) {
@@ -1360,10 +1366,11 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			) ) );
 
 		}
-		
-		
+
+
 		/**
 		 * Content Section
+		 * @param $wp_customize
 		 */
 		
 		function section_content( $wp_customize ) {
@@ -1636,9 +1643,10 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			$center_title_priority++;
 		
 		}
-		
+
 		/**
 		 * Sidebars Section
+		 * @param $wp_customize
 		 */
 		
 		function section_layouts( $wp_customize ) {
@@ -1775,9 +1783,10 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			) );
 			
 		}
-		
+
 		/**
 		 * Widget section
+		 * @param $wp_customize
 		 */
 		
 		function section_widgets( $wp_customize ) {
@@ -1905,9 +1914,10 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			$widget_section_priority++;
 			
 		}
-	
+
 		/**
 		 * Typography Section
+		 * @param $wp_customize
 		 */
 		function section_typography( $wp_customize ) {
 			extract( $this->prepare_variables() );
@@ -2095,11 +2105,12 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 
 			
 		}
-		
 
-	/**
-	 * Footer Section
-	 */
+
+		/**
+		 * Footer Section
+		 * @param $wp_customize
+		 */
 	
 			
 		function section_footer( $wp_customize ) {
@@ -2839,12 +2850,13 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'type'   		 => 'text',
 				) );			
 		}
-		
-				
+
+
 		/**
 		 * Advanced bootstrap settings:
 		 * - container sizes (small, medium, large)
 		 * - sidebar / content col grid customization
+		 * @param $wp_customize
 		 */
 		
 		function section_customize_bootstrap( $wp_customize ) {
@@ -3082,6 +3094,3 @@ include_once( get_template_directory() . '/includes/admin/customizer/base-contro
 
 // implements a slightly modified color control WITH transparency option
 include_once( get_template_directory() . '/includes/admin/customizer/cc2-color-control.php' );
-
-
-?>

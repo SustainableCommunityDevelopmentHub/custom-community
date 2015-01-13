@@ -85,7 +85,10 @@ function tk_extensions_screen() { ?>
 
 /**
  * Adding a free extensions to the list
- * @author Sven Lehnert, Konrad Sroka   
+ * @author Sven Lehnert, Konrad Sroka
+ * @param $name
+ * @param $slug
+ * @param $url
  */
  
 function add_free_extension( $name, $slug, $url ) {

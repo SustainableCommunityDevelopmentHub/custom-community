@@ -31,32 +31,33 @@ class updateToCC_TwoZero extends updateHelper {
 		
 		return $return;
 	}
-	
+
 	/**
 	 * Structure of update data:
 	 *
 	 * array(
-	 * 	'section_name' => array(
-			'old_option_name' => 'custom_community_theme_options',
-			'old_setting_prefix' => 'cap_',
-			'new_option_name' =>'cc2_advanded_settings',
-			'import_data' => array(
-				'old_option' => 'new_option',
-				'old_option_2' => => array(
-					'new_setting_name' => 'new_option_2',
-					'value_conversion' => array(
-						'on' => true,
-						'off' => false,
-					),
-				),
-				'old_option_3' => array(
-					'new_setting_name' => 'new_option_3',
-					'callback' => 'font_conversion', // a method or function callback; use array( 'className', 'callback_method') if you want to use an external class instead the current one
-				),
-			)
-		); // end of section $section_name
-				
-	*/
+	 *    'section_name' => array(
+	 * 'old_option_name' => 'custom_community_theme_options',
+	 * 'old_setting_prefix' => 'cap_',
+	 * 'new_option_name' =>'cc2_advanded_settings',
+	 * 'import_data' => array(
+	 * 'old_option' => 'new_option',
+	 * 'old_option_2' => => array(
+	 * 'new_setting_name' => 'new_option_2',
+	 * 'value_conversion' => array(
+	 * 'on' => true,
+	 * 'off' => false,
+	 * ),
+	 * ),
+	 * 'old_option_3' => array(
+	 * 'new_setting_name' => 'new_option_3',
+	 * 'callback' => 'font_conversion', // a method or function callback; use array( 'className', 'callback_method') if you want to use an external class instead the current one
+	 * ),
+	 * )
+	 * ); // end of section $section_name
+	 * @param bool $arrSelectedSections
+	 * @return array
+	 */
 	
 	function run_updates( $arrSelectedSections = false ) {
 		$return = array(
@@ -356,5 +357,3 @@ $update->load_settings( $arrUpdateData );
 
 
 $arrResult = $update->run_updates();
-
-?>

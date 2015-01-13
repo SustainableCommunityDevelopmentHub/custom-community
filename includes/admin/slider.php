@@ -67,6 +67,8 @@ class cc2_SliderAdmin {
 
 	/**
 	 * Wrapper to avoid future fuck-ups and repetitive works (aka DRY!)
+	 * @param array $default
+	 * @return mixed|void
 	 */
 
 	function get_slider_settings( $default = array() ) {
@@ -212,18 +214,17 @@ class cc2_SliderAdmin {
 		require_once( get_template_directory() . '/includes/admin/templates/slideshow-edit.php' );
 	
 	}
-	
-	
-	
-	
+
+
 	/**
 	 * Enqueue the needed JS _for the admin screen_
 	 *
 	 * FIXME: Needs to be loaded ONLY when showing the admin screen, but NOWHERE ELSE!
 	 * TODO: Bundle into a seperate, independent call
-	 * 
+	 *
 	 * @package cc2
 	 * @since 2.0
+	 * @param $hook_suffix
 	 */
 
 	function init_admin_js($hook_suffix) {
@@ -259,12 +260,11 @@ class cc2_SliderAdmin {
 }
 
 
-
-
- 
 /**
  * Update custom field on save
-*/
+ * @param $attachment
+ * @return
+ */
 function cc_slider_update_attachment_meta($attachment){
 	global $post;
     $cc_slider_options = get_option('cc_slider_options');

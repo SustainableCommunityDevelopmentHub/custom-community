@@ -37,5 +37,3 @@
 	// if(get_theme_mod('name') == true)
 		// get_sidebar( $sidebar_right_name );
 // }
-
-?>
