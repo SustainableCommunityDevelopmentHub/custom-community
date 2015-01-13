@@ -402,13 +402,11 @@ class cc2_Admin_ExportImport {
 
 	/**
 	 * Export settings
-	 */
-
-
+	 */ 
+	
+	
 	/**
 	 * Bundle all settings
-	 * @param array $arrDataItems
-	 * @return bool
 	 */
 	 
 	public function compile_export_data( $arrDataItems = array() ) {
@@ -454,8 +452,6 @@ class cc2_Admin_ExportImport {
 
 	/**
 	 * Sometimes, an empty pair, like array( 0 => false ), appears, and wrecks havoc
-	 * @param array $data
-	 * @return array
 	 */
 	
 	public function remove_empty_pairs( $data = array() ) {
@@ -517,12 +513,9 @@ class cc2_Admin_ExportImport {
 		
 		return $return;
 	}
-
+	
 	/**
 	 * Import settings
-	 * @param $data
-	 * @param string $type
-	 * @return array|bool
 	 */
 
 	public function import_data( $data, $type = 'json' ) {
@@ -657,12 +650,9 @@ class cc2_Admin_ExportImport {
 		
 		return $return;
 	}
-
+	
 	/**
 	 * Wrapper for chained set_theme_mod + get_theme_mod. Ie. set_theme_mod with return code (fail / success)
-	 * @param $name
-	 * @param $value
-	 * @return bool
 	 */
 	
 	public static function update_theme_mod( $name, $value ) {
@@ -685,17 +675,16 @@ class cc2_Admin_ExportImport {
 		
 		return $return;
 	}
-
-
+	
+	
 	/**
 	 * Enqueue the needed JS _for the admin screen_
 	 *
 	 * FIXME: Needs to be loaded ONLY when showing the admin screen, but NOWHERE ELSE!
 	 * TODO: Bundle into a seperate, independent call
-	 *
+	 * 
 	 * @package cc2
 	 * @since 2.0
-	 * @param $hook_suffix
 	 */
 
 	function init_admin_js($hook_suffix) {

@@ -143,8 +143,6 @@ class cc2_Admin_AdvancedSettings {
 
 	/**
 	 * Wrapper to avoid future fuck-ups and repetitive works (aka DRY!)
-	 * @param array $default
-	 * @return mixed|void
 	 */
 
 	function get_advanced_settings( $default = array() ) {
@@ -164,8 +162,6 @@ class cc2_Admin_AdvancedSettings {
 
 	/**
 	 * Get default values for settings
-	 * @param array $arrFields
-	 * @return bool
 	 */
 	 
 	function compile_settings_defaults( $arrFields = array() ) {
@@ -353,17 +349,16 @@ class cc2_Admin_AdvancedSettings {
 		
 		echo apply_filters( $this->classPrefix . 'button_save_changes', $strSaveChangesButton );
 	}
-
+	
 	/**
 	 * Enqueue the needed JS _for the admin screen_
 	 *
 	 * FIXME: Needs to be loaded ONLY when showing the admin screen, but NOWHERE ELSE!
 	 * TODO: Bundle into a seperate, independent call
 	 * NOTE: Doesn't seem as if its being called anywhere, anyway.
-	 *
+	 * 
 	 * @package cc2
 	 * @since 2.0
-	 * @param $hook_suffix
 	 */
 
 	function init_admin_js($hook_suffix) {

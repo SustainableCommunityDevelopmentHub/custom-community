@@ -101,12 +101,10 @@ class cc20_slideshowImport extends updateHelper {
 		
 		return $return;
 	}
-
-
+	
+		
 	/**
 	 * Add new slide
-	 * @param array $arrParams
-	 * @return bool
 	 */
 	 
 	function add_slide( $arrParams = array() ) {

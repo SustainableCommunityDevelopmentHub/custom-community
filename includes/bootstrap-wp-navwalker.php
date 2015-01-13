@@ -11,7 +11,7 @@
  */
 
 class wp_bootstrap_navwalker extends Walker_Nav_Menu {
-
+	
 	/**
 	 * @see Walker::start_lvl()
 	 * @since 3.0.0
@@ -38,9 +38,8 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
 	 * @param string $output Passed by reference. Used to append additional content.
 	 * @param object $item Menu item data object.
 	 * @param int $depth Depth of menu item. Used for padding.
-	 * @param array|object $args
-	 * @param int $id
-	 * @internal param int $current_page Menu item ID.
+	 * @param int $current_page Menu item ID.
+	 * @param object $args
 	 */
 
 	function start_el( &$output, $item, $depth = 0, $args = array(), $id = 0 ) {

@@ -76,8 +76,6 @@ if( !class_exists( 'cc2_ColorSchemes' ) ) :
 
 		/**
 		 * Backward compatiblity for LESS-compiled stylesheets
-		 * @param $url
-		 * @return mixed|void
 		 */
 
 		public function use_compiled_stylesheet( $url ) {
@@ -223,12 +221,12 @@ if( !class_exists( 'cc2_ColorSchemes' ) ) :
 			
 			return $return;
 		}
-
+	
 		/**
 		 * Fetch the default settings of the current scheme (mostly for the customizer API).
-		 *
-		 * @param bool|string $scheme_slug Required.
-		 * @return mixed $return        Returns FALSE if not found, missing scheme_slug or something else is broken. On success, returns the complete default settings data (array).
+		 * 
+		 * @param string $scheme_slug	Required.
+		 * @return mixed $return		Returns FALSE if not found, missing scheme_slug or something else is broken. On success, returns the complete default settings data (array).
 		 */
 		
 		function get_scheme_default_settings( $scheme_slug = false ) {

@@ -132,11 +132,9 @@ class _cc2_BootStrapSupplements {
 		}
 		
 	}*/
-
+	
 	/**
 	 * Add on-demand loading information for bootstrap-wp.js and the style.css
-	 * @param array $classes
-	 * @return array
 	 */
 	public function filter_body_class( $classes = array() ) {
 		$return = $classes;
