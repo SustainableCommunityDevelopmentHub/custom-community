@@ -1,12 +1,13 @@
 <?php
 /**
  * @package _tk
- */ 
+ */
  
 // customizer title display handling
 $show_title = true; // default
 $display_page_title_props = get_theme_mod('display_page_title', array() );
 $author_image_settings = get_theme_mod('show_author_image' );
+$post_class = get_post_class();
 //$author_avatar = false;
 
 // search
@@ -25,9 +26,8 @@ if( is_home() && isset( $display_page_title_props['home'] ) && $display_page_tit
 }
 
 if( 'post' == get_post_type() && $author_image_settings['archive'] != false ) {
-	
-	
 	$author_avatar = cc2_get_author_image();
+	$post_class[] = 'has-author-avatar';
 }
 
 ?>
@@ -40,7 +40,7 @@ if( 'post' == get_post_type() && $author_image_settings['archive'] != false ) {
 // Remember to do this for all content templates you want to have this, 
 // for example content-single.php for the post single view. ?>
 
-<article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+<article id="post-<?php the_ID(); ?>" <?php post_class( $post_class ); ?>>
 	
 
 	<header class="page-header">

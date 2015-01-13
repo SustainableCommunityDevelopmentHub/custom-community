@@ -860,6 +860,17 @@ class cc2_CustomStyle {
 		margin-top: -10px;
 		margin-left: 5px;
 	}
+	
+	<?php /** NOTE: Fixes issues with the post header size (overlaps with the bottom border etc.); a gravatar image usually is 60x60. */ ?>	
+	.has-author-avatar .page-header,
+	.has-author-avatar .page-header .entry-meta {
+		min-height: 60px; 
+	}
+	
+	.has-author-avatar .page-title {
+		margin-bottom: 20px;
+	}
+	
 
 	/* Footer Fullwidth */
 	

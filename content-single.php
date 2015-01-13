@@ -1,12 +1,14 @@
 <?php
 /**
- * @package _tk
+ * @package cc2
  */
 
 $show_title = true;
 $display_page_title_props = get_theme_mod('display_page_title', array() );
 $author_image_settings = get_theme_mod('show_author_image' );
 $author_avatar = false;
+$post_class = get_post_class();
+
 
 //new __debug( array('settings' => $author_image_settings, 'global settings' => get_theme_mod('show_author_image', array() ) )  );
 
@@ -17,11 +19,14 @@ if( isset( $display_page_title_props['posts'] ) && $display_page_title_props['po
 
 if( $author_image_settings['single_post'] != false ) {
 	$author_avatar = cc2_get_author_image();
+		
+	$post_class[] = 'has-author-avatar';
 }
+
 
 ?>
 
-<article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+<article id="post-<?php the_ID(); ?>" <?php post_class( $post_class ); ?>>
 	
 	<header class="page-header">
 		<?php if( !empty($show_title) ) : ?>
