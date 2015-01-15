@@ -345,22 +345,22 @@ endif;
  */
 
 if( !function_exists( 'cc2_default_footer_branding' ) ) :
-	function cc2_default_footer_branding() {
-		
-
-?>
+	function cc2_default_footer_branding() { ?>
 		
 		<p class="alignright">
-			<small><a href="http://wordpress.org/" title="A Semantic Personal Publishing Platform">Proudly powered by WordPress</a>
-		
-			<span class="sep"> | </span>
-			
-			<a href="http://themekraft.com/store/custom-community-2-free-responsive-wordpress-bootstrap-theme/" title="WordPress Theme Custom Community 2">WordPress Theme Custom Community 2</a> developed by <a href="http://themekraft.com/" title="WordPress Themes and Plugins by ThemeKraft">ThemeKraft</a></small>
-			
+			<small>
+				<a href="http://wordpress.org/" rel="nofollow" title="A Semantic Personal Publishing Platform">Proudly powered by WordPress</a>
+				<span class="sep"> | </span>
+				<?php if(is_home()){ ?>
+					<a href="http://themekraft.com/store/custom-community-2-free-responsive-wordpress-bootstrap-theme/" title="WordPress BuddyPress WooCommerce Responsive Theme Custom Community 2">Responsive WordPress Customizer Theme </a> Custom Community 2 - Developed by ThemeKraft
+				<?php } else { ?>
+					<a rel="nofollow" href="http://themekraft.com/store/custom-community-2-free-responsive-wordpress-bootstrap-theme/" title="WordPress BuddyPress WooCommerce Responsive Theme Custom Community 2">Responsive WordPress Customizer Theme </a> Custom Community 2 - Developed by ThemeKraft
+				<?php } ?>
+			</small>
 		</p>
 		<!-- footer branding -->
 
-<?php
+	<?php
 
 	}
 	
