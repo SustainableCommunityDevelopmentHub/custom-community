@@ -84,10 +84,47 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
 
 			$output .= $indent . '<li' . $id . $value . $class_names .'>';
 
+			
+
+			/*
 			$attributes = ! empty( $item->target )     ? ' target="' . esc_attr( $item->target     ) .'"' : '';
-			$attributes .= ! empty( $item->xfn )        ? ' rel="'    . esc_attr( $item->xfn        ) .'"' : '';
-			$attributes .= ! empty( $item->url )        ? ' href="'   . esc_attr( $item->url        ) .'"' : '';
-			$attributes .= ($args->has_children) 	    ? ' data-toggle="dropdown" data-target="#" class="dropdown-toggle"' : '';
+			$attributes .= ! empty( $item->xfn ) ? ' rel="'    . esc_attr( $item->xfn        ) .'"' : '';
+			$attributes .= ! empty( $item->url ) ? ' href="'   . esc_attr( $item->url        ) .'"' : '';
+			$attributes .= ($args->has_children) ? ' data-toggle="dropdown" data-target="#" class="dropdown-toggle"' : '';
+			*/
+			
+			/**
+			 * Better structure + fixing the missing "click" event
+			 * 
+			 * @author Fabian Wolf
+			 * @since 2.0.22
+			 */
+			 
+			$attributes = '';
+			
+			if( ! empty( $item->target ) ) {
+				$arrAttributes[] = 'target="' . esc_attr( $item->target ) . '"';
+			}
+			
+			if( ! empty( $item->xfn ) ) {
+				$arrAttributes[] = 'rel="' . esc_attr( $item->xfn ) . '"';
+			}
+			
+			$url = '#';
+			
+			if( ! empty( $item->url ) ) { // somebody didnt get the memo, about URLs to be sanitized using the url sanitizer .. ?
+				$url = esc_url($item->url);
+				
+				$arrAttributes[] = 'href="' . $url . '"';
+			}
+			
+			if( $args->has_children ) {
+				$arrAttributes[] = 'data-toggle="dropdown" data-target="'. $url . '" class="dropdown-toggle"';
+			}
+			
+			if( !empty( $arrAttributes ) ) {
+				$attributes = ' ' . implode(' ', $arrAttributes );
+			}
 
 			$item_output = $args->before;
 			
@@ -98,7 +135,7 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
 			 * if there is a value in the attr_title property. If the attr_title
 			 * property is NOT null we apply it as the class name for the glyphicon.
 			 */
-			if(! empty( $item->attr_title )){
+			if( ! empty( $item->attr_title ) ) {
 				$item_output .= '<a'. $attributes .'><i class="' . esc_attr( $item->attr_title ) . '"></i>&nbsp;';
 			} else {
 				$item_output .= '<a'. $attributes .'>';
@@ -148,5 +185,3 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
         parent::display_element($element, $children_elements, $max_depth, $depth, $args, $output);
     }
 }
-
-?>

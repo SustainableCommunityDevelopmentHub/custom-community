@@ -28,10 +28,12 @@ function cc_add_header_image() {
 
 	global $post;
 	$header_image = get_header_image();
+	$custom_header_image = get_custom_header();
+	
 
 	if ( ! empty( $header_image ) ) { ?>
 		<a id="cc-header-image" href="<?php echo esc_url( home_url( '/' ) ); ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" rel="home">
-			<img src="<?php header_image(); ?>" width="<?php echo get_custom_header()->width; ?>" height="<?php echo get_custom_header()->height; ?>" alt="">
+			<img src="<?php echo $header_image; ?>" width="<?php echo $custom_header_image->width; ?>" height="<?php echo $custom_header_image->height; ?>" alt="">
 		</a><?php 
 	}  
 	
@@ -345,22 +347,26 @@ endif;
  */
 
 if( !function_exists( 'cc2_default_footer_branding' ) ) :
-	function cc2_default_footer_branding() { ?>
+	function cc2_default_footer_branding() {
+		$nofollow = '';
+		
+		if( !is_home() && !is_front_page() ) {
+			$nofollow = ' rel="nofollow"';
+		}
+
+?>
 		
 		<p class="alignright">
-			<small>
-				<a href="http://wordpress.org/" rel="nofollow" title="A Semantic Personal Publishing Platform">Proudly powered by WordPress</a>
-				<span class="sep"> | </span>
-				<?php if(is_home()){ ?>
-					<a href="http://themekraft.com/store/custom-community-2-free-responsive-wordpress-bootstrap-theme/" title="WordPress BuddyPress WooCommerce Responsive Theme Custom Community 2">Responsive WordPress Customizer Theme </a> Custom Community 2 - Developed by ThemeKraft
-				<?php } else { ?>
-					<a rel="nofollow" href="http://themekraft.com/store/custom-community-2-free-responsive-wordpress-bootstrap-theme/" title="WordPress BuddyPress WooCommerce Responsive Theme Custom Community 2">Responsive WordPress Customizer Theme </a> Custom Community 2 - Developed by ThemeKraft
-				<?php } ?>
-			</small>
+			<small><a href="http://wordpress.org/" title="A Semantic Personal Publishing Platform">Proudly powered by WordPress</a>
+
+			<span class="sep"> | </span>
+			
+			<a href="http://themekraft.com/store/custom-community-2-free-responsive-wordpress-bootstrap-theme/"<?php echo $nofollow; ?> title="WordPress Theme Custom Community 2">WordPress Theme Custom Community 2</a> developed by ThemeKraft</small>
+			
 		</p>
 		<!-- footer branding -->
 
-	<?php
+<?php
 
 	}
 	
@@ -441,6 +447,7 @@ function cc2_has_sidebar( $location = 'right' ) {
 		case 'home':
 			$layout_part = 'archive_';
 		
+			break;
 		case 'front-page':
 			$layout_part = 'page_';
 		

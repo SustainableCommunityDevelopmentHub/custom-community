@@ -39,7 +39,7 @@
 					<p class="site-description"><?php bloginfo( 'description' ); ?></p>
 				</div>
 
-				<?php do_action( 'cc_header_last'); // wanna hook something here? i wanted to ;) ?>
+				<?php do_action( 'cc_header_last'); // wanna hook something here? ;) ?>
 
 			</div>
 		</div>

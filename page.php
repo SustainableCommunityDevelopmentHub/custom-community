@@ -10,9 +10,9 @@
  * @package _tk
  */
 $content_class = array('main-content-inner');
-?>
 
-<?php get_header(); ?>
+
+get_header(); ?>
 
     <div class="main-content">
         <div id="container" class="container">
