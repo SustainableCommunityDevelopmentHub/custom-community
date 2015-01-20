@@ -347,26 +347,19 @@ endif;
  */
 
 if( !function_exists( 'cc2_default_footer_branding' ) ) :
-	function cc2_default_footer_branding() {
-		$nofollow = '';
-		
-		if( !is_home() && !is_front_page() ) {
-			$nofollow = ' rel="nofollow"';
-		}
-
-?>
+	function cc2_default_footer_branding() { ?>
 		
 		<p class="alignright">
-			<small><a href="http://wordpress.org/" title="A Semantic Personal Publishing Platform">Proudly powered by WordPress</a>
+			<small><a href="http://wordpress.org/" title="<?php _e( 'A Semantic Personal Publishing Platform', 'cc2' ) ?> "><?php _e( 'Proudly powered by WordPress', 'cc2') ?></a>
 
 			<span class="sep"> | </span>
 			
-			<a href="http://themekraft.com/store/custom-community-2-free-responsive-wordpress-bootstrap-theme/"<?php echo $nofollow; ?> title="WordPress Theme Custom Community 2">WordPress Theme Custom Community 2</a> developed by ThemeKraft</small>
+			<a href="http://themekraft.com/store/custom-community-2-free-responsive-wordpress-bootstrap-theme/" rel="nofollow" title="<?php _e('WordPress Theme Custom Community', 'cc2') ?> "><?php _e( 'WordPress Theme Custom Community', 'cc2') ?></a> <?php _e( 'developed by ThemeKraft', 'CC2') ?></small>
 			
 		</p>
 		<!-- footer branding -->
 
-<?php
+	<?php
 
 	}
 	
