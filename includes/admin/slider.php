@@ -180,7 +180,7 @@ class cc2_SliderAdmin {
 
 		add_meta_box(
 			'cc_slider_sectionid',
-			__( 'SlideShow Settings', 'cc' ),
+			__( 'SlideShow Settings', 'cc2' ),
 			array( $this, 'admin_custom_box' ),
 			'attachment'
 		);
