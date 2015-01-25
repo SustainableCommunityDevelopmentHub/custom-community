@@ -22,7 +22,7 @@ class cc2_Admin_AdvancedSettings {
 		$optionNameCompat = 'cc2_custom_styling',
 		$optionName = 'cc2_advanced_settings',
 		$arrKnownFields = array(
-			'custom_css' => array( 'type' => 'text', 'default' => ''),
+			'custom_css' => array( 'type' => 'text_css', 'default' => ''),
 			
 			'headjs_type' => array('type' => 'text', 'default' => 'redux'),
 			'headjs_url' => array('type' => 'url', 'default' => ''),
@@ -79,7 +79,7 @@ class cc2_Admin_AdvancedSettings {
 
 		// save settings
 		add_action( 'wp_ajax_' . $this->classPrefix . 'save', array( $this, 'update_settings') );
-		add_action( 'wp_ajax_nopriv_' . $this->classPrefix . 'save', array( $this, 'update_settings') );
+		//add_action( 'wp_ajax_nopriv_' . $this->classPrefix . 'save', array( $this, 'update_settings') );
 		
 		
 	}
@@ -117,6 +117,15 @@ class cc2_Admin_AdvancedSettings {
 						case 'bool':
 						// convert truethy/falsy to boolean
 							$update_settings[$strFieldName] = ( $_POST['settings'][ $strFieldName ] == 1 );
+							break;
+						case 'text_css':
+						case 'css':
+							$sanitized_setting = '';
+							$sanitized_setting = apply_filters( 'cc2_pre_sanitize_css', $_POST['settings'][ $strFieldName ] );
+							$sanitized_setting = cc2_Pasteur::sanitize_css( $sanitized_setting );
+							
+							$update_settings[ $strFieldName ] = wp_filter_nohtml_kses( $sanitized_setting );
+							
 							break;
 						default:
 							$update_settings[$strFieldName] = $_POST['settings'][ $strFieldName ];
@@ -349,6 +358,27 @@ class cc2_Admin_AdvancedSettings {
 		
 		echo apply_filters( $this->classPrefix . 'button_save_changes', $strSaveChangesButton );
 	}
+	
+	/**
+	 * Sanitize input before saving
+	 * NOTE: Possibly obsolete <=> collission with update_settings
+	 * 
+	 */
+	/*
+	function sanitize_settings( $input = false ) {
+		$return = $input;
+		
+		if( !empty( $input ) && is_array( $input) ) {
+			foreach( $input as $strSettingName => $settingValue ) {
+				
+				
+				$arrReturn[ $strSettingName ] 
+				
+			}
+		}
+		
+		return $return;
+	}*/
 	
 	/**
 	 * Enqueue the needed JS _for the admin screen_

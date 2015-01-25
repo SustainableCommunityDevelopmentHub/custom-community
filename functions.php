@@ -9,7 +9,9 @@ if( file_exists( get_stylesheet_directory() . '/includes/theme-config.php' ) && 
 }
 
 
-// uncomment if something fails to work - enables all built-in theme debugging options
+/**
+ * NOTE: Uncomment the following line if something fails to work - enables all built-in theme debugging functions! ;-)
+ */
 //define('CC2_THEME_DEBUG', true );
 
 // First, include debugging helper class, if the helper plugin isnt activated
@@ -21,14 +23,6 @@ require_once( get_template_directory() . '/includes/extras.php' );
 // generic validator / sanitization class
 require( get_template_directory() . '/includes/pasteur.class.php' );
 
-/**
- * Possible bugfix for randomly appearing "blank" screen in the Theme Customizer
- * @link http://www.mhthemes.com/support/theme-customizer-not-working/
- * @link http://wordpress.org/support/topic/theme-customizer-problem
- * 
- * NOTE: Didnt help much :-/
- */
-//remove_action('shutdown', 'wp_ob_end_flush_all', 1);
 
 
 /**
@@ -110,8 +104,8 @@ function cc2_theme_initial_setup( $old_name, $old_theme = false) {
 add_action('switch_theme', 'cc2_theme_deactivation', 10, 2 );
 function cc2_theme_deactivation($new_name, $new_theme) {
 	// save current theme settings
-	//update_option( 'cc2_theme_mods_backup', get_theme_mods() );
 	//require_once( get_template_directory() . '/includes/extras.php' );
+	
 	cc2_Helper::update_settings_backup( 'theme_mods', get_theme_mods() );
 	
 	// disable theme
@@ -120,8 +114,6 @@ function cc2_theme_deactivation($new_name, $new_theme) {
 	set_transient( 'cc2_theme_active', false );
 	
 	//new __debug( cc2_Helper::get_settings_backup( 'theme_mods' ), 'backup of theme_mods' );
-	
-	//exit('and now for  ... brutal break!');
 
 }
 
@@ -893,7 +885,6 @@ endif;
 
 
 // Load Customizer Options
-//include get_template_directory() . '/includes/admin/customizer-helper.class.php';
 require get_template_directory() . '/includes/admin/customizer-options.class.php';
 
 // Implement the Custom Header Feature
@@ -912,7 +903,11 @@ require get_template_directory() . '/includes/template-tags.php';
 require get_template_directory() . '/includes/jetpack.php';
 
 // Load Bootstrap WP Navwalker
-require get_template_directory() . '/includes/bootstrap-wp-navwalker.php';
+//require get_template_directory() . '/includes/bootstrap-wp-navwalker.php';
+
+// Load improved Bootstrap WP Navwalker
+require get_template_directory() . '/includes/wp-bootstrap-navwalker.php';
+
 
 // load Boostrap helpers
 require_once( get_template_directory() . '/includes/bootstrap-supplements.php' );

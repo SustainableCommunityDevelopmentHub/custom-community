@@ -12,6 +12,37 @@ if( !class_exists('cc2_Pasteur') ) :
 
 
 class cc2_Pasteur {
+	public static $allowed_css_attr = array( 
+		'text-align', 'margin', 'color', 'float',
+		
+		'border', 'background', 'background-color', 'border-bottom', 'border-bottom-color',
+		
+		'border-bottom-style', 'border-bottom-width', 'border-collapse', 'border-color', 'border-left',
+		'border-left-color', 'border-left-style', 'border-left-width', 'border-right', 'border-right-color',
+		'border-right-style', 'border-right-width', 'border-spacing', 'border-style', 'border-top',
+		'border-top-color', 'border-top-style', 'border-top-width', 'border-width', 'caption-side',
+		
+		'clear', 'cursor', 'direction', 
+		
+		'font', 'font-family', 'font-size', 'font-style',
+		'font-variant', 'font-weight', 'letter-spacing', 'line-height', 
+		
+		'margin-bottom',
+		'margin-left', 'margin-right', 'margin-top', 'overflow', 'padding', 'padding-bottom',
+		'padding-left', 'padding-right', 'padding-top', 
+		
+		'text-decoration', 'text-indent', 'vertical-align',
+		
+		'width', 'height',
+		
+		'top', 'left', 'display', 'visibility', 'position',
+		
+	
+		
+		'border-radius',
+		
+	);
+	
 
 	/**
 	 * Generic sanitizer for the Theme Customizer
@@ -159,10 +190,30 @@ class cc2_Pasteur {
 	public static function none( $value, $wp_settings_instance = false ) {
 		return;
 	}
+	
+
+	public static function sanitize_css( $value, $wp_settings_instance = false ) {
+		$return = $value;
+		
+		/**
+		 * Strip out all html tags etc.
+		 * Based upon @link http://css-tricks.com/snippets/php/sanitize-database-inputs/
+		 */
+		
+		$search = array(
+			'@<script[^>]*?>.*?</script>@si',   // Strip out javascript
+			'@<[\/\!]*?[^<>]*?>@si',            // Strip out HTML tags
+			'@<style[^>]*?>.*?</style>@siU',    // Strip style tags properly
+			'@<![\s\S]*?--[ \t\n\r]*>@'         // Strip multi-line comments
+		);
+
+		$return = preg_replace($search, '', $return);
+		
+		return $return;
+	}
+	
 
 }
-
-
 endif; // class_exists
 
 /**

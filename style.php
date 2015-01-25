@@ -117,7 +117,10 @@ class cc2_CustomStyle {
 	?>
 	
 	@media (min-width: <?php echo $load_hover_dropdown_css_min_width; ?>px) {
-		html.no-mobile .dropdown:hover .dropdown-menu {
+		html.no-mobile .dropdown:active > .dropdown-menu,
+		html.no-mobile .dropdown:hover > .dropdown-menu,
+		.dropdown-submenu:active > .dropdown-menu, 
+		.dropdown-submenu:hover > .dropdown-menu {
 			display: block;
 		}
 	}

@@ -355,13 +355,13 @@ if( !function_exists( 'cc2_default_footer_branding' ) ) :
 		}
 
 ?>
-		
+
 		<p class="alignright">
 			<small><a href="http://wordpress.org/" title="A Semantic Personal Publishing Platform">Proudly powered by WordPress</a>
 
 			<span class="sep"> | </span>
 			
-			<a href="http://themekraft.com/store/custom-community-2-free-responsive-wordpress-bootstrap-theme/"<?php echo $nofollow; ?> title="WordPress Theme Custom Community 2">WordPress Theme Custom Community 2</a> developed by ThemeKraft</small>
+			<a href="http://themekraft.com/store/custom-community-2-free-responsive-wordpress-bootstrap-theme/"<?php echo $nofollow; ?> title="<?php _e('WordPress Theme Custom Community 2', 'cc2'); ?>"><?php _e('WordPress Theme Custom Community 2', 'cc2'); ?></a> <?php _e('developed by ThemeKraft', 'cc2'); ?></small>
 			
 		</p>
 		<!-- footer branding -->

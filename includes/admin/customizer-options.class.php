@@ -417,6 +417,10 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				add_action('customizer_register', array( $this,  ) );
 			}*/
 			
+			/**
+			 * FIXME: Global static priority count for sections does not work properly. Only manually set priority works.
+			 */
+			
 			self::$customizer_section_priority = 10;
 			self::$customizer_section_priority_call['section_color_schemes'] = self::$customizer_section_priority;
 			add_action( 'customize_register', array( $this, 'section_color_schemes' ),11 );
@@ -709,8 +713,8 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			
 			$wp_customize->add_section( 'header', array(
 				'title'         => 	'Header',
-				//'priority'      => 	60,
-				'priority' => self::$customizer_section_priority,
+				'priority'      => 	60,
+				//'priority' => self::$customizer_section_priority,
 			) );
 
 				// Display Header
@@ -1235,6 +1239,24 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			
 			$branding_section_priority+=5;
 		
+			/*
+			$_debug = array(
+				'branding_section_priority' => self::$customizer_section_priority,
+			);
+		
+			// debug label
+			$wp_customize->add_setting( 'branding_section_debug', array(
+				'capability'    => 	'edit_theme_options',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'none' ),
+			) );
+			$wp_customize->add_control( new Label( $wp_customize, 'branding_section_debug', array(
+				'label' 		=> 	__('Debug:', 'cc2') . ' ' . print_r( $_debug , true ),
+				'type' 			=> 	'label',
+				'section' 		=> 	'branding',
+				'priority'		=> 	$branding_section_priority,
+			) ) );
+			$branding_section_priority++;
+			*/
 		
 		
 			// Add Branding - A small Heading
@@ -1370,11 +1392,13 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			extract( $this->prepare_variables() );
 
 
+
 			$wp_customize->add_section( 'content', array(
 				'title' =>	__( 'Content', 'cc2' ),
 				/*'priority' => 260,*/
-				'priority' => self::$customizer_section_priority,
+				'priority' =>  self::$customizer_section_priority,
 			) );
+			
 			
 
 				/*
@@ -1400,7 +1424,26 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					- Center Content Titles (checkboxes, "center on... ": All, Homepage, Archives, Post, Page, Attachment ) --> CSS output
 			*/
 			$display_page_title_priority = 262;
-			// Hide selected page titles
+			
+			/*
+			$_debug = array(
+				'self::$customizer_section_priority' => self::$customizer_section_priority,
+				'display_page_title_priority' => $display_page_title_priority,
+			);
+			
+			// debug label
+			$wp_customize->add_setting( 'content_section_debug', array(
+				'capability'    => 	'edit_theme_options',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'none' ),
+			) );
+			$wp_customize->add_control( new Label( $wp_customize, 'content_section_debug', array(
+				'label' 		=> 	__('Debug:', 'cc2') . ' ' . print_r( $_debug , true ),
+				'type' 			=> 	'label',
+				'section' 		=> 	'content',
+				'priority'		=> 	$display_page_title_priority,
+			) ) );
+			$display_page_title_priority++;
+			*/
 			
 			// Display Header
 			/**
@@ -3082,3 +3125,6 @@ include_once( get_template_directory() . '/includes/admin/customizer/base-contro
 
 // implements a slightly modified color control WITH transparency option
 include_once( get_template_directory() . '/includes/admin/customizer/cc2-color-control.php' );
+
+
+?>

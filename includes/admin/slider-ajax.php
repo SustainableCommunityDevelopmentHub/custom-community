@@ -72,40 +72,40 @@ class cc2_SliderAdminAjax {
 		
 		// save settings
 		add_action( 'wp_ajax_' . $this->classPrefix . 'query', array( $this, 'update_settings') );
-		add_action( 'wp_ajax_nopriv_' . $this->classPrefix . 'query', array( $this, 'update_settings') );
+		//add_action( 'wp_ajax_nopriv_' . $this->classPrefix . 'query', array( $this, 'update_settings') );
 		
 		
 		// show list of slides
 		add_action( 'wp_ajax_' . $this->classPrefix . 'display_slides_list', array( $this, 'display_slides_list') );
-		add_action( 'wp_ajax_nopriv_' . $this->classPrefix . 'display_slides_list', array( $this, 'display_slides_list') );
+		//add_action( 'wp_ajax_nopriv_' . $this->classPrefix . 'display_slides_list', array( $this, 'display_slides_list') );
 		
 		
 		// add new slideshow
 		add_action( 'wp_ajax_' . $this->classPrefix . 'add_slideshow', array( $this, 'add_slideshow') );
-		add_action( 'wp_ajax_nopriv_' . $this->classPrefix . 'add_slideshow', array( $this, 'add_slideshow') );
+		//add_action( 'wp_ajax_nopriv_' . $this->classPrefix . 'add_slideshow', array( $this, 'add_slideshow') );
 
 		// add single slide
 		add_action( 'wp_ajax_' . $this->classPrefix . 'add_slide', array( $this, 'add_slide' ) );
-		add_action( 'wp_ajax_nopriv_' . $this->classPrefix . 'add_slide', array( $this, 'add_slide' ) );
+		//add_action( 'wp_ajax_nopriv_' . $this->classPrefix . 'add_slide', array( $this, 'add_slide' ) );
 
 
 		// delete whole slideshow
 		add_action( 'wp_ajax_' . $this->classPrefix . 'delete_slideshow', array( $this, 'delete_slideshow') );
-		add_action( 'wp_ajax_nopriv_' . $this->classPrefix . 'delete_slideshow', array( $this,'delete_slideshow') );
+		//add_action( 'wp_ajax_nopriv_' . $this->classPrefix . 'delete_slideshow', array( $this,'delete_slideshow') );
 		
 		// delete single slide
 		add_action( 'wp_ajax_' . $this->classPrefix . 'delete_slide', array( $this, 'delete_slide' ) );
-		add_action( 'wp_ajax_nopriv_' . $this->classPrefix . 'delete_slide', array( $this, 'delete_slide') );
+		//add_action( 'wp_ajax_nopriv_' . $this->classPrefix . 'delete_slide', array( $this, 'delete_slide') );
 		
 		
 		// change order of slides
 		add_action( 'wp_ajax_' . $this->classPrefix . 'slideshow_neworder', array( $this, 'slideshow_neworder' ) );
-		add_action( 'wp_ajax_nopriv_' . $this->classPrefix . 'slideshow_neworder', array( $this, 'slideshow_neworder' ) );
+		//add_action( 'wp_ajax_nopriv_' . $this->classPrefix . 'slideshow_neworder', array( $this, 'slideshow_neworder' ) );
 		
 	
 		// safety switch: reset all slideshows
 		add_action( 'wp_ajax_' . $this->classPrefix . 'reset_slideshows', array( $this, 'reset_slideshows' ) );
-		add_action( 'wp_ajax_nopriv_' . $this->classPrefix . 'reset_slideshows', array( $this, 'reset_slideshows' ) );
+		//add_action( 'wp_ajax_nopriv_' . $this->classPrefix . 'reset_slideshows', array( $this, 'reset_slideshows' ) );
 	
 		// update post meta fields (aka custom fields)
 		add_action('wp_ajax_save-attachment-compat', array( $this, 'update_media_xtra_fields'), 0, 1);
