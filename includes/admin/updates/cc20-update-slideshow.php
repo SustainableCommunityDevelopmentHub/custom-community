@@ -187,7 +187,7 @@ if( !empty( $arrPreparedSlideshows ) && is_array( $arrPreparedSlideshows) ) {
 
 
 	// Slideshow
-	/* array(__('home','cc'), __('off','cc'), __('all','cc')), =>     
+	/* array(__('home','cc2'), __('off','cc2'), __('all','cc2')), =>
 	 * 'home' 			=> 'display on home',
 'bloghome' 		=> 'display on blog home',
 'always'		=> 'display always',

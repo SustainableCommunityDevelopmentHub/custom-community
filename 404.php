@@ -29,13 +29,13 @@
 
 						<?php if( get_theme_mod('display_page_title[error]', false ) != false ) : ?>
                         <header class="page-header">
-                            <h2 class="page-title"><?php _e( 'Oops! Something went wrong here.', '_tk' ); ?></h2>
+                            <h2 class="page-title"><?php _e( 'Oops! Something went wrong here.', 'cc2' ); ?></h2>
                         </header><!-- .page-header -->
 						<?php endif; ?>
 						
                         <div class="page-content">
 
-                            <p><?php _e( 'Nothing could be found at this location. Maybe try a search?', '_tk' ); ?></p>
+                            <p><?php _e( 'Nothing could be found at this location. Maybe try a search?', 'cc2' ); ?></p>
 
                             <?php get_search_form(); ?>
 
