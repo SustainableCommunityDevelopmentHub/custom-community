@@ -18,7 +18,12 @@ if( file_exists( get_stylesheet_directory() . '/includes/theme-config.php' ) && 
 if( !class_exists('__debug') && file_exists( get_template_directory() . '/includes/debug.class.php' ) ) :
 	include_once( get_template_directory() . '/includes/debug.class.php' );
 endif;
+
+// backup settings + more 
 require_once( get_template_directory() . '/includes/extras.php' );
+
+// alternative theme settings handler (alternative to get_theme_mod / set_theme_mod, including comparision functions)
+require( get_template_directory() . '/includes/theme-mods.php' );
 
 // generic validator / sanitization class
 require( get_template_directory() . '/includes/pasteur.class.php' );
@@ -94,6 +99,11 @@ function cc2_theme_initial_setup( $old_name, $old_theme = false) {
 				
 			}
 		}*/
+		
+		/**
+		 * TODO: Add check for old data (cc 1.x) and redirect to step-wise import view
+		 */
+		
 		
         wp_redirect(admin_url('customize.php'));
         exit;
@@ -889,6 +899,7 @@ require get_template_directory() . '/includes/admin/customizer-options.class.php
 
 // Implement the Custom Header Feature
 require get_template_directory() . '/includes/custom-header.php';
+
 
 // Load the customizer style file for the frontend & customizer preview
 require get_template_directory() . '/style.php';

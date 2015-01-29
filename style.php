@@ -142,25 +142,62 @@ class cc2_CustomStyle {
 	 * NOTE: get_header_image() is ALSO null = empty if the header image is "hidden" in the customizer
 	 */
 
-	if( get_header_image() != '' ) { ?>
-		.site-branding {
-			display: none;
-		}
-		
-	<?php	
+	// formerly: get_header_image() != ''
+	$show_header_image = false;
+	$header_image = get_header_image();
+	
+	if( !empty( $header_image ) ) {
+		$show_header_image = true;
 	}
+
+	?>
+	
+	.site-header .cc-header-image {
+	<?php
+	if( !empty( $show_header_image) ) { ?>
+		display: block;
+	<?php } else { ?>
+		display: none;
+	<?php } ?>
+	}
+	
+	
+	<?php
+
+
+	// site title!
+	//$show_site_title = ( get_theme_mod( 'display_headertext');
+	$show_site_title = true;
+	
+	?>
+	
+	
+	.site-branding {
+		
+	<?php if( !empty( $show_site_title ) ) { ?>
+		display: block;
+	<?php } else { ?>
+		display: none;	
+	<?php } ?>
+
+	}
+
+<?php
 	
 	/**
 	 * Header base settings
 	 */
-    $arrHeaderBaseStyle = array();
+    
     
     // Header Background Color.
     
+    /*
     echo '/*debug: Header Background Color: '
 		. print_r( get_theme_mod( 'header_background_color' ), true )
-		. '*/';
+		. '*' . '/';*/
     
+	
+	$arrHeaderBaseStyle = array();
     
     if( get_theme_mod( 'header_background_color', false ) != false ) {
 		$arrHeaderBaseStyle[] = 'background-color: #' . get_theme_mod( 'header_background_color' );
@@ -177,20 +214,6 @@ class cc2_CustomStyle {
 	}
 	
 
-    // Header Background Color.
-    /*if( '' !== get_theme_mod( 'header_background_color' ) ) { ?>
-        .site-header {
-            background-color: #<?php echo get_theme_mod( 'header_background_color' ); ?>;
-        }
-    <?php } ?>
-
-	<?php 	// Header Background Image
-		if( get_theme_mod( 'header_background_image', false ) != false ) { ?>
-		.site-header {
-			background: url(<?php echo get_theme_mod( 'header_background_image' ); ?>);
-		}
-    <?php } ?>
-    */
     if( !empty( $arrHeaderBaseStyle ) ) {
 		?>
 		.site-header {
@@ -207,17 +230,19 @@ class cc2_CustomStyle {
     // Show header on home (only if no static frontpage is set!)
     if( $has_static_frontpage != false ) { // blog != home
 	?>
-		body.blog #masthead {
-			
+		/**
+		 * ork
+		 */
+	
+		body.blog .site-header .cc-header-image {
 	<?php
 		// blog
-		if( get_theme_mod( 'display_header_home', true ) == false ) { ?>
-		
+		if( get_theme_mod( 'display_header_home', false) != true ) { ?>
 			display: none; 
 		<?php
 		} else { // display header home = blog
 
-			if( get_theme_mod('header_height_blog', false ) != false ) { ?>
+			if( get_theme_mod('header_height_blog', false ) !== false ) { ?>
 			
 			height: <?php echo get_theme_mod('header_height_blog' ); ?>;
 		
@@ -234,12 +259,12 @@ class cc2_CustomStyle {
 		
 		body.home #masthead {
 			
-	<?php if( get_theme_mod( 'display_header_static_frontpage', true ) == false ) { ?>
+	<?php if( get_theme_mod( 'display_header_static_frontpage', false ) != true ) { ?>
 		
 			display: none;
 	<?php 
 		} else {
-			if( get_theme_mod('header_height_home', false ) != false ) { ?>
+			if( get_theme_mod('header_height_home', false ) !== false ) { ?>
 		
 			height: <?php echo get_theme_mod('header_height_home' ); ?>;
 		<?php }
@@ -255,12 +280,12 @@ class cc2_CustomStyle {
 	body.home #masthead {
 		
 	<?php
-		if( get_theme_mod( 'display_header_home', true ) == false ) { ?>
+		if( get_theme_mod( 'display_header_home', true ) === false ) { ?>
         
 			display: none;
     <?php 
 		} else { // show header home
-			if( get_theme_mod('header_height_home', false ) != false ) { ?>
+			if( get_theme_mod('header_height_home', false ) !== false ) { ?>
 			
 			height: <?php echo get_theme_mod('header_height_home' ); ?>;
 		<?php } ?>
@@ -272,28 +297,35 @@ class cc2_CustomStyle {
 	}
 
     // Show header on posts?
-    if( false === get_theme_mod( 'display_header_posts' ) ) { ?>
-        body.single #masthead { display: none; }
+    if( !get_theme_mod( 'display_header_posts', true ) ) { ?>
+        body.single #masthead .cc-header-image { 
+			display: none; 
+		}
     <?php }
 
     // Show header on pages?
-    if( false === get_theme_mod( 'display_header_pages' ) ) { ?>
-        body.page #masthead { display: none; }
+    if( ! get_theme_mod( 'display_header_pages', true ) ) { ?>
+        body.page #masthead .cc-header-image { 
+			display: none; 
+		}
     <?php }
 
     // Show header on archive?
-    if( false === get_theme_mod( 'display_header_archive' ) ) { ?>
-        body.archive #masthead { display: none; }
+    if( ! get_theme_mod( 'display_header_archive', true ) ) { ?>
+        body.archive #masthead .cc-header-image,
+        body.blog.paged #masthead .cc-header-image { 
+			display: none; 
+		}
     <?php }
 
     // Show header on search?
-    if( false === get_theme_mod( 'display_header_search' ) ) { ?>
-        body.search #masthead { display: none; }
+    if( ! get_theme_mod( 'display_header_search', true ) ) { ?>
+        body.search #masthead .cc-header-image { display: none; }
     <?php }
 
     // Show header on 404?
-    if( false === get_theme_mod( 'display_header_404' ) ) { ?>
-        body.404 #masthead { display: none; }
+    if( ! get_theme_mod( 'display_header_404', true ) ) { ?>
+        body.error404 #masthead .cc-header-image { display: none; }
     <?php }	
    
      ?>

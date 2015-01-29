@@ -58,11 +58,29 @@ class cc2_Pasteur {
 		return $return;
 	}
 	
+	public static function sanitize_truethy_falsy( $value ) {
+		$return = 1;
+		
+		if( empty( $value ) != false ) {
+			$return = 0;
+		}
+		
+		
+		return $return;
+	}
+	
 	/**
 	 * Truethy + falsey
+	 * 
+	 * Return integer values because set_theme_mod sometimes doesn't properly preserve boolean values
 	 */
-	
 	public static function sanitize_boolean( $value, $wp_settings_instance = false ) {
+		return self::sanitize_truethy_falsy( $value );
+	}
+
+	
+	
+	public static function _sanitize_boolean( $value, $wp_settings_instance = false ) {
 		$return = true;
 		
 		if( empty( $value ) != false ) { // 0 = false = null = empty; everything else IS NOT empty and thus true ^^
@@ -86,7 +104,7 @@ class cc2_Pasteur {
 	public static function sanitize_text( $value, $wp_settings_instance = false ) {
 		$return = $value;
 		
-		if( !empty( $value ) ) { 
+		if( !empty( $value ) ) {
 			$return = sanitize_text_field( $value );
 		}
 		
@@ -191,8 +209,14 @@ class cc2_Pasteur {
 		return;
 	}
 	
-
+	
 	public static function sanitize_css( $value, $wp_settings_instance = false ) {
+		//self::sanitize_css_tidy( $value );
+		return self::_sanitize_css( $value);
+	}
+	
+
+	public static function _sanitize_css( $value, $wp_settings_instance = false ) {
 		$return = $value;
 		
 		/**
@@ -208,6 +232,8 @@ class cc2_Pasteur {
 		);
 
 		$return = preg_replace($search, '', $return);
+		
+		//$return =. "\n" . '/' . '* passed _sanitize_css *' . '/' ."\n";
 		
 		return $return;
 	}

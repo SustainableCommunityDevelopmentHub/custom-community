@@ -30,12 +30,16 @@ function cc_add_header_image() {
 	$header_image = get_header_image();
 	$custom_header_image = get_custom_header();
 	
+	echo '<!-- debug: header_image ' . print_r( array('header_image' => $header_image, 'custom_header_image' => $custom_header_image ), true ). ' -->';
 
 	if ( ! empty( $header_image ) ) { ?>
-		<a id="cc-header-image" href="<?php echo esc_url( home_url( '/' ) ); ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" rel="home">
+	<div class="cc-header-image">	
+		<a class="cc-header-image-link" href="<?php echo esc_url( home_url( '/' ) ); ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" rel="home">
 			<img src="<?php echo $header_image; ?>" width="<?php echo $custom_header_image->width; ?>" height="<?php echo $custom_header_image->height; ?>" alt="">
-		</a><?php 
-	}  
+		</a>
+	</div>	
+	<?php 
+	}
 	
 }
 
@@ -361,8 +365,8 @@ if( !function_exists( 'cc2_default_footer_branding' ) ) :
 
 			<span class="sep"> | </span>
 			
-			<a href="http://themekraft.com/store/custom-community-2-free-responsive-wordpress-bootstrap-theme/"<?php echo $nofollow; ?> title="<?php _e('WordPress Theme Custom Community 2', 'cc2'); ?>"><?php _e('WordPress Theme Custom Community 2', 'cc2'); ?></a> <?php _e('developed by ThemeKraft', 'cc2'); ?>
-			</small>
+			<a href="http://themekraft.com/store/custom-community-2-free-responsive-wordpress-bootstrap-theme/"<?php echo $nofollow; ?> title="<?php _e('WordPress Theme Custom Community 2', 'cc2'); ?>"><?php _e('WordPress Theme Custom Community 2', 'cc2'); ?></a> <?php _e('developed by ThemeKraft', 'cc2'); ?></small>
+			
 		</p>
 		<!-- footer branding -->
 
@@ -1253,20 +1257,20 @@ if( !function_exists( 'cc2_bootstrap_comment_form_fields' ) ):
 		$arrDefaultFields = array(
 			'author' =>
 				'<p class="comment-form-author">' .
-				'<label for="author">' . __( 'Name', 'cc2' ) . '</label> ' .
+				'<label for="author">' . __( 'Name', 'domainreference' ) . '</label> ' .
 				( !empty($req) ? '<span class="required">*</span>' : '' ) .
 				'<input id="author" name="author" type="text" value="' . esc_attr( $commenter['comment_author'] ) .
 				'" size="30"' . $aria_req . ' /></p>',
 
 			'email' =>
-				'<p class="comment-form-email"><label for="email">' . __( 'Email', 'cc2' ) . '</label> ' .
+				'<p class="comment-form-email"><label for="email">' . __( 'Email', 'domainreference' ) . '</label> ' .
 				( !empty($req) ? '<span class="required">*</span>' : '' ) .
 				'<input id="email" name="email" type="text" value="' . esc_attr(  $commenter['comment_author_email'] ) .
 				'" size="30"' . $aria_req . ' /></p>',
 
 			'url' =>
 				'<p class="comment-form-url"><label for="url">' .
-				__( 'Website', 'cc2' ) . '</label>' .
+				__( 'Website', 'domainreference' ) . '</label>' .
 				'<input id="url" name="url" type="text" value="' . esc_attr( $commenter['comment_author_url'] ) .
 				'" size="30" /></p>'
 		);
@@ -1557,22 +1561,22 @@ function _tk_content_nav( $nav_id ) {
 
 	?>
 	<nav role="navigation" id="<?php echo esc_attr( $nav_id ); ?>" class="<?php echo $nav_class; ?>">
-		<h1 class="screen-reader-text"><?php _e( 'Post navigation', 'cc2' ); ?></h1>
+		<h1 class="screen-reader-text"><?php _e( 'Post navigation', '_tk' ); ?></h1>
 
 	<?php if ( is_single() ) : // navigation links for single posts ?>
 
-		<?php previous_post_link( '<div class="nav-previous">%link</div>', '<span class="meta-nav">' . _x( '&larr;', 'Previous post link', 'cc2' ) . '</span> %title' ); ?>
-		<?php next_post_link( '<div class="nav-next">%link</div>', '%title <span class="meta-nav">' . _x( '&rarr;', 'Next post link', 'cc2' ) . '</span>' ); ?>
+		<?php previous_post_link( '<div class="nav-previous">%link</div>', '<span class="meta-nav">' . _x( '&larr;', 'Previous post link', '_tk' ) . '</span> %title' ); ?>
+		<?php next_post_link( '<div class="nav-next">%link</div>', '%title <span class="meta-nav">' . _x( '&rarr;', 'Next post link', '_tk' ) . '</span>' ); ?>
 
 	<?php elseif ( $wp_query->max_num_pages > 1 && ( is_home() || is_archive() || is_search() ) ) : // navigation links for home, archive, and search pages ?>
 		<h1>Yay for pagination!</h1>
 
 		<?php if ( get_next_posts_link() ) : ?>
-		<div class="nav-previous"><?php next_posts_link( __( '<span class="meta-nav">&larr;</span> Older posts', 'cc2' ) ); ?></div>
+		<div class="nav-previous"><?php next_posts_link( __( '<span class="meta-nav">&larr;</span> Older posts', '_tk' ) ); ?></div>
 		<?php endif; ?>
 
 		<?php if ( get_previous_posts_link() ) : ?>
-		<div class="nav-next"><?php previous_posts_link( __( 'Newer posts <span class="meta-nav">&rarr;</span>', 'cc2' ) ); ?></div>
+		<div class="nav-next"><?php previous_posts_link( __( 'Newer posts <span class="meta-nav">&rarr;</span>', '_tk' ) ); ?></div>
 		<?php endif; ?>
 
 	<?php endif; ?>
@@ -1595,7 +1599,7 @@ function _tk_comment( $comment, $args, $depth ) {
 
 	<li id="comment-<?php comment_ID(); ?>" <?php comment_class( 'media' ); ?>>
 		<div class="comment-body">
-			<?php _e( 'Pingback:', 'cc2' ); ?> <?php comment_author_link(); ?> <?php edit_comment_link( __( 'Edit', 'cc2' ), '<span class="edit-link">', '</span>' ); ?>
+			<?php _e( 'Pingback:', '_tk' ); ?> <?php comment_author_link(); ?> <?php edit_comment_link( __( 'Edit', '_tk' ), '<span class="edit-link">', '</span>' ); ?>
 		</div>
 
 	<?php else : ?>
@@ -1609,18 +1613,18 @@ function _tk_comment( $comment, $args, $depth ) {
 			<div class="media-body">
 				<div class="media-body-wrap panel">
 					
-					<h5 class="media-heading"><?php printf( __( '%s <span class="says">says:</span>', 'cc2' ), sprintf( '<cite class="fn">%s</cite>', get_comment_author_link() ) ); ?></h5>
+					<h5 class="media-heading"><?php printf( __( '%s <span class="says">says:</span>', '_tk' ), sprintf( '<cite class="fn">%s</cite>', get_comment_author_link() ) ); ?></h5>
 					<p class="comment-meta">
 						<a href="<?php echo esc_url( get_comment_link( $comment->comment_ID ) ); ?>">
 							<time datetime="<?php comment_time( 'c' ); ?>">
-								<?php printf( _x( '%1$s at %2$s', '1: date, 2: time', 'cc2' ), get_comment_date(), get_comment_time() ); ?>
+								<?php printf( _x( '%1$s at %2$s', '1: date, 2: time', '_tk' ), get_comment_date(), get_comment_time() ); ?>
 							</time>
 						</a> 
-						<?php edit_comment_link( __( '<span style="margin-left: 5px;" class="glyphicon glyphicon-edit"></span> Edit', 'cc2' ), '<span class="edit-link">', '</span>' ); ?>
+						<?php edit_comment_link( __( '<span style="margin-left: 5px;" class="glyphicon glyphicon-edit"></span> Edit', '_tk' ), '<span class="edit-link">', '</span>' ); ?>
 					</p>
 	
 					<?php if ( '0' == $comment->comment_approved ) : ?>
-						<p class="comment-awaiting-moderation"><?php _e( 'Your comment is awaiting moderation.', 'cc2' ); ?></p>
+						<p class="comment-awaiting-moderation"><?php _e( 'Your comment is awaiting moderation.', '_tk' ); ?></p>
 					<?php endif; ?>
 					
 					<div class="comment-content">

@@ -28,13 +28,21 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 	class cc2_CustomizerLoader {
 		
 		static $customizer_section_priority,
-			$customizer_section_priority_call = array();
+			$customizer_section_priority_call = array(),
+			$arrSectionCalls = array();
+			
+		var $arrSectionPriorities = array();
+			
 		
 		function __construct() {
 			
 			$this->init_customizer_hooks();
 			
 		}
+
+		protected static $customizer_section_priorities = NULL;
+			
+	
 		
 		public function init_customizer_hooks() {
 			//__debug::log( __METHOD__ . ' fires ');
@@ -48,22 +56,20 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 		}
 		
 		
-		public static function get_customizer_section_priority( $section = false ) {
-			$return = self::$customizer_section_priority;
+		protected static function set_section_priorities( $priority_data = array() ) {
+			if( !empty( $priority_data ) && is_array( $priority_data ) ) {
+				self::$customizer_section_priorities = $priority_data;
+			}
 			
-			if( !empty( $section )) {
-				if( isset( self::$customizer_section_priority_call[ $section ] ) ) {
-					$return = self::$customizer_section_priority_call[ $section ];
-				} else {				
-					// missing prefix
-					if( substr( $section, 0, 8 ) !== 'section_' && isset( self::$customizer_section_priority_call[ 'section_'. $section ] ) ) {
-						$return = self::$customizer_section_priority_call[ 'section_'. $section ];
-					}
-				}
-			} 
-			
-			return $return;
 		}
+		
+		public static function get_section_priorities( $section = false ) {
+			if( !empty( $section ) ) {
+				return self::$customizer_section_priorities;
+			}
+			
+		}
+		
 		
 		function load_customizer_scripts() {
 			
@@ -139,6 +145,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 		function prepare_variables() {
 			$return = array();
 			$wp_date_format = trim( get_option('date_format', 'Y-m-d' ) ) . ' ' . trim( get_option('time_format', 'H:i:s' ) );
+			$current_wp_version = get_bloginfo('version');
 			
 			// load base theme config
 			if( defined( 'CC2_THEME_CONFIG' ) ) {
@@ -185,6 +192,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				}*/
 			}
 			
+			$return['current_wp_version'] = $current_wp_version;
 			
 			
 			// Load Loop Templates
@@ -308,7 +316,10 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				10 => '10',
 				11 => '11',
 				12 => '12',
-			);	
+			);
+			
+			// get advanced settings
+			$return['advanced_settings'] = get_option('cc2_advanced_settings', false );
 			
 			
 			return apply_filters( 'cc2_customizer_prepare_variables',  $return );
@@ -359,12 +370,41 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 		
 	}
 	
+	/**
+	 * NOTE: copy + paste fron wp-includes/theme.php - the ORIGINAL init point of the theme customizer!
+	 * 
+ * Includes and instantiates the WP_Customize_Manager class.
+ *
+ * Fires when ?wp_customize=on or on wp-admin/customize.php.
+ *
+ * @since 3.4.0
+ 
+function _wp_customize_include() {
+	if ( ! ( ( isset( $_REQUEST['wp_customize'] ) && 'on' == $_REQUEST['wp_customize'] )
+		|| ( is_admin() && 'customize.php' == basename( $_SERVER['PHP_SELF'] ) )
+	) )
+		return;
+
+	require( ABSPATH . WPINC . '/class-wp-customize-manager.php' );
+	// Init Customize class
+	$GLOBALS['wp_customize'] = new WP_Customize_Manager;
+}
+add_action( 'plugins_loaded', '_wp_customize_include' );
+*/
+	
+	
 	class cc2_CustomizerTheme extends cc2_CustomizerLoader {
-		function __construct() {
+		function __construct() {		
+			//add_action('plugins_loaded', array( $this, 'customize_default_sections' ) );
 			
-			
+			//add_action( 'init', array( $this, 'customizer_init' ) );
+			// init AFTER the customizer init; has default priority = 10, thus we go for 11!
 			
 			add_action( 'init', array( $this, 'customizer_init' ) );
+			
+			if( !empty( $this->arrSectionPriorities ) ) {
+				self::set_section_priorities( $this->arrSectionPriorities );
+			}
 			
 			// add global sanitizer
 			add_action('sanitize_option_theme_mods_cc2', array( $this, 'customizer_sanitizer' ) );
@@ -372,6 +412,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			add_filter('sanitize_option_theme_mods_cc2', array( $this, 'customizer_sanitizer' ) );
 			
 		}
+		
 		
 		function customizer_init() {
 			
@@ -386,131 +427,181 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			// its unclear whether this is a filter or an action
 			add_filter('sanitize_option_theme_mods_cc2', array( $this, 'customizer_sanitizer' ) );
 			
+			$section_priority = 10;
 			
-			// initial function call. don't change if you don't know what you're doing!
-			add_action('customizer_register', array( $this, 'customize_default_sections' ),10 );
-			
-		
-			
-			// rest of the calls, ordered by priority (somewhat)
-			/*$arrCustomizerSections = array(
-				'section_color_schemes',
-				'section_background',
-				'section_static_frontpage',
-				'section_title_tagline',
-				'section_header',
-				'section_nav',
-				'section_branding',
-				'section_content',
-				'section_layouts',
-				'section_widgets',
-				'section_typography',
-				'section_footer',
-				'section_blog',
-				'section_slider',
-				'section_customize_bootstrap',
+			/*self::$arrSectionCalls = array(
+				'section_header' => $section_priority+=20, // 10 + 20; should sit straight below header image (50) 60 
+				'section_color_schemes' => 100, // 30 + 10 
 				
+				'section_nav' => $section_priority+=10, // 60 + 10 
+				
+				'section_branding' => $section_priority+=10, // 70 + 10 
+				
+				'section_typography' => $section_priority+=10, // 80 + 10 
+				'section_background' => $section_priority+=10, // 90 + 10 
+				
+				'section_widgets' => $section_priority+=10, // 100 + 10 
+				'section_customize_widgets' => $section_priority+=10, // 110 + 10 
+				
+				'section_layouts' => $section_priority+=10, // 120 + 10 
+				
+				
+				'section_static_frontpage' => $section_priority+=10, // 120 + 10 
+				'section_content' => $section_priority+=10, // 130 + 10 
+				'section_blog' => $section_priority+=10, // 140 + 10 
+				'section_slider' => $section_priority+=10, // 150 + 10 
+				
+				
+				'section_footer' => $section_priority+=10, // 170 + 10 
+				
+				'section_customize_bootstrap' => $section_priority+=10, // 180 + 10 
+			);*/
+			
+			$this->arrSectionPriorities = array(
+				'section_title_tagline' => $section_priority+=10,
+				'section_header' => $section_priority+=20, /* 20 + 20; should sit straight below header image (50) 60 */
+				'section_color_schemes' => 10, /* 40 + 10 */
+				
+				'section_nav' => $section_priority+=10, /* 50 + 10 */
+				
+				'section_branding' => $section_priority+=10, /* 60 + 10 */
+				
+				'section_typography' => $section_priority+=10, /* 70 + 10 */
+				/*'section_background' => $section_priority+=10, // 80 + 10 */
+				
+				
+				
+				
+				
+				
+				
+				'section_static_frontpage' => $section_priority+=10, /* 120 + 10 */
+				'section_blog' => $section_priority+=5, /* 140 + 10 */
+				
+				'section_slider' => $section_priority+=5, /* 150 + 10 */
+				
+				
+				'section_content' => $section_priority+=5, /* 130 + 10 */
+				'section_layouts' => $section_priority+=5, /* 120 + 10 */
+				
+				
+				
+				'section_widgets' => $section_priority+=20, /* 90 + 20 */
+				'panel_widgets' => $section_priority+=10, /* 110 + 10 */
+				
+				
+				
+				'section_footer' => $section_priority+=10, /* 170 + 10 */
+				
+				'section_customize_bootstrap' => $section_priority+=30, /* 180 + 10 */
+				'section_advanced_settings' => $section_priority+=10,
 			);
 			
-			foreach( $arrCustomizerSections as $strMethod ) {
 			
-				add_action('customizer_register', array( $this,  ) );
-			}*/
+			
+			// initial function call. don't change if you don't know what you're doing!
+			//add_action('customizer_register', array( $this, 'customize_default_sections' ), 11 );
+	
 			
 			/**
 			 * FIXME: Global static priority count for sections does not work properly. Only manually set priority works.
-			 */
+			 */	
 			
-			self::$customizer_section_priority = 10;
-			self::$customizer_section_priority_call['section_color_schemes'] = self::$customizer_section_priority;
 			add_action( 'customize_register', array( $this, 'section_color_schemes' ),11 );
+			add_action( 'customize_register', array( $this, 'section_title_tagline' ), 12);
+			add_action( 'customize_register', array( $this, 'section_typography' ), 13);	
+			add_action( 'customize_register', array( $this, 'section_background' ), 14);
+			add_action( 'customize_register', array( $this, 'section_header' ), 15);
+			add_action( 'customize_register', array( $this, 'section_nav' ), 16);
+			add_action( 'customize_register', array( $this, 'section_branding' ), 17);
+			add_action( 'customize_register', array( $this, 'section_static_frontpage' ), 18);
+			add_action( 'customize_register', array( $this, 'section_content' ), 19);
+			add_action( 'customize_register', array( $this, 'section_blog' ), 20);
+			add_action( 'customize_register', array( $this, 'section_slider' ), 21);
+			add_action( 'customize_register', array( $this, 'section_layouts' ), 22);
+			add_action( 'customize_register', array( $this, 'section_widgets' ), 23);
+			add_action( 'customize_register', array( $this, 'section_footer' ), 24);
 			
+			add_action( 'customize_register', array( $this, 'section_customize_bootstrap' ), 28);
+			//add_action( 'customize_register', array( $this, 'section_advanced_settings' ), 29);
 			
-			self::$customizer_section_priority += 20;
-			self::$customizer_section_priority_call['section_title_tagline'] = self::$customizer_section_priority;
-			add_action( 'customize_register', array( $this, 'section_title_tagline' ));
-	
-			self::$customizer_section_priority += 20;
-			self::$customizer_section_priority_call['section_typography'] = self::$customizer_section_priority;
-			add_action( 'customize_register', array( $this, 'section_typography' ));
-			
-			self::$customizer_section_priority += 20;
-			self::$customizer_section_priority_call['section_background'] = self::$customizer_section_priority;
-			add_action( 'customize_register', array( $this, 'section_background' ));
-			
-			self::$customizer_section_priority += 20;
-			self::$customizer_section_priority_call['section_header'] = self::$customizer_section_priority;
-			add_action( 'customize_register', array( $this, 'section_header' ));
-			
-			self::$customizer_section_priority += 20;
-			self::$customizer_section_priority_call['section_nav'] = self::$customizer_section_priority;
-			add_action( 'customize_register', array( $this, 'section_nav' ));
-			
-			self::$customizer_section_priority += 20;
-			self::$customizer_section_priority_call['section_branding'] = self::$customizer_section_priority;
-			add_action( 'customize_register', array( $this, 'section_branding' ));
-			
-			self::$customizer_section_priority += 20;
-			self::$customizer_section_priority_call['section_static_frontpage'] = self::$customizer_section_priority;
-			add_action( 'customize_register', array( $this, 'section_static_frontpage' ));
-			
-			self::$customizer_section_priority += 20;
-			self::$customizer_section_priority_call['section_content'] = self::$customizer_section_priority;
-			add_action( 'customize_register', array( $this, 'section_content' ));
-
-			self::$customizer_section_priority += 20;
-			self::$customizer_section_priority_call['section_blog'] = self::$customizer_section_priority;
-			add_action( 'customize_register', array( $this, 'section_blog' ));
-			
-			self::$customizer_section_priority += 20;
-			self::$customizer_section_priority_call['section_slider'] = self::$customizer_section_priority;
-			add_action( 'customize_register', array( $this, 'section_slider' ));
-			
-			self::$customizer_section_priority += 20;
-			self::$customizer_section_priority_call['section_layouts'] = self::$customizer_section_priority;
-			add_action( 'customize_register', array( $this, 'section_layouts' ));
-			
-			self::$customizer_section_priority += 20;
-			self::$customizer_section_priority_call['section_widgets'] = self::$customizer_section_priority;
-			add_action( 'customize_register', array( $this, 'section_widgets' ));
-
-			self::$customizer_section_priority += 20;
-			self::$customizer_section_priority_call['section_footer'] = self::$customizer_section_priority;
-			add_action( 'customize_register', array( $this, 'section_footer' ));
-			
-			
-			self::$customizer_section_priority += 20;
-			self::$customizer_section_priority_call['section_customize_bootstrap'] = self::$customizer_section_priority;
-			add_action( 'customize_register', array( $this, 'section_customize_bootstrap' ));
-		
 			
 			//add_action( 'customize_register', 'tk_customizer_support' );
 		}
 		
+
+		
 		/**
-		 * Goes first
+		 * 
+		 * NOTE: Base customizer settings are defined in class-wp-customize-manager.php: WP_Customize_Manager::register_controls()
+		 * 
 		 */
 		
 		function customize_default_sections( $wp_customize ) {
 			// Changing some section titles, ordering and updating
-			$wp_customize->remove_section( 'background_image' );
-			$wp_customize->get_section( 'colors' 			) -> title 		= 'Color Scheme';
-			//$wp_customize->get_section( 'colors' 			) -> priority	= 30;
-			//$wp_customize->get_section( 'static_front_page' ) -> priority 	= 200;
+			//$wp_customize->remove_section( 'background_image' );
+			
+			
+			//$wp_customize->get_section( 'colors' )->title = __('Color Schemes', 'cc2' );
+			/*
+			if( !empty( self::$arrSectionCalls['section_color_schemes'] ) ) {
+				$wp_customize->get_section( 'colors' )->priority = self::$arrSectionCalls['section_color_schemes'];
+			}*/
+			$wp_customize->get_section( 'title_tagline' )->priority = $this->arrSectionPriorities['section_title_tagline'];
+			
+				$wp_customize->get_control('display_header_text')->priority = 10;
+				$wp_customize->get_control('display_header_text')->label = __('Display Site Title', 'cc2' );
+				$wp_customize->get_control('blogname')->priority = 13;
+				//$wp_customize->get_setting('blogname')->title = 13;
+				
+				$wp_customize->get_control('blogdescription')->priority = 14;
+				
+				$wp_customize->get_control('header_textcolor')->priority = 15;
+
+			
+			$wp_customize->get_section('nav')->priority = $this->arrSectionPriorities['section_nav'];
+			
+			//$wp_customize->get_section( 'colors' )->priority = 10;
+			
+			$wp_customize->get_section('colors')->priority = $this->arrSectionPriorities['section_color_schemes'];
+			$wp_customize->get_section('colors')->title = __('Color Schemes', 'cc2' );
+		
+		
+			
+			
+			
 			$wp_customize->get_section( 'static_front_page' ) -> title 		= 'Homepage';
+			// change default WP priority
+			if( !empty( $this->arrSectionPriorities['section_static_frontpage'] ) ) {
+				//$wp_customize->get_section( 'static_frontpage' )->priority = $this->arrSectionPriorities['section_static_frontpage'];
+				@$wp_customize->get_section( 'static_frontpage' )->priority = 120;
+			}
+			
+			if( !empty( $this->arrSectionPriorities['panel_widgets'] ) ) {
+				//$wp_customize->get_panel('widgets')->priority = $this->arrSectionPriorities['panel_widgets'];
+			}
+			
 			
 			/**
 			 * FIXME: doesnt seem to work thou .. :(
 			 */
-			$wp_customize->get_setting( 'background_color' 	)->transport = 'postMessage';
-			$wp_customize->get_setting( 'background_image' 	)->transport = 'postMessage';
+			/*$wp_customize->get_setting( 'background_color' 	)->transport = 'postMessage';
+			$wp_customize->get_setting( 'background_image' 	)->transport = 'postMessage';*/
 			
-			
+			/*
 			$wp_customize->get_control( 'background_color' 	) -> section 	= 'background';
-			$wp_customize->get_control( 'background_image' 	) -> section 	= 'background';
+			$wp_customize->get_control( 'background_image' 	) -> section 	= 'background';*/
+			$wp_customize->get_control( 'background_color' 	) -> section 	= 'colors';
+			$wp_customize->get_control( 'background_color' 	)->priority = 80;
+			$wp_customize->get_control( 'background_image' 	) -> section 	= 'colors';
+			$wp_customize->get_control( 'background_image' 	)->priority = 90;
+			
+			$wp_customize->remove_section( 'background_image' );
 			
 			$wp_customize->get_control( 'header_image' 		) -> section 	= 'header';
 			$wp_customize->get_control( 'header_textcolor' 	) -> section 	= 'title_tagline';
+		
+			//return $wp_customize;
 				
 		}
 		
@@ -529,11 +620,34 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			
 			// customize from default WP
 			//self::$customizer_section_priority
-			//$wp_customize->get_section( 'colors') -> priority = 30;
+			/*
+			$wp_customize->get_section( 'colors')->priority = 10;
+			$wp_customize->get_section( 'colors')->title = __('Color Schemes', 'cc2' );
+			*/
+			$this->customize_default_sections( $wp_customize );
+			//$wp_customize->get_panel('widgets')->priority = 120;
 			
+			//$wp_customize->get_panel('widgets')->priority = $this->arrSectionPriorities['section_customize_widgets'];
 			
-			
-			$wp_customize->get_section( 'colors')->priority = self::$customizer_section_priority;
+			/*
+			$_debug = array(
+				'section_priorities' => $this->arrSectionPriorities,
+				'wp_customize->get_panel(widgets)' => $wp_customize->get_panel('widgets'),
+				'wp_customize->get_panel(widgets)' => $wp_customize->get_panel('widgets')->priority,
+			);
+		
+			// debug label
+			$wp_customize->add_setting( 'debug_customizer', array(
+				'capability'    => 	'edit_theme_options',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'none' ),
+			) );
+			$wp_customize->add_control( new Label( $wp_customize, 'debug_customizer', array(
+				'label' 		=> 	__('Debug:', 'cc2') . ' ' . print_r( $_debug , true ),
+				'type' 			=> 	'label',
+				'section' 		=> 	'colors',
+				'priority'		=> 	1,
+			) ) );
+			*/
 			
 			if( !empty( $color_schemes ) ) {
 				// mind the test scheme
@@ -582,11 +696,13 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 
 
 		function section_background( $wp_customize ) {
-			extract( $this->prepare_variables() );		
+			extract( $this->prepare_variables() );
+			
+			
 			// Background Section
 			$wp_customize->add_section( 'background', array(
 				'title'         => 	'Background',
-				'priority'      => 	45,
+				'priority'      => 	( !empty( $this->arrSectionPriorities['section_background'] ) ? $this->arrSectionPriorities['section_background'] : 60 ),
 			) );
 		}
 		
@@ -599,8 +715,36 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 		function section_static_frontpage( $wp_customize ) {
 			extract( $this->prepare_variables() );
 			
-			// change default WP priority
-			$wp_customize->get_section( 'static_front_page' )->priority = self::$customizer_section_priority;
+			
+			if( !empty( $this->arrSectionPriorities['section_static_frontpage'] ) ) {
+				$wp_customize->get_section('static_front_page')->priority = $this->arrSectionPriorities['section_static_frontpage'];
+			}
+			
+			/*if( !empty( self::$arrSectionCalls['section_static_frontpage'] ) && method_exists( $wp_customize, 'get_section' ) ) {
+				
+				$wp_customize->get_section( 'section_static_frontpage' )->priority = self::$arrSectionCalls['section_static_frontpage'];
+			}
+			*/
+			
+			/*
+			$_debug = array(
+				'section_priorities' => $this->arrSectionPriorities,
+				'wp_customize->get_section' => get_object_vars( $wp_customize->get_section('static_front_page') ),
+			);
+		
+			// debug label
+			$wp_customize->add_setting( 'debug_static_fp', array(
+				'capability'    => 	'edit_theme_options',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'none' ),
+			) );
+			$wp_customize->add_control( new Label( $wp_customize, 'debug_static_fp', array(
+				'label' 		=> 	__('Debug:', 'cc2') . ' ' . print_r( $_debug , true ),
+				'type' 			=> 	'label',
+				'section' 		=> 	'static_front_page',
+				'priority'		=> 	1,
+			) ) );*/
+			//$branding_section_priority++;
+			
 			
 			
 			 // Hide all Content on Frontpage
@@ -615,8 +759,11 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'section'  		=> 	'static_front_page',
 				'type'     		=> 	'checkbox',
 				'priority'		=> 	261,
+				'value' 		=> 1,
 			) );
 
+
+			
 		}
 		
 		/**
@@ -624,7 +771,25 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 		 */
 		function section_title_tagline( $wp_customize ) {
 			extract( $this->prepare_variables() );
-			
+
+			//$wp_customize->get_control('display_header_text')->priority = 15;
+
+			// display site title ALSO when a header image is set
+			/*
+			$wp_customize->add_setting( 'display_site_title_with_header_image', array(
+				'default'       => 	true,
+				'capability'    => 	'edit_theme_options',
+				'transport'   	=> 	'refresh',
+				'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_bool'),
+			) );
+			$wp_customize->add_control( 'display_site_title_with_header_image', array(
+				'label'   		=> 	__('... even if a header image is set', 'cc2'),
+				'section' 		=> 	'title_tagline',
+				'priority'		=> 	11,
+				'type'    		=> 	'checkbox',
+				'value' 		=> 1,
+			) );
+			*/
 			
 			// here we need to add some extra options first..
 
@@ -708,13 +873,18 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 		function section_header( $wp_customize ) {
 			extract( $this->prepare_variables() );
 			
+			$priority = 60;
+			
+			if( !empty( $this->arrSectionPriorities['section_header'] ) ) {
+				$priority = $this->arrSectionPriorities['section_header'];
+			}
+			
 		// Header Section
 			$has_static_frontpage = ( get_option( 'show_on_front') == 'page' ? true : false );
 			
 			$wp_customize->add_section( 'header', array(
 				'title'         => 	'Header',
-				'priority'      => 	60,
-				//'priority' => self::$customizer_section_priority,
+				'priority'      => 	$priority,
 			) );
 
 				// Display Header
@@ -723,7 +893,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'sanitize_callback' => array( 'cc2_Pasteur', 'none' ),
 				) );
 				$wp_customize->add_control( new Label( $wp_customize, 'display_header_heading', array(
-					'label' 		=> 	__('Display Header', 'cc2'),
+					'label' 		=> 	__('Display Header Image', 'cc2'),
 					'type' 			=> 	'label',
 					'section' 		=> 	'header',
 					'priority'		=> 	20,
@@ -747,6 +917,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 						'section'  		=> 	'header',
 						'type'     		=> 	'checkbox',
 						'priority'		=> 	40,
+						'value' 		=> true,
 					) );
 					
 					
@@ -762,6 +933,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 						'section'  		=> 	'header',
 						'type'     		=> 	'checkbox',
 						'priority'		=> 	41,
+						'value' 		=> 1,
 					) );
 				} else { // no static frontpage; home == blog
 					// Display Header on Home
@@ -776,6 +948,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 						'section'  		=> 	'header',
 						'type'     		=> 	'checkbox',
 						'priority'		=> 	40,
+						'value' 		=> 1,
 					) );
 					
 					
@@ -793,6 +966,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'section'  		=> 	'header',
 					'type'     		=> 	'checkbox',
 					'priority'		=> 	50,
+					'value' 		=> true,
 				) );
 
 				// Display Header on Pages
@@ -807,6 +981,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'section'  		=> 	'header',
 					'type'     		=> 	'checkbox',
 					'priority'		=> 	60,
+					'value' 		=> true,
 				) );
 
 				// Display Header on Archive
@@ -821,6 +996,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'section'  		=> 	'header',
 					'type'     		=> 	'checkbox',
 					'priority'		=> 	70,
+					'value' 		=> true,
 				) );
 
 				// Display Header on Search
@@ -835,6 +1011,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'section'  		=> 	'header',
 					'type'     		=> 	'checkbox',
 					'priority'		=> 	80,
+					'value' 		=> 1,
 				) );
 
 				// Display Header on 404
@@ -849,6 +1026,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'section'  		=> 	'header',
 					'type'     		=> 	'checkbox',
 					'priority'		=> 	90,
+					'value' 		=> 1,
 				) );
 
 				// Header Height
@@ -862,6 +1040,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'label'      	=> __('Header Height', 'cc2'),
 					'section'    	=> 'header',
 					'priority'   	=> 120,
+					'value' 		=> true,
 				) );
 
 				// Notice on Header Height
@@ -875,6 +1054,8 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'section' 		=> 	'header',
 					'priority'		=> 	121,
 				) ) );
+
+				
 
 				// differentiate between home and blog (ie. static frontpage IS set)
 
@@ -1007,6 +1188,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'section'  		=> 	'nav',
 				'type'     		=> 	'checkbox',
 				'priority'		=> 	40,
+				'value' 		=> 1,
 			) );
 			
 			// Top Nav Position
@@ -1229,8 +1411,11 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 		function section_branding( $wp_customize ) {
 			extract( $this->prepare_variables() );
 
-			//$branding_section_priority = 70;
-			$branding_section_priority = self::$customizer_section_priority;
+			$branding_section_priority = 70;
+	
+			if( !empty( $this->arrSectionPriorities['section_branding'] ) ) {
+				$branding_section_priority = $this->arrSectionPriorities['section_branding'];
+			}
 		 
 			$wp_customize->add_section( 'branding', array(
 				'title' =>	__( 'Branding', 'cc2' ),
@@ -1287,6 +1472,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'section'  		=> 	'branding',
 				'type'     		=> 	'checkbox',
 				'priority'		=> 	$branding_section_priority++,
+				'value' 		=> 1,
 			) );
 			//$branding_section_priority++;
 
@@ -1346,6 +1532,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'section'  		=> 	'branding',
 				'type'     		=> 	'checkbox',
 				'priority'		=> 	$branding_section_priority++,
+				'value' 		=> 1,
 			) );
 			//$branding_section_priority++;
 		   
@@ -1391,12 +1578,17 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 		function section_content( $wp_customize ) {
 			extract( $this->prepare_variables() );
 
-
+			$priority = 260;
+			
+			if( !empty( $this->arrSectionPriorities['section_content'] ) ) {
+				$priority = $this->arrSectionPriorities['section_content'];
+			}
+			
 
 			$wp_customize->add_section( 'content', array(
 				'title' =>	__( 'Content', 'cc2' ),
 				/*'priority' => 260,*/
-				'priority' =>  self::$customizer_section_priority,
+				'priority' => $priority,
 			) );
 			
 			
@@ -1473,6 +1665,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'section'  		=> 	'content',
 				'type'     		=> 	'checkbox',
 				'priority'		=> 	$display_page_title_priority,
+				'value' 		=> 1,
 			) );
 			$display_page_title_priority++;
 
@@ -1488,6 +1681,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'section'  		=> 	'content',
 				'type'     		=> 	'checkbox',
 				'priority'		=> 	$display_page_title_priority,
+				'value' 		=> 1,
 			) );
 			$display_page_title_priority++;
 
@@ -1503,6 +1697,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'section'  		=> 	'content',
 				'type'     		=> 	'checkbox',
 				'priority'		=> 	$display_page_title_priority,
+				'value' 		=> 1,
 			) );
 			$display_page_title_priority++;
 			
@@ -1519,6 +1714,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'section'  		=> 	'content',
 				'type'     		=> 	'checkbox',
 				'priority'		=> 	$display_page_title_priority,
+				'value' 		=> 1,
 			) );
 			$display_page_title_priority++;
 
@@ -1534,6 +1730,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'section'  		=> 	'content',
 				'type'     		=> 	'checkbox',
 				'priority'		=> 	$display_page_title_priority,
+				'value' 		=> 1,
 			) );
 			$display_page_title_priority++;
 			
@@ -1550,6 +1747,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'section'  		=> 	'content',
 				'type'     		=> 	'checkbox',
 				'priority'		=> 	$display_page_title_priority,
+				'value' 		=> 1,
 			) );
 			
 			$display_page_title_priority++;
@@ -1582,6 +1780,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'section'  		=> 	'content',
 				'type'     		=> 	'checkbox',
 				'priority'		=> 	$center_title_priority,
+				'value' 		=> 1,
 			) );
 			$center_title_priority++;
 
@@ -1597,6 +1796,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'section'  		=> 	'content',
 				'type'     		=> 	'checkbox',
 				'priority'		=> 	$center_title_priority,
+				'value' 		=> 1,
 			) );
 			$center_title_priority++;
 
@@ -1612,6 +1812,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'section'  		=> 	'content',
 				'type'     		=> 	'checkbox',
 				'priority'		=> 	$center_title_priority,
+				'value' 		=> 1,
 			) );
 			$center_title_priority++;
 
@@ -1627,6 +1828,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'section'  		=> 	'content',
 				'type'     		=> 	'checkbox',
 				'priority'		=> 	$center_title_priority,
+				'value' 		=> 1,
 			) );
 			$center_title_priority++;
 			
@@ -1643,6 +1845,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'section'  		=> 	'content',
 				'type'     		=> 	'checkbox',
 				'priority'		=> 	$center_title_priority,
+				'value' 		=> 1,
 			) );
 			$center_title_priority++;
 
@@ -1658,6 +1861,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'section'  		=> 	'content',
 				'type'     		=> 	'checkbox',
 				'priority'		=> 	$center_title_priority,
+				'value' 		=> 1,
 			) );
 			$center_title_priority++;
 			
@@ -1674,6 +1878,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'section'  		=> 	'content',
 				'type'     		=> 	'checkbox',
 				'priority'		=> 	$center_title_priority,
+				'value' 		=> 1,
 			) );
 			
 			$center_title_priority++;
@@ -1705,10 +1910,16 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'fullwidth'     => 'Fullwidth'
 			);*/
 
+			$priority = 80;
+
+			if( !empty( $this->arrSectionPriorities['section_layouts'] ) ) {
+				$priority = $this->arrSectionPriorities['section_layouts'];
+			}
+
 
 			$wp_customize->add_section( 'layouts', array(
 				'title'         => 	__( 'Sidebar Layouts', 'cc2' ),
-				'priority'      => 	120,
+				'priority'      => 	$priority,
 			) );
 
 			// Layouts Description - A quick note
@@ -1801,6 +2012,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'section'  		=> 	'layouts',
 				'type'     		=> 	'checkbox',
 				'priority'		=> 	140,
+				'value' 		=> 1,
 			) );
 
 			// Hide Right Sidebar On Phones?
@@ -1815,6 +2027,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'section'  		=> 	'layouts',
 				'type'     		=> 	'checkbox',
 				'priority'		=> 	120,
+				'value' 		=> 1,
 			) );
 			
 		}
@@ -1823,17 +2036,42 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 		 * Widget section
 		 */
 		
-		function section_widgets( $wp_customize ) {
+		function section_widgets( $wp_customize, $params = false ) {
 	
 			extract( $this->prepare_variables() );
 	
-			$widget_section_priority = 140;
-
-			$wp_customize->add_section( 'widgets', array(
-				'title'         => 	'Widgets',
-				'priority'      => 	$widget_section_priority,
-			) );
+			$strSectionName = 'widget_settings';
+			//$strPanelID = 'my_widgets_panel';
+			$strPanelID = '';
 			
+			if( !empty( $params ) && isset( $params['panel_id'] ) ) {
+				$strPanelID = $params['panel_id'];
+			}
+	
+			$widget_section_priority = 140;
+			if( !empty( $this->arrSectionPriorities['section_widgets'] ) ) {
+				$widget_section_priority = $this->arrSectionPriorities['section_widgets'];
+			}
+
+			/*
+			$wp_customize->add_panel( $strPanelID, array(
+				'capability' => 'edit_theme_options',
+				'title' => __('My Widget Settings'),
+			) );
+
+
+			$wp_customize->add_section( $strSectionName, array(
+				'title'         => 	__('Widget Settings', 'cc2'),
+				'priority'      => $widget_section_priority,
+				'panel' => $strPanelID,
+			) );*/
+			
+
+			$wp_customize->add_section( $strSectionName, array(
+				'title'         => 	__('Widget Settings', 'cc2'),
+				'priority'      => $widget_section_priority,
+				'panel'	=> $strPanelID,
+			) );
 
 			$widget_section_priority+=2;
 		
@@ -1846,7 +2084,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			$wp_customize->add_control( new Description( $wp_customize, 'widget_title_attributes_note', array(
 				'label' 		=> 	__('Get more options to style your header and footer widgets with the CC2 Premium Pack', 'cc2'),
 				'type' 			=> 	'description',
-				'section' 		=> 	'widgets',
+				'section' 		=> 	$strSectionName,
 				'priority'		=> 	$widget_section_priority,
 			) ) );
 			$widget_section_priority+=2; // 144
@@ -1861,7 +2099,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			) );
 			$wp_customize->add_control( new WP_Customize_Color_Control($wp_customize, 'widget_title_text_color', array(
 				'label'    				=> __('Title Font Color', 'cc2'),
-				'section'  				=> 'widgets',
+				'section'  				=> $strSectionName,
 				'priority'				=> $widget_section_priority,
 			) ) );
 			$widget_section_priority+=2; // 146
@@ -1876,7 +2114,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			) );
 			$wp_customize->add_control( new WP_Customize_Color_Control($wp_customize, 'widget_title_background_color', array(
 				'label'    				=> __('Title Background Color', 'cc2'),
-				'section'  				=> 'widgets',
+				'section'  				=> $strSectionName,
 				'priority'				=> $widget_section_priority,
 			) ) );
 			$widget_section_priority+=2; // 148
@@ -1891,7 +2129,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			) );
 			$wp_customize->add_control('widget_title_font_size', array(
 				'label'      	=> __('Title Font Size', 'cc2'),
-				'section'    	=> 'widgets',
+				'section'    	=> $strSectionName,
 				'priority'   	=> $widget_section_priority,
 			) );
 			$widget_section_priority++;
@@ -1910,7 +2148,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			) );
 			$wp_customize->add_control( new WP_Customize_Color_Control($wp_customize, 'widget_background_color', array(
 				'label'    				=> __('Widget Background Color', 'cc2'),
-				'section'  				=> 'widgets',
+				'section'  				=> $strSectionName,
 				'priority'				=> $widget_section_priority,
 			) ) );
 			$widget_section_priority++;
@@ -1926,7 +2164,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			) );
 			$wp_customize->add_control( new WP_Customize_Color_Control($wp_customize, 'widget_link_color', array(
 				'label'    				=> __('Widget Link Color', 'cc2'),
-				'section'  				=> 'widgets',
+				'section'  				=> $strSectionName,
 				'priority'				=> $widget_section_priority,
 			) ) );
 			$widget_section_priority++;
@@ -1942,7 +2180,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			) );
 			$wp_customize->add_control( new WP_Customize_Color_Control($wp_customize, 'widget_link_text_hover_color', array(
 				'label'    				=> __('Widget Link Text Hover Color', 'cc2'),
-				'section'  				=> 'widgets',
+				'section'  				=> $strSectionName,
 				'priority'				=> $widget_section_priority,
 			) ) );
 			$widget_section_priority++;
@@ -1955,10 +2193,15 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 		function section_typography( $wp_customize ) {
 			extract( $this->prepare_variables() );
 		
+			$priority = 110;
+			if( !empty( $this->arrSectionPriorities['section_typography'] ) ) {
+				$priority = $this->arrSectionPriorities['section_typography'];
+			}
+		
 
 			$wp_customize->add_section( 'typography', array(
 				'title'         => 	'Typography',
-				'priority'      => 	110,
+				'priority'      => 	$priority,
 			) );
 
 			if( ! defined( 'CC2_LESSPHP' ) ) {
@@ -2004,6 +2247,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'section'  		=> 	'typography',
 				'type'     		=> 	'checkbox',
 				'priority'		=> 	140,
+				'value' 		=> 1,
 			) );
 
 			// Title Font Style
@@ -2018,6 +2262,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'section'  		=> 	'typography',
 				'type'     		=> 	'checkbox',
 				'priority'		=> 	160,
+				'value' 		=> 1,
 			) );
 
 			// Headline Font Color
@@ -2149,6 +2394,10 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			extract( $this->prepare_variables() );
 
 			$footer_section_priority = 340;
+			
+			if( !empty( $this->arrSectionPriorities['section_footer'] ) ) {
+				$footer_section_priority = $this->arrSectionPriorities['section_footer'];
+			}
 		 
 			$wp_customize->add_section( 'footer', array(
 				'title'         => 	'Footer',
@@ -2252,10 +2501,16 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 		function section_blog( $wp_customize ) {
 			extract( $this->prepare_variables() );
 
+			$priority = 380;
+			
+			if( !empty( $this->arrSectionPriorities['section_blog'] ) ) {
+				$priority = $this->arrSectionPriorities['section_blog'];
+			}
+
 			// Blog Section
 			$wp_customize->add_section( 'blog', array(
 				'title'         => 	'Blog',
-				'priority'      => 	380,
+				'priority'      => 	$priority,
 			) );
 
 			// Blog Archive Loop Template
@@ -2309,6 +2564,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'section'  		=> 	'blog',
 				'type'     		=> 	'checkbox',
 				'priority'		=> 	80,
+				'value' 		=> 1,
 			) );
 
 			// Blog Archive View - Show category
@@ -2323,6 +2579,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'section'  		=> 	'blog',
 				'type'     		=> 	'checkbox',
 				'priority'		=> 	100,
+				'value' 		=> 1,
 			) );
 
 			// Blog Archive View - Show author
@@ -2337,6 +2594,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'section'  		=> 	'blog',
 				'type'     		=> 	'checkbox',
 				'priority'		=> 	120,
+				'value' 		=> 1,
 			) );
 
 			// Blog Archive View - Show author avatar
@@ -2351,6 +2609,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'section'  		=> 	'blog',
 				'type'     		=> 	'checkbox',
 				'priority'		=> 	130,
+				'value' 		=> 1,
 			) );
 
 
@@ -2378,6 +2637,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'section'  		=> 	'blog',
 				'type'     		=> 	'checkbox',
 				'priority'		=> 	180,
+				'value' 		=> 1,
 			) );
 
 			// Blog Single View - Show category
@@ -2392,6 +2652,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'section'  		=> 	'blog',
 				'type'     		=> 	'checkbox',
 				'priority'		=> 	200,
+				'value' 		=> 1,
 			) );
 
 			// Blog Single View - Show author
@@ -2406,6 +2667,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'section'  		=> 	'blog',
 				'type'     		=> 	'checkbox',
 				'priority'		=> 	220,
+				'value' 		=> 1,
 			) );
 			
 			// single post / page 
@@ -2420,6 +2682,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 				'section'  		=> 	'blog',
 				'type'     		=> 	'checkbox',
 				'priority'		=> 	240,
+				'value' 		=> 1,
 			) );
 
 		}
@@ -2429,9 +2692,16 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 		function section_slider( $wp_customize ) {
 			extract( $this->prepare_variables() );
 			
+			$priority = 400;
+			
+			if( !empty( $this->arrSectionPriorities['section_slider'] ) ) {
+				$priority = $this->arrSectionPriorities['section_slider'];
+			}
+			
+			
 			$wp_customize->add_section( 'cc_slider', array(
 				'title'         => 	'Slideshow',
-				'priority'      => 	400,
+				'priority'      => 	$priority,
 			) );
 
 				// Create A Slideshow Note
@@ -2617,6 +2887,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'section'  		=> 	'cc_slider',
 					'type'     		=> 	'checkbox',
 					'priority'		=> 	220,
+					'value' 		=> 1,
 				) );
 
 				// Caption Title Font Style
@@ -2631,6 +2902,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'section'  		=> 	'cc_slider',
 					'type'     		=> 	'checkbox',
 					'priority'		=> 	240,
+					'value' 		=> 1,
 				) );
 
 				// Caption Title Text Shadow
@@ -2645,6 +2917,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'section'  		=> 	'cc_slider',
 					'type'     		=> 	'checkbox',
 					'priority'		=> 	250,
+					'value' 		=> 1,
 				) );
 
 				// Caption Title Opacity
@@ -2716,6 +2989,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'section'  		=> 	'cc_slider',
 					'type'     		=> 	'checkbox',
 					'priority'		=> 	360,
+					'value' 		=> 1,
 				) );
 
 				// Caption Text Font Style
@@ -2729,6 +3003,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'section'  		=> 	'cc_slider',
 					'type'     		=> 	'checkbox',
 					'priority'		=> 	380,
+					'value' 		=> 1,
 				) );
 
 				// Caption Text Shadow
@@ -2743,6 +3018,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 					'section'  		=> 	'cc_slider',
 					'type'     		=> 	'checkbox',
 					'priority'		=> 	385,
+					'value' 		=> 1,
 				) );
 
 				// Caption Text Opacity
@@ -3040,7 +3316,7 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			
 			$customize_bootstrap_priority+=5;
 
-			 $wp_customize->add_setting('cc2_comment_form_orientation', array(
+			$wp_customize->add_setting('cc2_comment_form_orientation', array(
 				'default' 		=> 'vertical',
 				'capability'    => 'edit_theme_options',
 				'transport'   	=> 'refresh',
@@ -3058,13 +3334,80 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			
 		}
 		
+		
+		function section_advanced_settings( $wp_customize, $arrParams = false ) {
+			extract( $this->prepare_variables() );
+			
+			$strSectionName = 'advanced_settings';
+			$priority = 180;
+			$strPanelID = '';
+		
+			
+			
+			
+			if( !empty( $this->arrSectionPriorities['section_advanced_settings'] ) ) {
+				$priority = $this->arrSectionPriorities['section_advanced_settings'];
+			}
+			
+			
+			$wp_customize->add_section( $strSectionName, array(
+				'title'         => 	__('Advanced Settings', 'cc2' ),
+				'priority' 		=> $priority,
+				'panel' 		=> $strPanelID,
+			) );
+			
+			$_debug = array(
+				'section_priorities' => $this->arrSectionPriorities,
+				'priority' => $priority,
+				/*'wp_customize->get_panel(widgets)' => $wp_customize->get_panel('widgets'),
+				'wp_customize->get_panel(widgets)' => $wp_customize->get_panel('widgets')->priority,*/
+			);
+		
+			// debug label
+			$wp_customize->add_setting( 'debug_customizer', array(
+				'capability'    => 	'edit_theme_options',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'none' ),
+			) );
+			$wp_customize->add_control( new Label( $wp_customize, 'debug_customizer', array(
+				'label' 		=> 	__('Debug:', 'cc2') . ' ' . print_r( $_debug , true ),
+				'type' 			=> 	'label',
+				'section' 		=> 	$strSectionName,
+				'priority'		=> 	1,
+			) ) );
+			
+			// mirrors $cc2_advanced_settings['custom_css']
+			
+			$wp_customize->add_setting( 'advanced_settings[custom_css]', array(
+				'default' => $advanced_settings['custom_css'],
+				'capability'    => 'edit_theme_options',
+				'transport'   	=> 'refresh',
+				'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_css' ),
+			) );
+			
+			$wp_customize->add_control( 'advanced_settings[custom_css]', array(
+				'label'      	=> __('Custom CSS', 'cc2'),
+				'section'    	=> $strSectionName,
+				'description'	=> sprintf( __('Mirroring the contents of the &quot;Custom CSS&quot; field under <a href="%s">CC Settings &raquo; Advanced Settings</a>', 'cc2' ), admin_url('admin.php?page=cc2-settings&tab=advanced-settings') ),
+				'priority'		=> $priority,
+				'type'			=> 'textarea',
+				'value'			=> $advanced_settings['custom_css'],
+				
+			) );
+			
+			
+		}
 	
 	} // end of class
 	
 	
+	// Original WP customizer init!
+	//add_action( 'plugins_loaded', '_wp_customize_include' );
+	// reuse and init AFTER it = default priority = 10, thus we go for 11!
+	//add_action( 'plugins_loaded', array( 'cc2_CustomizerTheme', 'init' ), 11 );
 	
-	if( !isset( $cc2_customizer ) ) {
-		$cc2_customizer = new cc2_CustomizerTheme(); // intentionally NOT using the Simpleton pattern .. ;)
+	
+	if( !isset( $GLOBALS['cc2_customizer'] ) ) {
+		$GLOBALS['cc2_customizer'] = new cc2_CustomizerTheme(); // intentionally NOT using the Simpleton pattern .. ;)
 	}
 	
 }
@@ -3125,6 +3468,3 @@ include_once( get_template_directory() . '/includes/admin/customizer/base-contro
 
 // implements a slightly modified color control WITH transparency option
 include_once( get_template_directory() . '/includes/admin/customizer/cc2-color-control.php' );
-
-
-?>
