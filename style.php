@@ -290,10 +290,12 @@ class cc2_CustomStyle {
 			height: <?php echo get_theme_mod('header_height_home' ); ?>;
 		<?php } ?>
 		
+		<?php 
+		} /* show header home.end */ ?>
+		
 	}
 		
-		<?php 
-		} // show header home.end
+	<?php
 	}
 
     // Show header on posts?
@@ -390,11 +392,14 @@ class cc2_CustomStyle {
 	<?php } ?>
 
 
+
     <?php if( has_nav_menu('top') && !has_nav_menu('secondary') ) { ?>
         .site-navigation {
             clip: 1px, 1px, 1px, 1px;
             position: absolute;
         }
+        
+        
     <?php } ?>
 
     <?php // Remove margin from top nav if set
@@ -405,16 +410,36 @@ class cc2_CustomStyle {
     <?php }
 
     // correcting navbar fixed top if admin bar is displaying
-     if( is_admin_bar_showing() ) : ?>
-        .navbar-fixed-top {
-            top: 45px;
+     //if( is_admin_bar_showing() ) :
+     
+		if( true === get_theme_mod( 'fixed_top_nav' ) ) : ?>
+     
+		body.admin-bar nav.site-navigation-top.navbar-fixed-top {
+			top: 32px !important;
+		}
+     
+		@media screen and (min-width: 783px) { <?php // that's the breakpoint where the admin bar gets bigger.. ?>
+			body.admin-bar nav.navbar-fixed-top {
+				top: 46px !important;
+			}
         }
-        @media screen and (min-width: 783px) { <?php // that's the breakpoint where the admin bar gets bigger.. ?>
-            .navbar-fixed-top {
-                top: 32px;
+        <?php else : ?>
+        body.logged-in.admin-bar .site-navigation-top {
+			margin-top: 32px !important;
+		}
+		
+		 @media screen and (min-width: 782px) { <?php // that's the breakpoint where the admin bar gets bigger.. ?>
+            body.logged-in.admin-bar .site-navigation-top {
+                margin-top: 46px !important;
             }
         }
-    <?php endif;
+
+        
+        <?php endif; ?>
+        
+        
+    <?php 
+    //endif;
 
     // Correct the <body> padding if the menu is fixed to top
     if( true === get_theme_mod( 'fixed_top_nav' ) && true === has_nav_menu( 'top' ) ) { ?>
@@ -496,9 +521,10 @@ class cc2_CustomStyle {
 	// navigation positions
 	//$top_nav_position = get_theme_mod('top_nav_position', 'left' );
 
-	
 	?>
 
+
+		
 
 
     /** Typography **/

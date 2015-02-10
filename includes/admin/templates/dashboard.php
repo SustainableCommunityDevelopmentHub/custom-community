@@ -7,12 +7,11 @@
  * @since 2.0
  */
 ?>
-
 <div class="wrap">
 
 	<div id="icon-themes" class="icon32"><br /></div>
 	
-	<h2>Custom Community <em>Settings</em></h2>
+	<h2><?php _e('Custom Community', 'cc2'); ?> <em><?php _e('Settings', 'cc2'); ?></em></h2>
 
 	<div class="cc2-support-wrap message updated" style="padding: 10px 2% 12px 2%; overflow:auto; float: none; clear: both; width: 96%; max-width: 96%;">
 
@@ -20,7 +19,7 @@
 			
 			<h3><span>Get Support.</span><?php do_action( 'cc2_support_add_title' ); ?></h3>
 			
-			<p><?php do_action( 'cc2_support_add' ); ?> <a id="cc2_get_personal_help" class="button button-primary" href="#" title="Get personal help by the theme authors and write us right from your backend - as soon as you purchase the CC2 Premium Pack." style="margin-right: 3px;">Personal Help</a> <a href="https://github.com/Themekraft/Custom-Community/wiki" class="button secondary" target="_new" title="Custom Community 2 Documentation">Documentation</a></p>
+			<p><?php do_action( 'cc2_support_add' ); ?> <a id="cc2_get_personal_help" class="button button-primary" href="#" title="Get personal help by the theme authors and write us right from your backend - as soon as you purchase the CC2 Premium Pack." style="margin-right: 3px;">Personal Help</a> <a href="<?php echo apply_filters( 'cc2_rtfm_url','https://github.com/Themekraft/Custom-Community/wiki' ); ?>" class="button secondary" title="Custom Community 2 Documentation">Documentation</a></p>
 		</div>
 
 		<div id="cc2_ideas" style="float: left; overflow: auto; padding: 0 20px 0 20px; border-right: 0px solid #ddd;">

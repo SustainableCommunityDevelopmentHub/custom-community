@@ -470,18 +470,13 @@ add_action( 'plugins_loaded', '_wp_customize_include' );
 				/*'section_background' => $section_priority+=10, // 80 + 10 */
 				
 				
-				
-				
-				
-				
-				
 				'section_static_frontpage' => $section_priority+=10, /* 120 + 10 */
 				'section_blog' => $section_priority+=5, /* 140 + 10 */
 				
 				'section_slider' => $section_priority+=5, /* 150 + 10 */
+			
 				
-				
-				'section_content' => $section_priority+=5, /* 130 + 10 */
+				'section_content' => $section_priority+=5, /* 130 + 10 */				
 				'section_layouts' => $section_priority+=5, /* 120 + 10 */
 				
 				
@@ -496,6 +491,16 @@ add_action( 'plugins_loaded', '_wp_customize_include' );
 				'section_customize_bootstrap' => $section_priority+=30, /* 180 + 10 */
 				'section_advanced_settings' => $section_priority+=10,
 			);
+			
+			// woocommerce support
+			if( class_exists('WooCommerce' ) != false ) {
+				
+				// add woocommerce-specific section between content + layouts section
+				
+				//$this->arrSectionPriorities
+				
+			}
+			
 			
 			
 			
@@ -1995,6 +2000,69 @@ add_action( 'plugins_loaded', '_wp_customize_include' );
 				'type'    		=> 	'select',
 				'choices'    	=> 	$layout_choices_all,
 			) );
+			
+			// add woocommerce layouts
+			if( class_exists( 'WooCommerce' ) != false ) {
+				$iLayoutPriorityWooCommerce = 81;
+				
+				// Default Shop main page (= Archives) Layout
+				$wp_customize->add_setting( 'wc_layout_archive', array(
+					'default'       => 	'default',
+					'capability'    => 	'edit_theme_options',
+					'transport'   	=> 	'refresh',
+					'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
+				) );
+				$wp_customize->add_control( 'wc_layout_archive', array(
+					'label'   		=> 	__('WooCommerce Products List Layout', 'cc2'),
+					'section' 		=> 	'layouts',
+					'priority'		=> 	$iLayoutPriorityWooCommerce++,
+					'type'    		=> 	'select',
+					'choices'    	=> 	$layout_choices_all,
+				) );
+				
+				// Default Single Product Layout
+				$wp_customize->add_setting( 'wc_layout_single_product', array(
+					'default'       => 	'default',
+					'capability'    => 	'edit_theme_options',
+					'transport'   	=> 	'refresh',
+					'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
+				) );
+				$wp_customize->add_control( 'wc_layout_single_product', array(
+					'label'   		=> 	__('WooCommerce Single Product Layout', 'cc2'),
+					'section' 		=> 	'layouts',
+					'priority'		=> 	$iLayoutPriorityWooCommerce++,
+					'type'    		=> 	'select',
+					'choices'    	=> 	$layout_choices_all,
+				) );
+				
+				
+				// Change position of the WooCommerce "shop" sidebar
+				$wp_customize->add_setting( 'wc_shop_sidebar_position', array(
+					'default'       => 	'hide',
+					'capability'    => 	'edit_theme_options',
+					'transport'   	=> 	'refresh',
+					'sanitize_callback' => array( 'cc2_Pasteur', 'sanitize_text' ),
+				) );
+				$wp_customize->add_control( 'wc_shop_sidebar_position', array(
+					'label'   		=> 	__('Position of the WooCommerce Shop sidebar', 'cc2'),
+					'section' 		=> 	'layouts',
+					'priority'		=> 	$iLayoutPriorityWooCommerce++,
+					'type'    		=> 	'select',
+					'choices'    	=> 	array(
+						'hide' => 'Disable sidebar',
+						/*
+						'left' => 'Replace Left Sidebar',
+						'right' => 'Replace Right Sidebar',*/
+						
+						'header_top' => __('Before', 'cc2' ) . ' ' . __( 'Header Widget Area', 'cc2' ),
+						'header_bottom' => __('After', 'cc2' ) . ' ' . __( 'Header Widget Area', 'cc2' ),
+						'footer_top' 	=> __('Before', 'cc2' ) . ' ' . __( 'Footer Widget Area', 'cc2' ),
+						'footer_bottom' => __('After', 'cc2' ) . ' ' . __( 'Footer Widget Area', 'cc2' ),
+					),
+				) );
+				
+			} // end woocommerce integration
+			
 			
 			// change sidebar columns (default: 4)
 			

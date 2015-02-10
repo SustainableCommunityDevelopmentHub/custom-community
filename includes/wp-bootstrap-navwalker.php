@@ -25,6 +25,31 @@ if(!defined('ABSPATH')) exit;
 if( !class_exists( 'wp_bootstrap_navwalker' ) ) :
 
 class wp_bootstrap_navwalker extends Walker_Nav_Menu {
+	
+	/**
+	 * Enable parent item links?
+	 */
+	
+	protected $use_hrefs = false;
+
+	function __construct( $params = false ) {
+		if( !empty( $params ) && is_array( $params ) ) {
+			foreach( array_keys( $params ) as $strParam ) {
+				switch( $strParam ) {
+					case 'use_hrefs':
+					case 'link_parent_items':
+						
+						$this->use_hrefs = !empty( $params[ $strParam ] );
+						break;
+				}
+			}
+		
+		
+			
+		}
+		
+		
+	}
 
 	/**
 	 * @see Walker::start_lvl()
@@ -119,14 +144,23 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
 			// if ( $args->has_children && $depth === 0 ) {
 			$url = ! empty( $item->url ) ? $item->url : '';
 			
-			if ( $args->has_children ) {
+			//if ( $args->has_children ) {
+			if ( $args->has_children && $depth === 0 ) {
 				$atts['href']   		= ( empty( $url ) ? '#' : $url ); // make parent item clickable again
 				$atts['data-toggle']	= 'dropdown';
-				$atts['data-target']	= $atts['href'];
+				//$atts['data-target']	= $atts['href'];
+				
+				if( $this->use_hrefs != false ) {
+					$atts['data-target'] = $atts['href'];
+				} else {
+					$atts['data-target']	= '#'; // avoids issues with the 
+				}
+				
 				$atts['class']			= 'dropdown-toggle';
 				
+				// => data-toggle="dropdown" data-target="'. $url . '" class="dropdown-toggle"'
 				
-				// data-toggle="dropdown" data-target="'. $url . '" class="dropdown-toggle"'
+				$atts['aria-haspopup'] = 'true';
 				
 			} else {
 				$atts['href'] = $url;

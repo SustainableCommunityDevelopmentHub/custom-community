@@ -34,6 +34,14 @@ require( get_template_directory() . '/includes/pasteur.class.php' );
  * Next: Add theme activation / deactivation hooks - mostly used for future enhancements and updates
  */
 
+
+
+// initial activation
+if( is_admin() ) :
+	require_once( get_template_directory() . '/includes/admin/welcome.class.php' );
+endif;
+
+// add to the prospective hook
 add_action('after_switch_theme', 'cc2_theme_initial_setup', 10, 2 );
 function cc2_theme_initial_setup( $old_name, $old_theme = false) {
 	update_option( 'cc2_theme_version', CC2_THEME );
@@ -91,21 +99,14 @@ function cc2_theme_initial_setup( $old_name, $old_theme = false) {
 	// first activation
 	
     if ( is_admin() && isset( $_GET['activated'] ) && 'themes.php' == $GLOBALS['pagenow'] ) {
-		// setup menu
-		/*if( ! has_nav_menu( 'top' ) ) {
-		
-			$available_nav_menus = wp_get_nav_menus();
-			if( !empty( $available_nav_menus ) && is_array( $available_nav_menus ) ) { // assign first menu to the primary nav location
-				
-			}
-		}*/
 		
 		/**
-		 * TODO: Add check for old data (cc 1.x) and redirect to step-wise import view
+		 * TODO: Add return referrer url
 		 */
 		
+		wp_safe_redirect( add_query_arg( array( 'page' => 'cc2-welcome', 'return' => admin_url( 'themes.php') ), admin_url( apply_filters( 'cc2_welcome_screen_url', 'themes.php' ) ) ) );
 		
-        wp_redirect(admin_url('customize.php'));
+        //wp_redirect(admin_url('customize.php'));
         exit;
     }
 	
@@ -153,7 +154,10 @@ function cc2_theme_activation() {
 	
 	
     if ( is_admin() && isset( $_GET['activated'] ) && 'themes.php' == $GLOBALS['pagenow'] ) {
-        wp_redirect(admin_url('customize.php'));
+        //wp_redirect(admin_url('customize.php'));
+        
+        wp_safe_redirect( add_query_arg( array( 'page' => 'cc2-welcome' ), admin_url( apply_filters( 'cc2_welcome_screen_url', 'index.php' ) ) ) );
+        
         exit;
     }
 }

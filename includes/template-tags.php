@@ -61,8 +61,13 @@ add_action( 'cc_before_header', 'add_top_nav', 10 );
 function add_top_nav() {
  
 	// if top location doesn't have a menu -> do nothing
-	if( !has_nav_menu('top') )
+	if( !has_nav_menu('top') ) {
 		return;
+	}
+	
+	// maximum number of menu levels
+	$max_depth = get_theme_mod('top_nav_max_depth', 0 );
+	
 
 	// fetch position settings
 	$nav_position = get_theme_mod('top_nav_position', 'left' );
@@ -83,12 +88,18 @@ function add_top_nav() {
 		'menu_id' => 'top-menu',
 	);
 	
-	$menu_settings['walker'] = new wp_bootstrap_navwalker();
+	if( !empty( $max_depth ) && is_int( $max_depth ) ) {
+		$menu_settings['depth'] = $max_depth;
+	}
 	
+	//$menu_settings['walker'] = new wp_bootstrap_navwalker( array('use_hrefs' => true) );
+	
+	$menu_settings['walker'] = new wp_bootstrap_navwalker( array('use_hrefs' => false) );
+	$menu_settings['fallback_cb'] = array( 'wp_bootstrap_navwalker', 'fallback' );
 
 		
 		/*<nav id="access" class="site-navigation-top navbar navbar-static-top <?php do_action( 'top_nav_class' ); ?>">*/
-		?>
+	?>
 		<nav id="access" class="<?php echo apply_filters( 'top_nav_class', 'site-navigation-top navbar navbar-static-top' ); ?>">
 		
 			<div class="container">
@@ -400,7 +411,7 @@ function cc2_display_both_sidebars() {
 
 
 /**
- * Test if a given sidebar is available in the current VIEW
+ * Test if a given sidebar may be _displayed_ in the current VIEW. Thou it doesn't test if this sidebar is actually active.
  * 
  * @author Fabian Wolf
  * @package cc2
@@ -581,27 +592,47 @@ if( !function_exists( 'proper_submit_button' ) ) :
 			unset( $other_attributes['id'] );
 		}
 		
-		// Defualt button type
+		// Default button type
 		$button_type = 'submit';
 		if( is_array( $other_attributes ) && isset( $other_attributes['type'] ) ) {
 			$button_type = $other_attributes['type'];
 			unset( $other_attributes['type'] );
 		}
 		
-
+		$button_icon = '';
 		$attributes = '';
 		if ( is_array( $other_attributes ) ) {
 			foreach ( $other_attributes as $attribute => $value ) {
-				$attributes .= $attribute . '="' . esc_attr( $value ) . '" '; // Trailing space is important
+				$attributes .= $attribute . '="';
+				
+				if( $attribute == 'href' ) {
+					$attributes .= esc_url( $value );
+				} elseif( $attribute == 'icon' && !empty( $value ) ) {
+					$button_icon = '<i class="' . esc_attr( $value ) . '"></i> ';
+					
+				} else {
+				
+					 $attributes .= esc_attr( $value );
+					
+				}
+				
+				$attributes .= '" '; // Trailing space is important
 			}
 		} else if ( !empty( $other_attributes ) ) { // Attributes provided as a string
 			$attributes = $other_attributes;
 		}
 
-		$button = '<button type="' . esc_attr( $button_type ) . '" name="' . esc_attr( $name ) . '" id="' . esc_attr( $id ) . '" class="' . esc_attr( $class ) . '" '
-				. trim($attributes) . '>' . esc_attr( $text ) 
-				. '</button>';
 
+
+		if( in_array( 'link', $type ) != false ) {
+			$button = '<a id="' . esc_attr( $id ) . '" class="' . esc_attr( $class ) . '" ' . trim($attributes) . '>' . $button_icon . esc_attr( $text ) . '</a>';
+		} else {
+			$button = '<button type="' . esc_attr( $button_type ) . '" name="' . esc_attr( $name ) . '" id="' . esc_attr( $id ) . '" class="' . esc_attr( $class ) . '" '
+					. trim($attributes) . '>' . $button_icon . esc_attr( $text ) 
+					. '</button>';
+
+		}
+		
 		/*$button = '<input type="submit" name="' . esc_attr( $name ) . '" id="' . esc_attr( $id ) . '" class="' . esc_attr( $class );
 		$button	.= '" value="' . esc_attr( $text ) . '" ' . $attributes . ' />';*/
 
@@ -1865,6 +1896,78 @@ if( !function_exists( 'cc2_get_author_posts_url' ) ) :
 	}
 	
 endif;
+
+/**
+ * WooCommerce support
+ * @author Fabian Wolf
+ * @author Sven Lenhert
+ * @since 2.0.25
+ * @package cc2
+ */
+ 
+if( !class_exists( 'cc2_WooCommerce_Support') ) :
+
+	class cc2_WooCommerce_Support {
+		/**
+		 * Plugin instance.
+		 *
+		 * @see get_instance()
+		 * @type object
+		 */
+		protected static $instance = NULL;
+			
+		/**
+		 * Implements Factory pattern
+		 * Strongly inspired by WP Maintenance Mode of Frank Bueltge ^_^ (@link https://github.com/bueltge/WP-Maintenance-Mode)
+		 * 
+		 * Access this plugins working instance
+		 *
+		 * @wp-hook after_setup_theme
+		 * @return object of this class
+		 */
+		public static function get_instance() {
+
+			NULL === self::$instance and self::$instance = new self;
+
+			return self::$instance;
+		}
+		
+		function __construct() {
+			/**
+			 * TODO: maybe add a switch to the customizer woocommerce section?
+			 */
+			$wc_sidebar_pos = get_theme_mod('wc_shop_sidebar_position', false );
+			 
+			if( empty($wc_sidebar_pos) != false || $wc_sidebar_pos == 'hide' ) {
+			
+				remove_action( 'woocommerce_sidebar', 'woocommerce_get_sidebar', 10);
+			}
+			
+			remove_action( 'woocommerce_before_main_content', 'woocommerce_output_content_wrapper', 10);
+			remove_action( 'woocommerce_after_main_content', 'woocommerce_output_content_wrapper_end', 10);
+
+			add_action('woocommerce_before_main_content', array( $this, 'theme_wrapper_top' ), 10);
+			add_action('woocommerce_after_main_content', array( $this, 'theme_wrapper_bottom' ), 10);
+		}
+	
+	
+		public function theme_wrapper_top() {
+			//echo '<!--- ' .basename(__FILE__) . ': ' . __METHOD__ . ' -->';
+			locate_template( 'wc-content-top.php', true );
+		}
+		
+		public function theme_wrapper_bottom() {
+			//echo '<!--- ' .basename(__FILE__) . ': ' . __METHOD__ . ' -->';
+			locate_template( 'wc-content-bottom.php', true );
+		}
+	}
+
+
+	add_action('init', array( 'cc2_WooCommerce_Support', 'get_instance' ) );
+	//new cc2_WooCommerce_Support();
+	
+	
+endif; // end class_exists
 
 
 
