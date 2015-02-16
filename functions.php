@@ -23,23 +23,46 @@ endif;
 require_once( get_template_directory() . '/includes/extras.php' );
 
 // alternative theme settings handler (alternative to get_theme_mod / set_theme_mod, including comparision functions)
-require( get_template_directory() . '/includes/theme-mods.php' );
+//require( get_template_directory() . '/includes/theme-mods.php' );
 
 // generic validator / sanitization class
 require( get_template_directory() . '/includes/pasteur.class.php' );
-
-
+require( get_template_directory() . '/includes/pasteur.php' );
 
 /**
  * Next: Add theme activation / deactivation hooks - mostly used for future enhancements and updates
  */
 
+require_once( get_template_directory() . '/includes/admin/welcome.class.php' );
 
 
 // initial activation
-if( is_admin() ) :
-	require_once( get_template_directory() . '/includes/admin/welcome.class.php' );
-endif;
+
+// add the calls for the welcome screen
+/*
+add_action('admin_menu', 'cc2_add_welcome_screen');
+
+function cc2_add_welcome_screen() {
+	add_dashboard_page(
+		__('Welcome To Custom Community', 'cc2'),
+		__('Welcome To Custom Community', 'cc2'),
+		'read',
+		'cc2-welcome',
+		'cc2_welcome_screen'
+	);
+}
+
+// add the actual welcome screen function
+function cc2_welcome_screen() {
+	$import_old_settings = array(
+		'settings' => __('Theme Settings', 'cc2' ),
+		'widgets' => __('Widgets', 'cc2' ),
+		'slideshow' => __('Slideshow', 'cc2' ),
+	);
+	* 
+	
+	include( get_template_directory() . '/includes/admin/templates/welcome.php' );
+}*/
 
 // add to the prospective hook
 add_action('after_switch_theme', 'cc2_theme_initial_setup', 10, 2 );
@@ -104,6 +127,8 @@ function cc2_theme_initial_setup( $old_name, $old_theme = false) {
 		 * TODO: Add return referrer url
 		 */
 		
+		//add_query_arg( array( 'page' => 'cc2-welcome', 'return' => admin_url( 'themes.php') 
+		
 		wp_safe_redirect( add_query_arg( array( 'page' => 'cc2-welcome', 'return' => admin_url( 'themes.php') ), admin_url( apply_filters( 'cc2_welcome_screen_url', 'themes.php' ) ) ) );
 		
         //wp_redirect(admin_url('customize.php'));
@@ -153,10 +178,10 @@ function cc2_theme_activation() {
 	
 	
 	
-    if ( is_admin() && isset( $_GET['activated'] ) && 'themes.php' == $GLOBALS['pagenow'] ) {
+     if ( is_admin() && isset( $_GET['activated'] ) && 'themes.php' == $GLOBALS['pagenow'] ) {
         //wp_redirect(admin_url('customize.php'));
         
-        wp_safe_redirect( add_query_arg( array( 'page' => 'cc2-welcome' ), admin_url( apply_filters( 'cc2_welcome_screen_url', 'index.php' ) ) ) );
+        wp_safe_redirect( add_query_arg( array( 'page' => 'cc2-welcome', 'return' => admin_url( 'themes.php') ), admin_url( apply_filters( 'cc2_welcome_screen_url', 'themes.php' ) ) ) );
         
         exit;
     }
@@ -214,6 +239,11 @@ endif;
 
 // woocomerce support
 add_theme_support( 'woocommerce' );
+
+// woocommerce includes
+if( class_exists('WooCommerce' ) ) :
+	include_once( get_template_directory() . '/includes/wc-support.php' );
+endif;
 
 
 // Adding Google Fonts and TK Google Fonts Support
@@ -524,20 +554,13 @@ function cc2_js_aid() {
 add_action('get_header', 'cc2_js_aid' ); // frontend
 add_action('admin_enqueue_scripts', 'cc2_js_aid', 1 ); // admin
 
-//add_action('wp_enqueue_scripts', 'cc2_js_aid', 0 );
-//add_action('admin_enqueue_scripts', 'cc2_js_aid', 0 );
-
-
 
 /**
  * Color Scheme library includes (classes + helper functions)
  * TODO: Test if these could be tacked into the rest of the includes at the end of this file, or if there's a need to load them all BEFORE the rest.
  */
 
-//new __debug( 'loading color schemes', __FILE__ );
-
-
-require get_template_directory() . '/includes/extras.php';
+//require_once ( get_template_directory() . '/includes/extras.php' );
 require( get_template_directory() . '/includes/schemes/libs/color-schemes.class.php' );
 
 
@@ -888,7 +911,7 @@ if( !function_exists('cc2_load_theme_debug_assets' ) ) :
 		
 		
 			if( !empty( $cc2_advanced_settings ) && !empty($cc2_advanced_settings['load_test_js']) ) {
-			wp_enqueue_script( 'cc2-test-js' );
+				wp_enqueue_script( 'cc2-test-js' );
 			}
 		}
 	}
@@ -908,6 +931,12 @@ require get_template_directory() . '/includes/custom-header.php';
 // Load the customizer style file for the frontend & customizer preview
 require get_template_directory() . '/style.php';
 
+// Load Bootstrap WP Navwalker
+//require get_template_directory() . '/includes/bootstrap-wp-navwalker.php';
+
+// Load improved Bootstrap WP Navwalker
+require get_template_directory() . '/includes/wp-bootstrap-navwalker.php';
+
 // Custom template tags for this theme
 require get_template_directory() . '/includes/template-tags.php';
 
@@ -917,11 +946,7 @@ require get_template_directory() . '/includes/template-tags.php';
 // Load Jetpack compatibility file
 require get_template_directory() . '/includes/jetpack.php';
 
-// Load Bootstrap WP Navwalker
-//require get_template_directory() . '/includes/bootstrap-wp-navwalker.php';
 
-// Load improved Bootstrap WP Navwalker
-require get_template_directory() . '/includes/wp-bootstrap-navwalker.php';
 
 
 // load Boostrap helpers

@@ -30,7 +30,7 @@ function cc_add_header_image() {
 	$header_image = get_header_image();
 	$custom_header_image = get_custom_header();
 	
-	echo '<!-- debug: header_image ' . print_r( array('header_image' => $header_image, 'custom_header_image' => $custom_header_image ), true ). ' -->';
+	/*echo '<!-- debug: header_image ' . print_r( array('header_image' => $header_image, 'custom_header_image' => $custom_header_image ), true ). ' -->';*/
 
 	if ( ! empty( $header_image ) ) { ?>
 	<div class="cc-header-image">	
@@ -495,6 +495,7 @@ function cc2_display_sidebar( $sidebar_location = 'right' ) {
  * Check if to display a sidebar in current view
  *
  * @author Konrad Sroka
+ * @author Fabian Wolf
  * @package cc2
  * @since 2.0
  *
@@ -520,6 +521,11 @@ function _cc2_display_sidebar( $side = 'right' ){
 
         $single_layout = get_theme_mod( 'default_post_layout' );
 
+		if( class_exists( 'WooCommerce' ) ) {
+			$single_layout = get_theme_mod( 'wc_layout_single_product', 'default' );
+		}
+		
+
         if( 'default' === $single_layout )
             $single_layout = get_theme_mod( 'default_layout' );
 
@@ -536,11 +542,22 @@ function _cc2_display_sidebar( $side = 'right' ){
 
         $archive_layout = get_theme_mod( 'default_archive_layout' );
 
-        if( 'default' === $archive_layout )
-            $archive_layout = get_theme_mod( 'default_layout' );
+		/**
+		 * WooCommerce support
+		 * NOTE: The products list is also an "archive"
+		 */
+		
+		if( class_exists( 'WooCommerce' ) ) {
+			$archive_layout = get_theme_mod( 'wc_layout_archive', 'default' );
+		}
 
-        if( $side === $archive_layout || 'left-right' === $archive_layout )
-            return true;
+        if( 'default' === $archive_layout ) {
+            $archive_layout = get_theme_mod( 'default_layout' );
+		}
+
+		if( $side === $archive_layout || 'left-right' === $archive_layout ) {
+			return true;
+		}
 
         return false;
 
@@ -965,6 +982,10 @@ function cc2_add_content_class( $class = '' ) {
 
         $single_layout = get_theme_mod( 'default_post_layout' );
 
+		if( class_exists( 'WooCommerce' ) ) {
+			$single_layout = get_theme_mod( 'wc_layout_single_product', 'default' );
+		}
+		
         if( 'default' === $single_layout )
             $single_layout = get_theme_mod( 'default_layout' );
 
@@ -1003,6 +1024,11 @@ function cc2_add_content_class( $class = '' ) {
 	} elseif( is_archive() || is_home() ) {
 
         $archive_layout = get_theme_mod( 'default_archive_layout' );
+
+		if( class_exists( 'WooCommerce' ) ) {
+			$archive_layout = get_theme_mod( 'wc_layout_archive', 'default' );
+		}
+		
 
         if( 'default' === $archive_layout )
             $archive_layout = get_theme_mod( 'default_layout' );
@@ -1896,78 +1922,6 @@ if( !function_exists( 'cc2_get_author_posts_url' ) ) :
 	}
 	
 endif;
-
-/**
- * WooCommerce support
- * @author Fabian Wolf
- * @author Sven Lenhert
- * @since 2.0.25
- * @package cc2
- */
- 
-if( !class_exists( 'cc2_WooCommerce_Support') ) :
-
-	class cc2_WooCommerce_Support {
-		/**
-		 * Plugin instance.
-		 *
-		 * @see get_instance()
-		 * @type object
-		 */
-		protected static $instance = NULL;
-			
-		/**
-		 * Implements Factory pattern
-		 * Strongly inspired by WP Maintenance Mode of Frank Bueltge ^_^ (@link https://github.com/bueltge/WP-Maintenance-Mode)
-		 * 
-		 * Access this plugins working instance
-		 *
-		 * @wp-hook after_setup_theme
-		 * @return object of this class
-		 */
-		public static function get_instance() {
-
-			NULL === self::$instance and self::$instance = new self;
-
-			return self::$instance;
-		}
-		
-		function __construct() {
-			/**
-			 * TODO: maybe add a switch to the customizer woocommerce section?
-			 */
-			$wc_sidebar_pos = get_theme_mod('wc_shop_sidebar_position', false );
-			 
-			if( empty($wc_sidebar_pos) != false || $wc_sidebar_pos == 'hide' ) {
-			
-				remove_action( 'woocommerce_sidebar', 'woocommerce_get_sidebar', 10);
-			}
-			
-			remove_action( 'woocommerce_before_main_content', 'woocommerce_output_content_wrapper', 10);
-			remove_action( 'woocommerce_after_main_content', 'woocommerce_output_content_wrapper_end', 10);
-
-			add_action('woocommerce_before_main_content', array( $this, 'theme_wrapper_top' ), 10);
-			add_action('woocommerce_after_main_content', array( $this, 'theme_wrapper_bottom' ), 10);
-		}
-	
-	
-		public function theme_wrapper_top() {
-			//echo '<!--- ' .basename(__FILE__) . ': ' . __METHOD__ . ' -->';
-			locate_template( 'wc-content-top.php', true );
-		}
-		
-		public function theme_wrapper_bottom() {
-			//echo '<!--- ' .basename(__FILE__) . ': ' . __METHOD__ . ' -->';
-			locate_template( 'wc-content-bottom.php', true );
-		}
-	}
-
-
-	add_action('init', array( 'cc2_WooCommerce_Support', 'get_instance' ) );
-	//new cc2_WooCommerce_Support();
-	
-	
-endif; // end class_exists
 
 
 

@@ -139,11 +139,7 @@ if( !class_exists( 'cc2_ColorSchemes' ) ) :
 				
 				if( !empty( $config['color_schemes'] ) ) {
 					
-					
-					
-					
 					$this->arrColorSchemes = $config['color_schemes'];
-					
 					
 				}
 				

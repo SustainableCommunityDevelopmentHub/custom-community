@@ -35,7 +35,15 @@ class cc2_SliderAdminAjax {
 
 
 	function __construct( $arrParams = array() ) {
-		$this->add_ajax_calls();
+		
+		/**
+		 * NOTE: Internal XSS protection (else EVERY registered user will be enabled to inject data into the slideshow AJAX request)
+		 */
+		
+		if( current_user_can('manage_options') ) {
+		
+			$this->add_ajax_calls();
+		}
 	}
 
 	/**

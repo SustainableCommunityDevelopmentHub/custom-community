@@ -11,7 +11,15 @@
  */
 
 class cc2_CustomStyle {
-
+	/**
+	 * Also see @link https://developer.mozilla.org/en-US/docs/Web/CSS/length
+	 */
+	var $allowed_css_units = array(
+		'em', 'ex', 'rem', 'pt', 'px', '%', 'cm', 'mm', 'in', 'pc',
+		'ch', 
+		'vh', 'vw',
+		'vmin', 'vmax',
+	);
 /**
  * 
  * Additional Dynamic CSS
@@ -30,12 +38,16 @@ class cc2_CustomStyle {
 		// initial values
 		$advanced_settings = get_option( 'cc2_advanced_settings', array() );
 		$has_static_frontpage = ( get_option( 'show_on_front') == 'page' ? true : false );
+		
  	
  	?>
  	<style type="text/css">	
+		
+	<?php /*
 	.js.loading-stage body {
 		display: none;
-	}
+	}*/
+	?>
 
 	/** Le Container De Bootstrap **/
 
@@ -229,65 +241,69 @@ class cc2_CustomStyle {
     
     // Show header on home (only if no static frontpage is set!)
     if( $has_static_frontpage != false ) { // blog != home
-	?>
-		/**
-		 * ork
-		 */
-	
-		body.blog .site-header .cc-header-image {
-	<?php
-		// blog
-		if( get_theme_mod( 'display_header_home', false) != true ) { ?>
-			display: none; 
-		<?php
-		} else { // display header home = blog
 
-			if( get_theme_mod('header_height_blog', false ) !== false ) { ?>
-			
-			height: <?php echo get_theme_mod('header_height_blog' ); ?>;
+		// blog
+		if( ! get_theme_mod( 'display_header_home', true) ) : ?>
+		body.blog #masthead .cc-header-image {
+			display: none; 
+		}
+		<?php
+		else : // display header home = blog
+
+			if( get_theme_mod('header_height_blog', false ) !== false ) : ?>
 		
-		<?php }
-		} // display header home.end
+		body.blog #masthead {
+			height: <?php echo get_theme_mod('header_height_blog' ); ?>;
+		}
+		<?php endif;
+		endif; // display header home.end
 		?>
 		
-		}
+		
 		
 	<?php 
 	
 		// home = static frontpage
 		?>
 		
-		body.home #masthead {
+		
 			
 	<?php if( get_theme_mod( 'display_header_static_frontpage', false ) != true ) { ?>
-		
+		body.home #masthead .cc-header-image {
 			display: none;
+		}
 	<?php 
 		} else {
 			if( get_theme_mod('header_height_home', false ) !== false ) { ?>
-		
+		body.home #masthead {
 			height: <?php echo get_theme_mod('header_height_home' ); ?>;
+		}
+		
 		<?php }
 		} // display static frontpage header.end 
 		?>
 		
-		}
 		
 	<?php 
 	} else { // blog = home
 	?>
 	
-	body.home #masthead {
 		
 	<?php
-		if( get_theme_mod( 'display_header_home', true ) === false ) { ?>
-        
-			display: none;
-    <?php 
+		if( !get_theme_mod( 'display_header_home', true ) ) { ?>
+    
+			body.home #masthead .cc-header-image {
+				display: none;
+			}
+    <?php ?>
+    
+    <?php
 		} else { // show header home
 			if( get_theme_mod('header_height_home', false ) !== false ) { ?>
-			
+		
+		body.home #masthead {
 			height: <?php echo get_theme_mod('header_height_home' ); ?>;
+		}
 		<?php } ?>
 		
 		<?php 
@@ -297,7 +313,8 @@ class cc2_CustomStyle {
 		
 	<?php
 	}
-
+	
+	
     // Show header on posts?
     if( !get_theme_mod( 'display_header_posts', true ) ) { ?>
         body.single #masthead .cc-header-image { 
@@ -330,10 +347,36 @@ class cc2_CustomStyle {
         body.error404 #masthead .cc-header-image { display: none; }
     <?php }	
    
-     ?>
-
-
-	
+	/**
+	 * WooCommerce Support
+	 * 
+	 * @since 2.0.25
+	 * @package cc2
+	 * @author Fabian Wolf
+	 */
+	if( class_exists( 'WooCommerce' ) ) :
+		if( ! get_theme_mod( 'wc_display_header_products', true ) ) : ?>
+		body.archive.woocommerce  #masthead .cc-header-image, 
+		body.post-type-archive-product.woocommerce #masthead .cc-header-image {
+			display: none;
+		}	
+	<?php
+		
+		endif;
+		
+		if( ! get_theme_mod( 'wc_display_header_single_product', true ) ) : ?>
+		
+		body.single-product  #masthead .cc-header-image,
+		body.single.woocommerce #masthead .cc-header-image,
+		body.single.woocommerce-page #masthead .cc-header-image {
+			display: none;
+		}
+		
+		
+	<?php	
+		endif;
+	endif;
+	?>
 
 
     /** Navigation **/
@@ -411,24 +454,46 @@ class cc2_CustomStyle {
 
     // correcting navbar fixed top if admin bar is displaying
      //if( is_admin_bar_showing() ) :
-     
-		if( true === get_theme_mod( 'fixed_top_nav' ) ) : ?>
+		$header_height = get_theme_mod('header_height', 'auto' );
+		if( $header_height == 'auto' || empty( $header_height) ) {
+			$strHeaderHeight = '50px';
+		} elseif( is_int( $header_height ) != false ) {
+			$strHeaderHeight = $header_height . 'px';
+		} elseif( strlen( str_replace( $this->allowed_css_units, '', $header_height ) ) < strlen( $header_height) != false )  {
+			$strHeaderHeight = $header_height;
+		}
+		
+		if( get_theme_mod( 'fixed_top_nav', false ) !== false ) : ?>
      
 		body.admin-bar nav.site-navigation-top.navbar-fixed-top {
 			top: 32px !important;
 		}
-     
-		@media screen and (min-width: 783px) { <?php // that's the breakpoint where the admin bar gets bigger.. ?>
-			body.admin-bar nav.navbar-fixed-top {
+   
+		
+		body.admin-bar .site-header {
+			
+			margin-top: <?php echo $strHeaderHeight; ?>;
+		}
+		 
+		@media screen and (max-width: 782px) { <?php // that's the breakpoint where the admin bar gets bigger.. ?>
+			body.admin-bar nav.site-navigation-top.navbar-fixed-top {
 				top: 46px !important;
 			}
         }
-        <?php else : ?>
+        
+        
+        
+        <?php else : 
+        
+        /*
+         * NOTE: Seems to be obsolete - or broken from the begin
+         * 
         body.logged-in.admin-bar .site-navigation-top {
 			margin-top: 32px !important;
 		}
-		
-		 @media screen and (min-width: 782px) { <?php // that's the breakpoint where the admin bar gets bigger.. ?>
+		*/
+		?>
+		 @media screen and (max-width: 782px) { <?php // that's the breakpoint where the admin bar gets bigger.. ?>
             body.logged-in.admin-bar .site-navigation-top {
                 margin-top: 46px !important;
             }

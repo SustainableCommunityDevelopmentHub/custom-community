@@ -61,10 +61,10 @@ class _cc2_BootStrapSupplements {
 		 
 		add_filter( 'the_content', array( $this, 'filter_the_content' ) );
 		
-		
-		add_action('comment_form_after_fields', array( $this, 'comment_buttons_try') );
-		add_action('comment_form', array( $this, 'comment_buttons_end') );
-		
+		if( is_single() && !class_exists( 'WooCommerce' ) ) {
+			add_action('comment_form_after_fields', array( $this, 'comment_buttons_try') );
+			add_action('comment_form', array( $this, 'comment_buttons_end') );
+		}
 		//add_filter( 'wp_head', array( $this, 'fire_from_wp_head' ), 10, 3 );
 	}
 	

@@ -19,12 +19,15 @@ if( !class_exists( 'cc2_Admin_Welcome' ) ) :
 
 class cc2_Admin_Welcome {
 	function __construct() {
-		add_action('admin_menu', array( $this, 'add_welcome_screen' ) );
+		add_action( 'admin_menu', array( $this, 'add_welcome_screen' ) );
 		add_action( 'admin_head', array( $this, 'admin_head' ) );
-		
+		//add_action( 'admin_init', array( $this, 'add_welcome_redirect'    ) );
 	}
 	
-	
+	/*
+	function add_welcome_redirect() {
+		
+	}*/
 	
 	function add_welcome_screen() {
 		$welcome_page_name = __('About Custom Community', 'cc2');
@@ -34,7 +37,7 @@ class cc2_Admin_Welcome {
 		$page = add_theme_page(
 			$welcome_page_name,
 			$welcome_page_title,
-			'read',
+			'edit_theme_options',
 			'cc2-welcome',
 			array($this, 'admin_page_welcome' )
 		);
@@ -48,7 +51,10 @@ class cc2_Admin_Welcome {
 		$current_theme = wp_get_theme();
 		$version = ( is_object( $current_theme ) ? $current_theme->Version : '2.0' );
 		
-		wp_enqueue_style( 'cc2-welcome', get_template_directory_uri() . '/includes/admin/css/welcome.css', array(), $version );
+		wp_register_style ('font-awesome', get_template_directory_uri() . '/includes/resources/fontawesome/css/font-awesome.min.css' );
+		
+		wp_enqueue_style( 'cc2-welcome', get_template_directory_uri() . '/includes/admin/css/welcome.css', array('font-awesome'), $version );
+		
 	}
 	
 	function admin_head() {

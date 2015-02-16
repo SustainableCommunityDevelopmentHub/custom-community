@@ -78,7 +78,10 @@ class cc2_Admin_AdvancedSettings {
 		//add_action('admin_enqueue_scripts', array( $this, 'init_admin_js' ) );
 
 		// save settings
-		add_action( 'wp_ajax_' . $this->classPrefix . 'save', array( $this, 'update_settings') );
+		if( current_user_can( 'manage_options' ) ) {
+		
+			add_action( 'wp_ajax_' . $this->classPrefix . 'save', array( $this, 'update_settings') );
+		}
 		//add_action( 'wp_ajax_nopriv_' . $this->classPrefix . 'save', array( $this, 'update_settings') );
 		
 		
