@@ -14,7 +14,7 @@ if( !empty( $display_footer ) ) :
 
 <footer id="colophon" class="site-footer" role="contentinfo">
 
-	<?php if( is_active_sidebar( 'sidebar-6' ) || ( !is_active_sidebar( 'sidebar-6' ) && current_user_can('edit_theme_options') ) ) : ?>
+	<?php if( is_active_sidebar( 'footer-fullwidth' ) || current_user_can('edit_theme_options') ) : ?>
 
 		<div id="footer-fullwidth-wrap" class="fullwidth cc-footer">
 			<div class="container">
