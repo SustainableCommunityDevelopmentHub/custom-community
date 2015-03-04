@@ -273,7 +273,7 @@ endif;
 /**
  * Filters wp_title to print a neat <title> tag based on what is being viewed.
  */
-if( !function_exists( '_tk_wp_title' ) ) :
+/*if( !function_exists( '_tk_wp_title' ) ) :
 function _tk_wp_title( $title, $sep ) {
 	global $page, $paged;
 
@@ -296,3 +296,4 @@ function _tk_wp_title( $title, $sep ) {
 }
 add_filter( 'wp_title', '_tk_wp_title', 10, 2 );
 endif;
+*/
