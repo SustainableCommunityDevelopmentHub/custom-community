@@ -96,6 +96,99 @@ class cc2_Admin {
 			
 			if( isset( $config['support_settings'] ) ) {
 				$this->arrSupportSettings = $config['support_settings'];
+		
+				//new __debug( $this->arrSections, 'updated class settings ');
+				
+				$currentUserData = get_userdata( get_current_user_id() );
+				
+				// default settings
+				$strUserName = '';
+				$strUserEMail = '';
+				$strDescription = '';
+				$strSubject = '';
+				
+				// retrieve user name
+				
+				
+				if( !empty( $currentUserData->first_name ) || !empty( $currentUserData->last_name ) ) {
+					if( !empty( $currentUserData->first_name ) ) {
+						$strUserName = $currentUserData->first_name . ' ';
+					}
+					
+					if( !empty( $currentUserData->last_name ) ) {
+						$strUserName .= $currentUserData->last_name;
+					}
+				} else {
+					if( isset( $currentUserData->display_name) ) {
+						$strUserName = $currentUserData->display_name;
+					}
+				}
+				
+				if( !empty( $strUserName ) ) {
+					$strUserName = sanitize_text_field( trim( $strUserName ) );
+				}
+				
+				// retrieve user e-mail
+				
+				if( isset( $currentUserData->user_email ) ) {
+					$strUserEMail = $currentUserData->user_email;
+				}
+				
+				// retrieve site information
+				$strSiteURL = get_bloginfo('url');
+				$strPHPVersion = phpversion();
+				$strVersion = '' . get_bloginfo('version');
+				
+				$strThemeVersion = ( defined( 'CC2_THEME' ) ? CC2_THEME : '' );
+				
+				if( empty( $strThemeVersion ) ) {
+					$current_theme = wp_get_theme();
+					
+					if( is_child_theme() ) {
+						$parent_theme = wp_get_theme( get_template() );
+						unset( $current_theme );
+						$current_theme = $parent_theme;
+					}
+					
+					//$strThemeVersion = $current_theme->get('Version');
+					$strThemeVersion = $current_theme->Version;
+				}
+				
+		
+				/**
+				 * TODO: Add parent theme query
+				 * 
+				else {
+					$current_theme = wp_get_theme(  );
+				}*/
+				
+				if( !empty( $strVersion ) ) {
+					$arrDescription[] = 'WP ' . $strVersion;
+				}
+				
+				if( !empty( $strThemeVersion ) ) {
+					$arrDescription[] = 'CC ' . $strThemeVersion;
+				}
+				
+				if( !empty( $strPHPVersion ) ) {
+					$arrDescription[] = 'PHP ' . $strPHPVersion;
+				}
+
+				// prefill text field
+				if( !empty( $arrDescription ) ) {
+					$strDescription = 'Please add your question(s) BEFORE the system information - ' . implode( ' / ', $arrDescription );
+				}	
+				
+				// prefill fields
+				$this->arrSupportSettings['zendesk']['prefill_fields'] = apply_filters('cc2_zendesk_prefill_fields', array(
+					'email' => $strUserEMail,
+					'name' => $strUserName,
+					'description' => $strDescription,
+					'subject' => $strSubject,
+				) );
+				
+				$this->arrSupportSettings['userinfo'] = $currentUserData;
+			
 			}
 		}
 		
@@ -106,9 +199,10 @@ class cc2_Admin {
 	function add_admin_menu() {
 
 		add_theme_page( 'CC Settings', 'CC Settings', 'edit_theme_options', $this->strPageName, array( $this, 'admin_page_screen' ) );
+		
 		//'cc2-settings'
 		
-		// add_theme_page( $page_title, $menu_title, $capability, $menu_slug, $function = $callback ) 
+		// syntax: add_theme_page( $page_title, $menu_title, $capability, $menu_slug, $function = $callback ) 
 		
 	}
 	
