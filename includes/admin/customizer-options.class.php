@@ -3640,14 +3640,14 @@ endif;
 
 /**
  * Hook into customizer_save and do a secondary check
- */
+ 
 add_action('customize_save', 'cc2_CustomizerCheck' );
-/*
+
 $custom_save_slugs = array('display_header_text', 'color_scheme', 'fixed_top_nav' );
 
 add_action('customize_save_display_header_text', function() {
 	cc2_CustomizerCheck( 'display_header_text' );
-});*/
+});
 
 add_action('customize_save_color_scheme', function() {
 	cc2_CustomizerCheck( 'color_scheme' );
@@ -3670,7 +3670,7 @@ function cc2_CustomizerCheck( $hook ) {
 		new __debug( array( 'save_data' => $save_data, 'theme_mods' => $theme_mods ), $title );
 	}
 } 
-
+*/
 
 
 
