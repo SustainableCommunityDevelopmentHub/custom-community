@@ -18,7 +18,7 @@
 	</div>
 
 	<div class="about-text cc2-about-text">
-		<p><?php printf( __('Welcome and thanks for installing Custom Community %s!'), $version ); ?></p>
+		<p><?php printf( __('Welcome and thanks for installing Custom Community %s!', 'cc2'), $version ); ?></p>
 	</div>
 	
 	<p class="cc2-welcome-actions">

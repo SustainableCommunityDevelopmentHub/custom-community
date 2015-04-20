@@ -135,7 +135,7 @@ class cc2_Admin {
 				}
 				
 				// retrieve site information
-				$strSiteURL = get_bloginfo('url');
+				$strSiteURL = get_home_url();
 				$strPHPVersion = phpversion();
 				$strVersion = '' . get_bloginfo('version');
 				

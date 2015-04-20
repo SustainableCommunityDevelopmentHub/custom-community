@@ -25,7 +25,7 @@ if( !empty( $import_old_settings ) ) : ?>
 		<div class="feature-rest feature-section col two-col">
 
 			<div class="cc2-about-text-import-old-data" id="welcome-import-old-data-text">
-				<h2><?php _e('Import old settings'); ?></h2>
+				<h2><?php _e('Import old settings', 'cc2'); ?></h2>
 				
 				<p><?php _e('Salvage and reuse settings, widgets, and other data from earlier incarnations of Custom Community:', 'cc2'); ?></p>
 				
@@ -44,7 +44,7 @@ if( !empty( $import_old_settings ) ) : ?>
 				<?php endforeach; ?>
 				</ul>
 				
-				<p><?php proper_submit_button( 'Import selected data', 'primary large', 'step', false, array('value' => 'update-script') ); ?></p>
+				<p><?php proper_submit_button( __('Import selected data', 'cc2'), 'primary large', 'step', false, array('value' => 'update-script') ); ?></p>
 			</div>
 
 		</div>

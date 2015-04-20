@@ -3641,38 +3641,10 @@ endif;
 /**
  * Hook into customizer_save and do a secondary check
  */
-add_action('customize_save', 'cc2_CustomizerCheck' );
-/*
-$custom_save_slugs = array('display_header_text', 'color_scheme', 'fixed_top_nav' );
-
-add_action('customize_save_display_header_text', function() {
-	cc2_CustomizerCheck( 'display_header_text' );
-});*/
-
-add_action('customize_save_color_scheme', function() {
-	cc2_CustomizerCheck( 'color_scheme' );
-});
-	
-add_action('customize_save_fixed_top_nav', function() {
-	cc2_CustomizerCheck( 'fixed_top_nav' );
-});
-
-function cc2_CustomizerCheck( $hook ) {
-	//new __debug( $hook );
-	$save_data = json_decode( stripcslashes( $_POST['customized'] ) );
-	//new __debug(  );
-	
-	$theme_mods = get_option( 'theme_mods_cc2', false );
-	
-	if( !empty( $theme_mods ) ) {
-		$title = ( is_string( $hook ) ? $hook : 'hook calls' );
-		
-		new __debug( array( 'save_data' => $save_data, 'theme_mods' => $theme_mods ), $title );
-	}
-} 
-
-
-
+ 
+if( defined( 'WP_DEBUG' ) && WP_DEBUG != false ) {
+	include_once( get_template_directory() . '/customizer-options.debug.php' );
+}
 
 /**
  * Load custom controls
