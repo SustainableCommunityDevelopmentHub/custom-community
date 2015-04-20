@@ -3637,15 +3637,6 @@ if( !function_exists('cc2_customizer_load_fonts') ) :
 
 endif;
 
-
-/**
- * Hook into customizer_save and do a secondary check
- */
- 
-if( defined( 'WP_DEBUG' ) && WP_DEBUG != false ) {
-	include_once( get_template_directory() . '/customizer-options.debug.php' );
-}
-
 /**
  * Load custom controls
  */
