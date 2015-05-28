@@ -17,7 +17,7 @@ if( isset( $display_page_title_props['posts'] ) && $display_page_title_props['po
 	$show_title = false;
 }
 
-if( $author_image_settings['single_post'] != false ) {
+if( isset($author_image_settings['single_post']) && $author_image_settings['single_post'] != false ) {
 	$author_avatar = cc2_get_author_image();
 		
 	$post_class[] = 'has-author-avatar';
