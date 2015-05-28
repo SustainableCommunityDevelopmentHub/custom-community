@@ -1759,64 +1759,67 @@ if ( ! function_exists( '_tk_posted_on' ) ) :
  * Prints HTML with meta information for the current post-date/time and author.
  */
 function _tk_posted_on() { 
-			global $post;
+    global $post;
 			// first check if to step into the first 3 things at all
-			if( !is_single() && ( true === get_theme_mod( 'show_date' ) || true === get_theme_mod( 'show_category' ) || true === get_theme_mod( 'show_author' ) ) 
-			  || is_single() && ( true === get_theme_mod( 'single_show_date' ) || true === get_theme_mod( 'single_show_category' ) || true === get_theme_mod( 'single_show_author' ) ) ) :
-	
-				echo _e( 'Posted ', 'cc2' ); 
-	
-				// the post date comes here, if theme options are chosen for either single or archive view
-				if( !is_single() && true === get_theme_mod( 'show_date' ) || is_single() && true === get_theme_mod( 'single_show_date' ) ) { ?>
-	
-						<span class="post-date-wrap">on 
-							<a class="post-date-link" href="<?php the_permalink(); ?>" title="<?php the_title(); ?>">
-								<span class="post-date-icon glyphicon glyphicon-calendar"></span>  
-								<time class="post-date" datetime="<?php esc_attr( the_date( 'c' ) ) ?>">
-									<?php esc_html( the_time('F j, Y') ); ?> 
-								</time>
-							</a>
-						</span>	
-	
-				<?php }
-					
-					
-				// now the category 
-				if( !is_single() && true === get_theme_mod( 'show_category' ) || is_single() && true === get_theme_mod( 'single_show_category' ) ) { ?> 
-	
-					<span class="post-category-wrap">in <?php the_category(', '); ?> </span>
-	
-				<?php }
-				
-				
-				// then the author stuff 
-				if( !is_single() && true === get_theme_mod( 'show_author' ) || is_single() && true === get_theme_mod( 'single_show_author' ) ) { ?> 
-				
-					<span class="author vcard">
-						<?php if (defined('BP_VERSION'))
-					        printf( __('by %s', 'cc2'), bp_core_get_userlink( $post->post_author ) );
-							// else if no BP activated, do this			
-					        echo sprintf( __('by %s', 'cc2'), '<a href="' . get_author_posts_url( get_the_author_meta( 'ID' ) ) . '" title="View all posts by ' . esc_attr( get_the_author() ) . '">'. get_the_author_meta( 'display_name' ) . '</a>' ); 
-					    ?>
-				   </span>
-				
-				<?php }
-			
-			endif; 
-			
-			
-			// display comments - if is single post view
-		    if( is_single() && true === get_theme_mod( 'single_show_comments' ) ) { ?>
-			
-				<a class="jump-to-comments" ref="#comments" title="Comments on this post">
-					<span class="alignright">
-						<span class="glyphicon glyphicon-comments"></span>  
-						<?php comments_number( _e( 'No Comments', 'cc2' ), _e( 'One Comment', 'cc2' ), _e( '$ Comments', 'cc2' ) ); ?> 
-					</span>
-				</a>
-			
-			<?php } 
-			
+    if( !is_single() && ( true == get_theme_mod( 'show_date' ) || true == get_theme_mod( 'show_category' ) || true == get_theme_mod( 'show_author' ) )
+        || is_single() && ( true == get_theme_mod( 'single_show_date' ) || true == get_theme_mod( 'single_show_category' ) || true == get_theme_mod( 'single_show_author' ) ) ) :
+        
+
+            echo _e( 'Posted ', 'cc2' );
+
+            // the post date comes here, if theme options are chosen for either single or archive view
+            if( !is_single() && true == get_theme_mod( 'show_date' ) || is_single() && true == get_theme_mod( 'single_show_date' ) ) { ?>
+
+                    <span class="post-date-wrap">on
+                        <a class="post-date-link" href="<?php the_permalink(); ?>" title="<?php the_title(); ?>">
+                            <span class="post-date-icon glyphicon glyphicon-calendar"></span>
+                            <time class="post-date" datetime="<?php esc_attr( the_date( 'c' ) ) ?>">
+                                <?php esc_html( the_time('F j, Y') ); ?>
+                            </time>
+                        </a>
+                    </span>
+
+            <?php }
+
+
+            // now the category
+            if( !is_single() && true == get_theme_mod( 'show_category' ) || is_single() && true == get_theme_mod( 'single_show_category' ) ) { ?>
+
+                <span class="post-category-wrap">in <?php the_category(', '); ?> </span>
+
+            <?php }
+
+
+            // then the author stuff
+            if( !is_single() && true == get_theme_mod( 'show_author' ) || is_single() && true == get_theme_mod( 'single_show_author' ) ) { ?>
+
+                <span class="author vcard">
+                    <?php if (defined('BP_VERSION')) {
+                        printf( __('by %s', 'cc2'), bp_core_get_userlink( $post->post_author ) );
+                    } else { 	// else if no BP activated, do this
+                        echo sprintf( __('by %s', 'cc2'), '<a href="' . get_author_posts_url( get_the_author_meta( 'ID' ) ) . '" title="View all posts by ' . esc_attr( get_the_author() ) . '">'. get_the_author_meta( 'display_name' ) . '</a>' );
+                    }
+
+                    ?>
+               </span>
+
+            <?php }
+
+
+
+        // display comments - if is single post view
+        if( is_single() && true == get_theme_mod( 'single_show_comments' ) ) { ?>
+
+            <a class="jump-to-comments" ref="#comments" title="Comments on this post">
+                <span class="alignright">
+                    <span class="glyphicon glyphicon-comments"></span>
+                    <?php comments_number( _e( 'No Comments', 'cc2' ), _e( 'One Comment', 'cc2' ), _e( '$ Comments', 'cc2' ) ); ?>
+                </span>
+            </a>
+
+        <?php }
+
+    endif;
 	
 }
 endif;
