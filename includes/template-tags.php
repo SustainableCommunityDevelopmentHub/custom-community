@@ -1763,7 +1763,7 @@ function _tk_posted_on() {
 			// first check if to step into the first 3 things at all
     if( !is_single() && ( true == get_theme_mod( 'show_date' ) || true == get_theme_mod( 'show_category' ) || true == get_theme_mod( 'show_author' ) )
         || is_single() && ( true == get_theme_mod( 'single_show_date' ) || true == get_theme_mod( 'single_show_category' ) || true == get_theme_mod( 'single_show_author' ) ) ) :
-        
+
 
             echo _e( 'Posted ', 'cc2' );
 
