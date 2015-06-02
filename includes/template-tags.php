@@ -59,13 +59,16 @@ function cc_add_header_image() {
 add_action( 'cc_before_header', 'add_top_nav', 10 ); 
  
 function add_top_nav() {
- 
+
+
 	// if top location doesn't have a menu -> do nothing
 	if( !has_nav_menu('top') ) {
 		return;
 	}
-	
-	// maximum number of menu levels
+
+    $advanced_settings = get_option( 'cc2_advanced_settings', array() );
+
+    // maximum number of menu levels
 	$max_depth = get_theme_mod('top_nav_max_depth', 0 );
 	
 
@@ -93,8 +96,10 @@ function add_top_nav() {
 	}
 	
 	//$menu_settings['walker'] = new wp_bootstrap_navwalker( array('use_hrefs' => true) );
-	
-	$menu_settings['walker'] = new wp_bootstrap_navwalker( array('use_hrefs' => false) );
+
+    $use_hrefs = isset($advanced_settings['load_hover_dropdown_css']) && $advanced_settings['load_hover_dropdown_css'] == true ? true : false;
+
+	$menu_settings['walker'] = new wp_bootstrap_navwalker( array('use_hrefs' => $use_hrefs) );
 	$menu_settings['fallback_cb'] = array( 'wp_bootstrap_navwalker', 'fallback' );
 
 		
