@@ -1,7 +1,7 @@
 <?php
 
 // some initial variables, some of them being very important for updates etc.
-define('CC2_THEME', '2.0' );
+define('CC2_THEME', '2.0.28' );
 
 // required for most stuff to work properly
 if( file_exists( get_stylesheet_directory() . '/includes/theme-config.php' ) && !defined('CC2_THEME_CONFIG') ) {
