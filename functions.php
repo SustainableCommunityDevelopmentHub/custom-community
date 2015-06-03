@@ -121,19 +121,19 @@ function cc2_theme_initial_setup( $old_name, $old_theme = false) {
 	
 	// first activation
 	
-    if ( is_admin() && isset( $_GET['activated'] ) && 'themes.php' == $GLOBALS['pagenow'] ) {
-		
-		/**
-		 * TODO: Add return referrer url
-		 */
-		
-		//add_query_arg( array( 'page' => 'cc2-welcome', 'return' => admin_url( 'themes.php') 
-		
-		wp_safe_redirect( add_query_arg( array( 'page' => 'cc2-welcome', 'return' => admin_url( 'themes.php') ), admin_url( apply_filters( 'cc2_welcome_screen_url', 'themes.php' ) ) ) );
-		
-        //wp_redirect(admin_url('customize.php'));
-        exit;
-    }
+//    if ( is_admin() && isset( $_GET['activated'] ) && 'themes.php' == $GLOBALS['pagenow'] ) {
+//
+//		/**
+//		 * TODO: Add return referrer url
+//		 */
+//
+//		//add_query_arg( array( 'page' => 'cc2-welcome', 'return' => admin_url( 'themes.php')
+//
+//		wp_safe_redirect( add_query_arg( array( 'page' => 'cc2-welcome', 'return' => admin_url( 'themes.php') ), admin_url( apply_filters( 'cc2_welcome_screen_url', 'themes.php' ) ) ) );
+//
+//        //wp_redirect(admin_url('customize.php'));
+//        exit;
+//    }
 	
 }
 
@@ -178,13 +178,13 @@ function cc2_theme_activation() {
 	
 	
 	
-     if ( is_admin() && isset( $_GET['activated'] ) && 'themes.php' == $GLOBALS['pagenow'] ) {
-        //wp_redirect(admin_url('customize.php'));
-        
-        wp_safe_redirect( add_query_arg( array( 'page' => 'cc2-welcome', 'return' => admin_url( 'themes.php') ), admin_url( apply_filters( 'cc2_welcome_screen_url', 'themes.php' ) ) ) );
-        
-        exit;
-    }
+//     if ( is_admin() && isset( $_GET['activated'] ) && 'themes.php' == $GLOBALS['pagenow'] ) {
+//        //wp_redirect(admin_url('customize.php'));
+//
+//        wp_safe_redirect( add_query_arg( array( 'page' => 'cc2-welcome', 'return' => admin_url( 'themes.php') ), admin_url( apply_filters( 'cc2_welcome_screen_url', 'themes.php' ) ) ) );
+//
+//        exit;
+//    }
 }
 
 // much more helping buddy
