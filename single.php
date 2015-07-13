@@ -39,6 +39,8 @@ $content_class = array('main-content-inner');
 
                     <?php endwhile; // end of the loop. ?>
 
+                    <?php do_action( 'cc_last_inside_main_content_inner'); ?>
+
                 </div><!-- close #content -->
 
                 <?php if( cc2_display_sidebar( 'right' ) )

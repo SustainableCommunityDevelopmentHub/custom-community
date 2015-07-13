@@ -83,8 +83,7 @@ get_header(); ?>
                         <?php endif; ?>
 
                     <?php } // we're through! that was the whole loop thing! let's move on to the sidebar.. ?>
-
-                    <?php do_action('tk_sidebars_index'); ?>
+                    <?php do_action( 'cc_first_inside_main_content_inner'); ?>
 
                 </div><!-- close #content -->
 

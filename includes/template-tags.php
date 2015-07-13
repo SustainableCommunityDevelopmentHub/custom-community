@@ -35,7 +35,7 @@ function cc_add_header_image() {
 	if ( ! empty( $header_image ) ) { ?>
 	<div class="cc-header-image">	
 		<a class="cc-header-image-link" href="<?php echo esc_url( home_url( '/' ) ); ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" rel="home">
-			<img src="<?php echo $header_image; ?>" width="<?php echo $custom_header_image->width; ?>" height="<?php echo $custom_header_image->height; ?>" alt="">
+			<img src="<?php echo $header_image; ?>" width="100%" height="auto" alt="">
 		</a>
 	</div>	
 	<?php 
@@ -183,7 +183,7 @@ function add_secondary_nav() {
 						       <?php wp_nav_menu(
 					                array(
 					                    'theme_location' => 'secondary',
-					                    'container_class' => 'navbar-collapse collapse',
+					                    'container_class' => 'navbar-collapse collapse navbar-responsive-collapse',
 					                    'menu_class' => $menu_class,
 					                    'fallback_cb' => '',
 					                    'menu_id' => 'main-menu',

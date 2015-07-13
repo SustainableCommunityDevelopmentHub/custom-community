@@ -217,7 +217,7 @@ endif;
 if( !function_exists( '_switchdefault' ) ) :
 	/**
 	 * Switch to default if $value is empty. Works identical to get_option()
-	 * 
+	 *
 	 * @param mixed $value		Value to test against.
 	 * @param mixed $default	Default value if $value is empty. Defaults to FALSE.
 	 * @return mixed $return	Returns $default if $value is empty, or $value, if not.
@@ -225,11 +225,11 @@ if( !function_exists( '_switchdefault' ) ) :
 
 	function _switchdefault( $value = null, $default = false ) {
 		$return = $default;
-		
+
 		if( $default !== $value && !empty( $value ) ) {
 			$return = $value;
 		}
-		
+
 		return $return;
 	}
 
@@ -564,11 +564,11 @@ add_action('admin_enqueue_scripts', 'cc2_js_aid', 1 ); // admin
 require( get_template_directory() . '/includes/schemes/libs/color-schemes.class.php' );
 
 
-/*
-if( !class_exists( 'cc2_ColorSchemes_ThemeHandler' ) ) {
-	require( get_template_directory() . '/includes/schemes/libs/theme_handler.class.php' );	
-} 
-*/
+
+//if( !class_exists( 'cc2_ColorSchemes_ThemeHandler' ) ) {
+//	require( get_template_directory() . '/includes/schemes/libs/theme_handler.class.php' );
+//}
+
 
 include( get_template_directory() . '/includes/schemes/libs/functions.php' );
 
@@ -584,12 +584,12 @@ if( !function_exists( '__cc2_init_color_schemes_call' ) ) :
 
 	function __cc2_init_color_schemes_call() {
 		global $cc2_color_schemes;
-		
+
 		if( !isset( $GLOBALS['cc2_color_schemes'] ) && !isset($cc2_color_schemes) ) {
 			do_action('cc2_init_color_schemes');
 		}
 	}
-	
+
 	add_action('init', '__cc2_init_color_schemes_call', 10 );
 endif;
 

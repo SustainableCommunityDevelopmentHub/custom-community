@@ -25,7 +25,7 @@ if( is_home() && isset( $display_page_title_props['home'] ) && $display_page_tit
 	$show_title = false;
 }
 
-if( 'post' == get_post_type() && $author_image_settings['archive'] != false ) {
+if( isset($author_image_settings['archive']) && 'post' == get_post_type() && $author_image_settings['archive'] != false ) {
 	$author_avatar = cc2_get_author_image();
 	$post_class[] = 'has-author-avatar';
 }

@@ -30,6 +30,7 @@ $content_class = array('main-content-inner');
 
                     <?php get_template_part('content','archive'); ?>
 
+                    <?php do_action( 'cc_last_inside_main_content_inner'); ?>
                 </div><!-- close #content -->
 
                 <?php if( cc2_display_sidebar( 'right' ) ) :
