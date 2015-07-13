@@ -2,7 +2,7 @@
 
     <?php if( function_exists( 'tk_loop_designer_the_loop' ) && 'blog-style' !== get_theme_mod( 'cc_list_post_style' ) ) {
 
-        tk_loop_designer_the_loop( get_theme_mod( 'cc_list_post_style' ), 'index', 'show' );
+        tk_loop_designer_the_loop( get_theme_mod( 'cc_list_post_style' ), 'index', 'pagenavi' );
 
     } else { ?>
 

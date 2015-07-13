@@ -88,7 +88,7 @@ if( $show_front_page_content ) :
                         <?php endif; ?>
 
                     <?php } // we're through! that was the whole loop thing! let's move on to the sidebar.. ?>
-                    <?php do_action( 'cc_first_inside_main_content_inner'); ?>
+                    <?php do_action( 'cc_last_inside_main_content_inner'); ?>
 
                 </div><!-- close #content -->
 
