@@ -1,14 +1,7 @@
 <div class="content-padder">
 
-    <?php if( function_exists( 'tk_loop_designer_the_loop' ) && 'blog-style' !== get_theme_mod( 'cc_list_post_style' ) ) {
-
-        tk_loop_designer_the_loop( get_theme_mod( 'cc_list_post_style' ), 'index', 'pagenavi' );
-
-    } else { ?>
-
         <?php if ( have_posts() ) : ?>
-
-			<?php if( get_theme_mod('display_page_title[archive]', false ) != false ) : ?>
+			<?php if( get_theme_mod('display_page_title[archive]', true ) == true ) : ?>
 
             <header class="page-header">
                 <h1 class="page-title">
@@ -65,13 +58,26 @@
                 // Show an optional term description.
                 $term_description = term_description();
                 if ( ! empty( $term_description ) ) :
-                    printf( '<div class="taxonomy-description">%s</div>', $term_description );
+//                    printf( '<div class="taxonomy-description">%s</div>', $term_description );
                 endif;
                 ?>
             </header><!-- .page-header -->
             
-            <?php endif; // endif display_page_title[archive] != false 
-            ?>
+            <?php endif; // endif display_page_title[archive] != false ?>
+  <?php endif; ?>
+
+
+
+
+
+
+    <?php if( function_exists( 'tk_loop_designer_the_loop' ) && 'blog-style' !== get_theme_mod( 'cc_list_post_style' ) ) {
+
+        tk_loop_designer_the_loop( get_theme_mod( 'cc_list_post_style' ), 'index', 'pagenavi' );
+
+    } else { ?>
+
+        <?php if ( have_posts() ) : ?>
             
             <div id="featured_posts_index">
                 <div id="list_posts_index" class="loop-designer list-posts-all">
