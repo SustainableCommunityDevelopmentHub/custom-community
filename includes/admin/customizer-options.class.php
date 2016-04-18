@@ -81,7 +81,6 @@ if( !class_exists( 'cc2_CustomizerLoader' ) ) {
 			
 			$customizer_data = self::prepare_preloaded_data();
 			
-			
 			wp_enqueue_script(
 				'cc2-customizer-helper', get_template_directory_uri() . '/includes/admin/js/customizer-helper.js', array('jquery', 'wp-color-picker')
 			);
@@ -565,16 +564,15 @@ add_action( 'plugins_loaded', '_wp_customize_include' );
 			}*/
 			$wp_customize->get_section( 'title_tagline' )->priority = $this->arrSectionPriorities['section_title_tagline'];
 			
-				$wp_customize->get_control('display_header_text')->priority = 10;
-				$wp_customize->get_control('display_header_text')->label = __('Display Site Title', 'cc2' );
-				$wp_customize->get_control('blogname')->priority = 13;
-				//$wp_customize->get_setting('blogname')->title = 13;
-				
-				$wp_customize->get_control('blogdescription')->priority = 14;
-				
-				$wp_customize->get_control('header_textcolor')->priority = 15;
-
+			$wp_customize->get_control('display_header_text')->priority = 10;
+			$wp_customize->get_control('display_header_text')->label = __('Display Site Title', 'cc2' );
+			$wp_customize->get_control('blogname')->priority = 13;
+			//$wp_customize->get_setting('blogname')->title = 13;
 			
+			$wp_customize->get_control('blogdescription')->priority = 14;
+			
+			$wp_customize->get_control('header_textcolor')->priority = 15;
+
 			$wp_customize->get_section('nav')->priority = $this->arrSectionPriorities['section_nav'];
 			
 			//$wp_customize->get_section( 'colors' )->priority = 10;

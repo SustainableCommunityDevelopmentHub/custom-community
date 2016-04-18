@@ -35,6 +35,9 @@ require( get_template_directory() . '/includes/pasteur.php' );
 
 require_once( get_template_directory() . '/includes/admin/welcome.class.php' );
 
+// Backwards compatibility
+require_once( get_template_directory() . '/includes/backwards-compatibility.php' );
+
 
 // initial activation
 
