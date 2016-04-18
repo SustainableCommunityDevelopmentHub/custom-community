@@ -572,8 +572,6 @@ add_action( 'plugins_loaded', '_wp_customize_include' );
 			$wp_customize->get_control('blogdescription')->priority = 14;
 			
 			$wp_customize->get_control('header_textcolor')->priority = 15;
-
-			$wp_customize->get_section('nav')->priority = $this->arrSectionPriorities['section_nav'];
 			
 			//$wp_customize->get_section( 'colors' )->priority = 10;
 			
