@@ -45,7 +45,7 @@ if( $show_front_page_content ) :
 
                         // If we got this far, the Loop Designer is active and we call the TK Loop Designer Loop.
                         // Let's do it.
-                        tk_loop_designer_the_loop( get_theme_mod( 'cc_list_post_style' ), 'index', 'pagenavi' );
+                        tk_loop_designer_the_loop( get_theme_mod( 'cc_list_post_style' ), 'index', 'show' );
 
                     } else {
 
@@ -88,7 +88,8 @@ if( $show_front_page_content ) :
                         <?php endif; ?>
 
                     <?php } // we're through! that was the whole loop thing! let's move on to the sidebar.. ?>
-                    <?php do_action( 'cc_last_inside_main_content_inner'); ?>
+
+                    <?php do_action('tk_sidebars_index'); ?>
 
                 </div><!-- close #content -->
 
