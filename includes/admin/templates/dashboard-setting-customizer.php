@@ -6,7 +6,7 @@
  * @package cc2
  * @since 2.0
  */
- 
+
 ?>
 
 <div class="section section-customizer-info">
@@ -14,14 +14,14 @@
 	<h3>Play With The Customizer</h3>
 
 	<p>Use your theme out of the box or customize its appearance.</p>
-	
+
 	<p><a href="<?php echo get_admin_url(); ?>customize.php" class="button">Visit Customizer</a></p>
-    
+
 	<p class="cc2tip-13inch" style="color: #999;"><em>Tip: Using a 13&quot; display?<br />
 	When the Customizer is loaded, click somewhere into the screen and press the key combination <strong class="keys">[Ctrl] + [-]</strong> once.<br />
 	This way you zoom out to 90% and you will be able to see the sidebar again ;)</em></p>
-	
-	
+
+
 	<?php if( !empty($is_first_run) ) : ?>
 	<h3>Add Your Content</h3>
 
@@ -32,7 +32,7 @@
 		<a href="<?php //echo get_admin_url(); ?>post-new.php?post_type=page/" class="button">Add Page</a>
 		<a href="<?php //echo get_admin_url(); ?>nav-menus.php/" class="button">Manage Menus</a>
 	</p>
-	
+
 <!--
 	<p style="color: #999;"><em>Hey, wanna import some ready-to-go <a href="#" title="coming!">starting point?</a></em></p>
 -->
@@ -67,7 +67,7 @@
     <p><a href="<?php //echo get_admin_url(); ?>plugin-install.php" class="button">Browse Free WordPress Plugins</a></p>
     -->
 
-
+<!--
 <div class="section section-get-pro">
 	<hr />
 
@@ -76,6 +76,6 @@
 	<p>If you want to make it professional - get the pro version.</p>
 
 	<p><a href="http://themekraft.com/store/custom-community-2-premium-pack/" class="button-primary">Get Pro Now</a></p>
-  
-</div>
 
+</div>
+-->

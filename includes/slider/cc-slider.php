@@ -31,7 +31,7 @@ function cc2_slider_load_assets() {
 add_action( 'wp_head', 'cc_slider_init' );
 
 function cc_slider_init() {
-
+	
 // check where to hook the slider 
 $slideshow_position = get_theme_mod( 'cc_slider_position' );
 
@@ -75,7 +75,9 @@ endif;
  *
  */
 
-function cc_slider() { ?>
+function cc_slider() {
+
+?>
 <div id="cc-slider-container" class="cc-slider">
 	<div class="cc-slider-wrap">
 		
@@ -90,10 +92,8 @@ function cc_slider() { ?>
 		//new __debug( array( 'options' => $cc_slider_options, 'slideshow_template' => $slideshow_template) );
 
         if(!empty($cc_slider_options) && $slideshow_template != 'none' && count($cc_slider_options[$slideshow_template]) > 0 ){
-
-
             if( isset($cc_slider_options[$slideshow_template]['meta-data']['slideshow_type']) && $cc_slider_options[$slideshow_template]['meta-data']['slideshow_type'] == 'post-slider') {
-				$args = array (
+                $args = array (
                     'posts_per_page' => -1
                 );
 
@@ -109,12 +109,11 @@ function cc_slider() { ?>
 
                 // The Loop
                 while ( have_posts() ) : the_post();
-
                     $img_src = '';
                     $img_src = wp_get_attachment_url( get_post_thumbnail_id( get_the_id() ));
 
                     if(!empty($img_src)) :
-                        array_push( $slides, array( 'src' => $img_src,	'title' => get_the_title(),'excerpt' => get_the_excerpt(),'permalink' => get_the_permalink() ) );
+                        array_push( $slides, array( 'src' => $img_src,	'title' => get_the_title(),'excerpt' => get_the_excerpt()	) );
 					endif;
 
                 endwhile;
@@ -152,7 +151,13 @@ function cc_slider() { ?>
 <?php
 }
 
-function cc_add_slide($name, $slides){ ?>
+function cc_add_slide($name, $slides){
+		
+	// echo '<pre>';
+	// print_r($slides);
+	// echo '</pre>';
+	
+	?>
 			
 		<script>
 		
@@ -243,10 +248,8 @@ function cc_add_slide($name, $slides){ ?>
 							<img src="<?php echo $slide['src'] ?>" alt="<?php echo $slide['title'] ?>">
 
 							<div class="carousel-caption">
-								<a href="<php echo $permalink ?>">
 								<div class="cc-slider-title"><h1 id="title-<?php echo $key; ?>" class="cc-slider-title"><span class="textwrap"><?php echo $slide['title'] ?></span></h1></div>
 								<div class="cc-slider-excerpt"><p id="excerpt-<?php echo $key; ?>" class="cc-slider-excerpt"><span class="textwrap"><?php echo $slide['excerpt'] ?></span></p></div>
-								</a>
 							</div>
 						</div>
 					<?php } ?>
