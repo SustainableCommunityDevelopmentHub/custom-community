@@ -126,7 +126,7 @@ if( !empty( $import_old_settings ) ) : ?>
 
 		
 		
-		<p><?php printf( __('No need for this hassle right now? Then <a href="%s">just skip it</a> - all the options are accessible in the <a href="%s">CC Settings</a> as well.'), admin_url( 'index.php' ), $theme_settings_url  ); ?></p>
+		<p><?php printf( __('No need for this hassle right now? Then <a href="%s">just skip it</a> - all the options are accessible in the <a href="%s">CC Settings</a> as well.', 'cc2'), admin_url( 'index.php' ), $theme_settings_url  ); ?></p>
 	
 		<p><a href="<?php echo $theme_return_url; ?>" class="link-return"><?php _e('Return to the dashboard', 'cc2'); ?></a></p>
 		

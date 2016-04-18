@@ -78,15 +78,15 @@ if ( post_password_required() )
 	$comment_form_args = array(
 			'id_form'           => 'commentform',  // that's the wordpress default value! delete it or edit it ;)
 			'id_submit'         => 'commentsubmit',
-			'title_reply'       => __( 'Leave a Reply' ),  // that's the wordpress default value! delete it or edit it ;)
-			'title_reply_to'    => __( 'Leave a Reply to %s' ),  // that's the wordpress default value! delete it or edit it ;)
-			'cancel_reply_link' => __( 'Cancel Reply' ),  // that's the wordpress default value! delete it or edit it ;)
-			'label_submit'      => __( 'Post Comment' ),  // that's the wordpress default value! delete it or edit it ;)
+			'title_reply'       => __( 'Leave a Reply', 'cc2' ),  // that's the wordpress default value! delete it or edit it ;)
+			'title_reply_to'    => __( 'Leave a Reply to %s', 'cc2' ),  // that's the wordpress default value! delete it or edit it ;)
+			'cancel_reply_link' => __( 'Cancel Reply', 'cc2' ),  // that's the wordpress default value! delete it or edit it ;)
+			'label_submit'      => __( 'Post Comment', 'cc2' ),  // that's the wordpress default value! delete it or edit it ;)
 
 			'comment_field' =>  sprintf( '<div class="form-group"><div class="col-md-12 col-lg-12"><p><textarea placeholder="%s" id="comment" class="form-control" name="comment" cols="45" rows="8" aria-required="true"></textarea></p></div></div>', __('Start typing...', 'cc2') ), 
 
 			'comment_notes_after' => '<p class="form-allowed-tags">' .
-			__( 'You may use these <abbr title="HyperText Markup Language">HTML</abbr> tags and attributes:' ) .
+			__( 'You may use these <abbr title="HyperText Markup Language">HTML</abbr> tags and attributes:', 'cc2' ) .
 			'</p><div class="alert alert-info">' . allowed_tags() . '</div>' 
 
 			// So, that was the needed stuff to have bootstrap basic styles for the form elements and buttons 
