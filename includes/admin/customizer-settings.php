@@ -384,7 +384,6 @@ $customizer_settings = array(
 		/**
 		 * Widget section
 		 */
-		 
 		'widget_title_text_color' => array('default' => '',
 			'sanitize_callback' 	=>  array( 'cc2_Pasteur', 'sanitize_hex'),
 			'sanitize_js_callback' 	=> 'maybe_hash_hex_color',

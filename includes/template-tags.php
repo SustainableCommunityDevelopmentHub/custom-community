@@ -602,7 +602,7 @@ if( !function_exists( 'proper_submit_button' ) ) :
 			$class = 'button-secondary delete';
 		}
 
-		$text = $text ? $text : __( 'Save Changes' );
+		$text = $text ? $text : __( 'Save Changes', 'cc2' );
 
 		// Default the id attribute to $name unless an id was specifically provided in $other_attributes
 		$id = $name;

@@ -55,7 +55,7 @@ class cc2_Customize_Color_Control extends WP_Customize_Control {
 	 * @param array $args
 	 */
 	public function __construct( $manager, $id, $args = array() ) {
-		$this->statuses = array( '' => __('Default') );
+		$this->statuses = array( '' => __('Default', 'cc2') );
 		parent::__construct( $manager, $id, $args );
 	}
 
@@ -100,7 +100,7 @@ class cc2_Customize_Color_Control extends WP_Customize_Control {
 		<label>
 			<span class="cc2-customize-control-title"><?php echo esc_html( $this->label ); ?></span>
 			<div class="cc2-customize-control-content">
-				<input class="color-picker-hex" type="text" maxlength="7" placeholder="<?php esc_attr_e( 'Hex Value' ); ?>"<?php echo $default_attr; ?> />
+				<input class="color-picker-hex" type="text" maxlength="7" placeholder="<?php esc_attr_e( 'Hex Value', 'cc2' ); ?>"<?php echo $default_attr; ?> />
 				<button type="button" class="button btn color-picker-set-transparent"><?php _e('Set transparent', 'cc2'); ?></button>
 			</div>
 		</label>

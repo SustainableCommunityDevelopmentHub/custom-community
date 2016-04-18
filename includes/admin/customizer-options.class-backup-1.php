@@ -572,6 +572,8 @@ add_action( 'plugins_loaded', '_wp_customize_include' );
 			$wp_customize->get_control('blogdescription')->priority = 14;
 			
 			$wp_customize->get_control('header_textcolor')->priority = 15;
+
+			$wp_customize->get_section('nav')->priority = $this->arrSectionPriorities['section_nav'];
 			
 			//$wp_customize->get_section( 'colors' )->priority = 10;
 			
@@ -2211,25 +2213,154 @@ add_action( 'plugins_loaded', '_wp_customize_include' );
 		 */
 		
 		function section_widgets( $wp_customize, $params = false ) {
+	
+			extract( $this->prepare_variables() );
+	
 			$strSectionName = 'widget_settings';
+			//$strPanelID = 'my_widgets_panel';
+			$strPanelID = '';
+			
+			if( !empty( $params ) && isset( $params['panel_id'] ) ) {
+				$strPanelID = $params['panel_id'];
+			}
+	
+			$widget_section_priority = 140;
+			if( !empty( $this->arrSectionPriorities['section_widgets'] ) ) {
+				$widget_section_priority = $this->arrSectionPriorities['section_widgets'];
+			}
 
-			// Section: Widget Settings
-			$wp_customize->add_section( $strSectionName, array(
-				'title'		=> 	__('Widget Settings', 'cc2'),
-				'priority'	=> 140,
+			/*
+			$wp_customize->add_panel( $strPanelID, array(
+				'capability' => 'edit_theme_options',
+				'title' => __('My Widget Settings'),
 			) );
 
-			// Setting and Control: Attributes Note
+
+			$wp_customize->add_section( $strSectionName, array(
+				'title'         => 	__('Widget Settings', 'cc2'),
+				'priority'      => $widget_section_priority,
+				'panel' => $strPanelID,
+			) );*/
+			
+
+			$wp_customize->add_section( $strSectionName, array(
+				'title'         => 	__('Widget Settings', 'cc2'),
+				'priority'      => $widget_section_priority,
+				'panel'	=> $strPanelID,
+			) );
+
+			$widget_section_priority+=2;
+		
+			// The widgets Title attributes - A Quick Note
+			
 			$wp_customize->add_setting( 'widget_title_attributes_note', array(
-				'capability'		=> 	'edit_theme_options',
-				'sanitize_callback'	=> 'cc2_Pasteur_none'
+				'capability'    => 	'edit_theme_options',
+				'sanitize_callback' => 'cc2_Pasteur_none'
 			) );
 			$wp_customize->add_control( new Description( $wp_customize, 'widget_title_attributes_note', array(
-				'label' 		=> 	__( 'Get more options to style your header and footer widgets with the CC2 Premium Pack', 'cc2' ),
+				'label' 		=> 	__('Get more options to style your header and footer widgets with the CC2 Premium Pack', 'cc2'),
 				'type' 			=> 	'description',
 				'section' 		=> 	$strSectionName,
-				'priority'		=> 	1,
+				'priority'		=> 	$widget_section_priority,
 			) ) );
+			$widget_section_priority+=2; // 144
+			
+			// widget title Font Color
+			$wp_customize->add_setting('widget_title_text_color', array(
+				'default'           	=> '',
+				'capability'        	=> 'edit_theme_options',
+				'transport'   			=> 'refresh',
+				'sanitize_callback' 	=> 'sanitize_hex_color_no_hash',
+				'sanitize_js_callback' 	=> 'maybe_hash_hex_color',
+			) );
+			$wp_customize->add_control( new WP_Customize_Color_Control($wp_customize, 'widget_title_text_color', array(
+				'label'    				=> __('Title Font Color', 'cc2'),
+				'section'  				=> $strSectionName,
+				'priority'				=> $widget_section_priority,
+			) ) );
+			$widget_section_priority+=2; // 146
+			
+			// widget title background color
+			$wp_customize->add_setting('widget_title_background_color', array(
+				'default'           	=> '',
+				'capability'        	=> 'edit_theme_options',
+				'transport'   			=> 'refresh',
+				'sanitize_callback' 	=> 'sanitize_hex_color_no_hash',
+				'sanitize_js_callback' 	=> 'maybe_hash_hex_color',
+			) );
+			$wp_customize->add_control( new WP_Customize_Color_Control($wp_customize, 'widget_title_background_color', array(
+				'label'    				=> __('Title Background Color', 'cc2'),
+				'section'  				=> $strSectionName,
+				'priority'				=> $widget_section_priority,
+			) ) );
+			$widget_section_priority+=2; // 148
+
+			// Widget title Font Size
+			
+			$wp_customize->add_setting('widget_title_font_size', array(
+				'default' 		=> '',
+				'capability'    => 	'edit_theme_options',
+				'transport'   	=> 	'refresh',
+				'sanitize_callback' => 'cc2_Pasteur_sanitize_text',
+			) );
+			$wp_customize->add_control('widget_title_font_size', array(
+				'label'      	=> __('Title Font Size', 'cc2'),
+				'section'    	=> $strSectionName,
+				'priority'   	=> $widget_section_priority,
+			) );
+			$widget_section_priority++;
+			
+			
+			// widget container attributes:  background color, link color, link color hover 
+			$widget_section_priority = 155;
+			
+			// widget background color 
+			$wp_customize->add_setting('widget_background_color', array(
+				'default'           	=> '',
+				'capability'        	=> 'edit_theme_options',
+				'transport'   			=> 'refresh',
+				'sanitize_callback' 	=> 'sanitize_hex_color_no_hash',
+				'sanitize_js_callback' 	=> 'maybe_hash_hex_color',
+			) );
+			$wp_customize->add_control( new WP_Customize_Color_Control($wp_customize, 'widget_background_color', array(
+				'label'    				=> __('Widget Background Color', 'cc2'),
+				'section'  				=> $strSectionName,
+				'priority'				=> $widget_section_priority,
+			) ) );
+			$widget_section_priority++;
+			
+
+			// widget link color 
+			$wp_customize->add_setting('widget_link_color', array(
+				'default'           	=> '',
+				'capability'        	=> 'edit_theme_options',
+				'transport'   			=> 'refresh',
+				'sanitize_callback' 	=> 'sanitize_hex_color_no_hash',
+				'sanitize_js_callback' 	=> 'maybe_hash_hex_color',
+			) );
+			$wp_customize->add_control( new WP_Customize_Color_Control($wp_customize, 'widget_link_color', array(
+				'label'    				=> __('Widget Link Color', 'cc2'),
+				'section'  				=> $strSectionName,
+				'priority'				=> $widget_section_priority,
+			) ) );
+			$widget_section_priority++;
+
+			
+			// widget link hover color
+			$wp_customize->add_setting('widget_link_text_hover_color', array(
+				'default'           	=> '',
+				'capability'        	=> 'edit_theme_options',
+				'transport'   			=> 'refresh',
+				'sanitize_callback' 	=> 'sanitize_hex_color_no_hash',
+				'sanitize_js_callback' 	=> 'maybe_hash_hex_color',
+			) );
+			$wp_customize->add_control( new WP_Customize_Color_Control($wp_customize, 'widget_link_text_hover_color', array(
+				'label'    				=> __('Widget Link Text Hover Color', 'cc2'),
+				'section'  				=> $strSectionName,
+				'priority'				=> $widget_section_priority,
+			) ) );
+			$widget_section_priority++;
+			
 		}
 	
 		/**
