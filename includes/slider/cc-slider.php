@@ -32,10 +32,14 @@ add_action( 'wp_head', 'cc_slider_init' );
 
 function cc_slider_init() {
 	
+	
 // check where to hook the slider 
 $slideshow_position = get_theme_mod( 'cc_slider_position' );
+$cc_slider_desplay = get_theme_mod( 'cc_slider_display', 'home' );
 
-if( 'always' === get_theme_mod( 'cc_slider_display' ) || ( is_home() && 'bloghome' === get_theme_mod( 'cc_slider_display' ) ) || ( is_front_page() && 'home' === get_theme_mod( 'cc_slider_display' ) ) ) :
+if( 'always' === $cc_slider_desplay || ( is_home() && 'bloghome' === $cc_slider_desplay ) || ( is_front_page() && 'home' === $cc_slider_desplay ) ) :
+
+	
 
 	switch ($slideshow_position) {
 	
@@ -87,12 +91,14 @@ function cc_slider() {
 		// just copy a line and modify to add more slides!
 
         $cc_slider_options = get_option('cc_slider_options');
-        $slideshow_template = get_theme_mod('cc_slideshow_template');
+        $slideshow_template = get_theme_mod('cc_slideshow_template', 'none');
+		
 
-		//new __debug( array( 'options' => $cc_slider_options, 'slideshow_template' => $slideshow_template) );
+		// new __debug( array( 'options' => $cc_slider_options, 'slideshow_template' => $slideshow_template) );
 
         if(!empty($cc_slider_options) && $slideshow_template != 'none' && count($cc_slider_options[$slideshow_template]) > 0 ){
             if( isset($cc_slider_options[$slideshow_template]['meta-data']['slideshow_type']) && $cc_slider_options[$slideshow_template]['meta-data']['slideshow_type'] == 'post-slider') {
+				
                 $args = array (
                     'posts_per_page' => -1
                 );
@@ -106,7 +112,7 @@ function cc_slider() {
 
                 // The Query
                 query_posts($args);
-
+				
                 // The Loop
                 while ( have_posts() ) : the_post();
                     $img_src = '';
@@ -121,6 +127,7 @@ function cc_slider() {
                 // Reset Query
                 wp_reset_query();
             } elseif(isset($cc_slider_options[$slideshow_template]['slides'])) {
+				
                 foreach ($cc_slider_options[$slideshow_template]['slides'] as $slide) {
                     $post = get_post($slide['id']);
 
@@ -142,7 +149,7 @@ function cc_slider() {
         }
 
 		//new __debug( $slides, 'slides' );
-
+		
         cc_add_slide( 'index', $slides );
 		?>
 		
@@ -152,10 +159,6 @@ function cc_slider() {
 }
 
 function cc_add_slide($name, $slides){
-		
-	// echo '<pre>';
-	// print_r($slides);
-	// echo '</pre>';
 	
 	?>
 			
@@ -228,7 +231,9 @@ function cc_add_slide($name, $slides){
 		
 	<?php } else {
 
-		if( 'slides-only' === get_theme_mod('cc2_slideshow_style') ) { ?>
+		$cc_slideshow_style = get_theme_mod('cc2_slideshow_style', 'slides-only');
+		
+		if( 'slides-only' === $cc_slideshow_style ) { ?>
 
 			<div id="carousel-<?php echo $name ?>-generic" class="carousel slide carousel-fade" data-ride="carousel">
 				  <!-- Indicators -->
@@ -265,7 +270,7 @@ function cc_add_slide($name, $slides){
 				</a>
 			</div>
 
-		<?php } elseif( 'bubble-preview' === get_theme_mod('cc2_slideshow_style') ) { ?>
+		<?php } elseif( 'bubble-preview' === $cc_slideshow_style ) { ?>
 
 				<div id="carousel-<?php echo $name ?>-generic" class="carousel slide carousel-fade cc-slider-bubbles-wrap" data-ride="carousel">
 
@@ -318,7 +323,7 @@ function cc_add_slide($name, $slides){
 				</div>
 
 
-		<?php } elseif( 'side-preview' === get_theme_mod('cc2_slideshow_style') ){ ?>
+		<?php } elseif( 'side-preview' === $cc_slideshow_style ){ ?>
 			<div id="carousel-<?php echo $name ?>-generic" class="carousel slide carousel-fade cc-slider-side-preview-wrap" data-ride="carousel">
 
 				<!-- Wrapper for slides -->
