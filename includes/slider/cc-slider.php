@@ -119,7 +119,7 @@ function cc_slider() {
                     $img_src = wp_get_attachment_url( get_post_thumbnail_id( get_the_id() ));
 
                     if(!empty($img_src)) :
-                        array_push( $slides, array( 'src' => $img_src,	'title' => get_the_title(),'excerpt' => get_the_excerpt()	) );
+                        array_push( $slides, array( 'src' => $img_src,	'title' => get_the_title(),'excerpt' => get_the_excerpt(), 'permalink' => esc_url(get_the_permalink())	) );
 					endif;
 
                 endwhile;
@@ -171,46 +171,56 @@ function cc_add_slide($name, $slides){
 
 			// the sliding intervall 
 			jQuery( '#carousel-<?php echo $name ?>-generic' ).carousel({
-			  interval: <?php echo get_theme_mod( 'cc_sliding_time' ) ?>
-			})
+			  interval: <?php echo get_theme_mod( 'cc_sliding_time','5000'); ?>
+			});
 
 			// first the starting slide 
 						
-				// the title effect 
-				<?php if( 'hide' !== get_theme_mod( 'slider_effect_title' ) && 'no-effect' !== get_theme_mod( 'slider_effect_title' ) ) : ?>
-					jQuery( '#carousel-<?php echo $name ?>-generic .item.active h1' ).addClass( 'animated <?php echo get_theme_mod('slider_effect_title'); ?>' ).css( 'display', 'block' );
+				<?php
+					
+					$cc_slider_effect_title = get_theme_mod( 'slider_effect_title', 'bounceInLeft' ) ;
+					$cc_slider_effect_excerpt = get_theme_mod( 'slider_effect_excerpt', 'bounceInRight' ) ;
+		
+					echo '/*';
+						echo 'title effect: '.$cc_slider_effect_title;
+						echo ' - excerpt effect: '.$cc_slider_effect_excerpt;
+					echo '*/';
+		
+		
+				?>				
+						
+					// the title effect 
+				<?php if( 'hide' !== $cc_slider_effect_title && 'no-effect' !== $cc_slider_effect_title ) : ?>
+					jQuery( '#carousel-<?php echo $name ?>-generic .item.active h1' ).addClass( 'animated <?php echo $cc_slider_effect_title; ?>' ).css( 'display', 'block' );
 				<?php endif; ?>
 				
-				// the excerpt effect 
-				<?php if( 'hide' !== get_theme_mod( 'slider_effect_excerpt' ) && 'no-effect' !== get_theme_mod( 'slider_effect_excerpt' ) ) : ?>
+					// the excerpt effect 
+				<?php if( 'hide' !== $cc_slider_effect_excerpt && 'no-effect' !== $cc_slider_effect_excerpt ) : ?>
 					jQuery( '#carousel-<?php echo $name ?>-generic .item.active p' ).addClass( 'animated' );
 					setTimeout(function(){
-						jQuery( '#carousel-<?php echo $name ?>-generic .item.active p' ).addClass( '<?php echo get_theme_mod('slider_effect_excerpt'); ?>' ).css( 'display', 'block' );
+						jQuery( '#carousel-<?php echo $name ?>-generic .item.active p' ).addClass( '<?php echo $cc_slider_effect_excerpt; ?>' ).css( 'display', 'block' );
 					},300);
 				<?php endif; ?>
-				
-			// effects on slide.bs  
-			jQuery('#carousel-<?php echo $name ?>-generic').on('slide.bs.carousel', function () {
-			})
+
 			
 			// effects on slid.bs
 			jQuery('#carousel-<?php echo $name ?>-generic').on('slid.bs.carousel', function () {
 				
-				<?php if( 'hide' !== get_theme_mod( 'slider_effect_title' ) && 'no-effect' !== get_theme_mod( 'slider_effect_title' ) ) : ?>
-					jQuery( '#carousel-<?php echo $name ?>-generic .item h1' ).removeClass( 'animated <?php echo get_theme_mod('slider_effect_title'); ?>' ).css( 'display', 'none' );
+				<?php if( 'hide' !== $cc_slider_effect_title && 'no-effect' !== $cc_slider_effect_title ) : ?>
+					jQuery( '#carousel-<?php echo $name ?>-generic .item h1' ).removeClass( 'animated <?php echo $cc_slider_effect_title; ?>' ).css( 'display', 'none' );
 				<?php endif; ?>
 				
-				<?php if( 'hide' !== get_theme_mod( 'slider_effect_excerpt' ) && 'no-effect' !== get_theme_mod( 'slider_effect_excerpt' ) ) : ?>
-					jQuery( '#carousel-<?php echo $name ?>-generic .item p' ).removeClass( 'animated <?php echo get_theme_mod('slider_effect_excerpt'); ?>' ).css( 'display', 'none' );
+				<?php if( 'hide' !== $cc_slider_effect_excerpt && 'no-effect' !== $cc_slider_effect_excerpt ) : ?>
+					jQuery( '#carousel-<?php echo $name ?>-generic .item p' ).removeClass( 'animated <?php echo $cc_slider_effect_excerpt; ?>' ).css( 'display', 'none' );
 				<?php endif; ?>
 				
-				<?php if( 'hide' !== get_theme_mod( 'slider_effect_title' ) && 'no-effect' !== get_theme_mod( 'slider_effect_title' ) ) : ?>
-					jQuery( '#carousel-<?php echo $name ?>-generic .item.active h1' ).addClass( 'animated <?php echo get_theme_mod('slider_effect_title'); ?>' ).css( 'display', 'block' );
+				<?php if( 'hide' !== $cc_slider_effect_title && 'no-effect' !== $cc_slider_effect_title ) : ?>
+					jQuery( '#carousel-<?php echo $name ?>-generic .item.active h1' ).addClass( 'animated <?php echo $cc_slider_effect_title; ?>' ).css( 'display', 'block' );
 				<?php endif; ?>
 				
-				<?php if( 'hide' !== get_theme_mod( 'slider_effect_excerpt' ) && 'no-effect' !== get_theme_mod( 'slider_effect_excerpt' ) ) : ?>
+				<?php if( 'hide' !== $cc_slider_effect_excerpt && 'no-effect' !== $cc_slider_effect_excerpt ) : ?>
 					setTimeout(function(){
-						jQuery( '#carousel-<?php echo $name ?>-generic .item.active p' ).addClass( 'animated <?php echo get_theme_mod('slider_effect_excerpt'); ?>' ).css( 'display', 'block' );
+						jQuery( '#carousel-<?php echo $name ?>-generic .item.active p' ).addClass( 'animated <?php echo $cc_slider_effect_excerpt; ?>' ).css( 'display', 'block' );
 					},300);
 				<?php endif; ?>
 				
@@ -252,9 +262,22 @@ function cc_add_slide($name, $slides){
 						<div class="item <?php if($key == 1) echo 'active'; ?>">
 							<img src="<?php echo $slide['src'] ?>" alt="<?php echo $slide['title'] ?>">
 
-							<div class="carousel-caption">
-								<div class="cc-slider-title"><h1 id="title-<?php echo $key; ?>" class="cc-slider-title"><span class="textwrap"><?php echo $slide['title'] ?></span></h1></div>
-								<div class="cc-slider-excerpt"><p id="excerpt-<?php echo $key; ?>" class="cc-slider-excerpt"><span class="textwrap"><?php echo $slide['excerpt'] ?></span></p></div>
+							<div class="carousel-caption" >
+							<?php 
+							
+								if (!empty($slide['permalink'])){
+								
+									echo '<div class="cc-slider-title"><h1 id="title-' . $key . '" class="cc-slider-title"><a href="' . $slide['permalink'] . '"><span class="textwrap">' . $slide['title'] . '</span></a></h1></div>';
+									echo '<div class="cc-slider-excerpt"><p id="excerpt-' . $key . '" class="cc-slider-excerpt"><a href="' . $slide['permalink'] . '"><span class="textwrap">' . $slide['excerpt'] . '</span></a></p></div>';
+								
+								}else{
+								
+									echo '<div class="cc-slider-title"><h1 id="title-' . $key . '" class="cc-slider-title"><span class="textwrap">' . $slide['title'] . '</span></h1></div>';
+									echo '<div class="cc-slider-excerpt"><p id="excerpt-' . $key . '" class="cc-slider-excerpt"><span class="textwrap">' . $slide['excerpt'] . '</span></p></div>';
+									
+								}
+							
+							?>
 							</div>
 						</div>
 					<?php } ?>
@@ -327,10 +350,10 @@ function cc_add_slide($name, $slides){
 			<div id="carousel-<?php echo $name ?>-generic" class="carousel slide carousel-fade cc-slider-side-preview-wrap" data-ride="carousel">
 
 				<!-- Wrapper for slides -->
-				<div class="carousel-inner cc-carousel-inner-side-preview">
+				<div class="carousel-inner cc-carousel-inner-side-preview" >
 					<?php
 					foreach ($slides as $key => $slide) { ?>
-						<div class="item <?php if($key == 1) echo 'active'; ?>">
+						<div class="item <?php if($key == 1) echo 'active'; ?>" >
 							<img src="<?php echo $slide['src'] ?>" alt="<?php echo $slide['title'] ?>">
 
 							<div class="carousel-caption">
