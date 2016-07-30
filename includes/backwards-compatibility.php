@@ -17,7 +17,7 @@ if( version_compare( $GLOBALS['wp_version'], '4.3', '<' ) ) {
 		}
 
 		if ( ( $paged >= 2 || $page >= 2) && !is_404() ) {
-			$title .= " $sep " . sprintf( esc_html__( 'Page %s', 'riba-lite' ), max( $paged, $page ) );
+			$title .= " $sep " . sprintf( esc_html__( 'Page %s', 'cc2' ), max( $paged, $page ) );
 		}
 
 		return $title;

@@ -1,3 +1,10 @@
+### V2.1.2
+    - fixed the home slideshow
+	- added links on posts for slideshow
+
+### V2.1.1
+    - Added TGMPA
+
 ### v2.0.30
 	- Has been added backwards compatibility for WP Title.
 	- Has been fixed an empty value error in customizer.
